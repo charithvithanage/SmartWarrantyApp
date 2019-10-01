@@ -89,7 +89,7 @@ public class Utils {
                 }).show();
     }
 
-    public static String convertDateTimeStringToString(String dateTimeString) {
+     public static String convertDateTimeStringToString(String dateTimeString) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(Config.date_time_pattern, Locale.ENGLISH);
         SimpleDateFormat patern = new SimpleDateFormat(Config.standard_date_time_pattern, Locale.ENGLISH);

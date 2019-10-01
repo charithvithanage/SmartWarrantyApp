@@ -1,5 +1,6 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -237,14 +238,14 @@ public class SignUpActivity extends AppCompatActivity {
 
         if (isUserNICValid(userNIC) && isPasswordValid(password) && isPasswordMatch(password, confirmPassword) && isUserNameValid(username)) {
 
-            if(password.length()>5){
+            if (password.length() > 5) {
                 dealerUserMock.setDealerCode(dealer.getDealerCode());
                 dealerUserMock.setNic(userNIC);
                 dealerUserMock.setUsername(username);
                 dealerUserMock.setPassword(password);
 
                 new ConfirmRegistrationDataAsync().execute();
-            }else {
+            } else {
                 errorPassword.setVisibility(View.VISIBLE);
                 errorPassword.setText(getString(R.string.password_length_wrong));
                 passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
@@ -285,6 +286,16 @@ public class SignUpActivity extends AppCompatActivity {
 
     private class ConfirmRegistrationDataAsync extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(SignUpActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -292,10 +303,11 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Log.d(TAG, jsonObject.toString());
-
+                    progressDialog.dismiss();
                     try {
                         boolean success = jsonObject.getBoolean("success");
                         String message = jsonObject.getString("message");
+
 
                         if (success) {
 
@@ -321,6 +333,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

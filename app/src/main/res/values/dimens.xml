@@ -40,4 +40,14 @@
     <dimen name="lableLeftPadding">12dp</dimen>
     <dimen name="edit_text_height">36dp</dimen>
     <dimen name="text_view_height">36dp</dimen>
+    <dimen name="selectBtnSize">50dp</dimen>
+
+    <dimen name="filterBtnMiddleMargin">10dp</dimen>
+    <dimen name="filterBtnSideMargin">40dp</dimen>
+    <dimen name="filterBtnPaddingLeft">10dp</dimen>
+    <dimen name="filterBtnPaddingTop">12dp</dimen>
+    <dimen name="filterBtnPaddingBottom">12dp</dimen>
+    <dimen name="filterBtnBottomMargin">20dp</dimen>
+    <dimen name="page_padding">8dp</dimen>
+
 </resources>

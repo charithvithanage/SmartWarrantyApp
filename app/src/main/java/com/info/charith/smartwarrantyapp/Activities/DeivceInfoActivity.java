@@ -1,5 +1,6 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -177,6 +178,16 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
     private class UpdateWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(DeivceInfoActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -184,6 +195,9 @@ public class DeivceInfoActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Log.d(TAG, jsonObject.toString());
+                    progressDialog = new ProgressDialog(DeivceInfoActivity.this);
+                    progressDialog.setMessage(getString(R.string.waiting));
+                    progressDialog.show();
                     Intent intent = new Intent(DeivceInfoActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -191,6 +205,9 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog = new ProgressDialog(DeivceInfoActivity.this);
+                    progressDialog.setMessage(getString(R.string.waiting));
+                    progressDialog.show();
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

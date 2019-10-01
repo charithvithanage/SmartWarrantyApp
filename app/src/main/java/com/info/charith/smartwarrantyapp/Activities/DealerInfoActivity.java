@@ -1,7 +1,6 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -11,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
@@ -94,6 +95,16 @@ public class DealerInfoActivity extends AppCompatActivity {
 
     private class RegisterAsync extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(DealerInfoActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -102,10 +113,11 @@ public class DealerInfoActivity extends AppCompatActivity {
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Log.d(TAG, jsonObject.toString());
 
-                    String loggedInUser = null;
-                    String accessToken = null;
-                    String refreshToken = null;
-                    String userDealer=null;
+                    progressDialog.dismiss();
+                    String loggedInUser;
+                    String accessToken;
+                    String refreshToken;
+                    String userDealer;
 
 
                     try {
@@ -156,6 +168,8 @@ public class DealerInfoActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

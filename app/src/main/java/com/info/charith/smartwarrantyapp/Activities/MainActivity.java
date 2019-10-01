@@ -1,6 +1,8 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -27,9 +29,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public NavController navController;
 
     public NavigationView navigationView;
-
-
-
 
 
     @Override
@@ -95,17 +94,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navController.navigate(R.id.nav_about);
                 break;
 
-            case R.id.nav_logout:
-                SharedPreferences sharedPref = getSharedPreferences(
-                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("loggedInUser", "0");
-                editor.putString("accessToken", "0");
-                editor.putString("refreshToken", "0");
-                editor.putString("userDealer", "0");
-                editor.commit();
+            case R.id.nav_report:
+                navController.navigate(R.id.nav_report);
+break;
 
-                Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+            case R.id.nav_logout:
+
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(getString(R.string.logout_confirmation_message))
+                        .setCancelable(false)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedPref = getSharedPreferences(
+                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString("loggedInUser", "0");
+                                editor.putString("accessToken", "0");
+                                editor.putString("refreshToken", "0");
+                                editor.putString("userDealer", "0");
+                                editor.commit();
+                                Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
                 break;
 
         }

@@ -1,5 +1,6 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -154,12 +155,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private class LoginUserAsync extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(LoginActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
             UserService.getInstance().loginUser(LoginActivity.this, credential, new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+
+                    progressDialog.dismiss();
 
                     try {
                         boolean success = jsonObject.getBoolean("success");
@@ -209,6 +222,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

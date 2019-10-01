@@ -1,6 +1,7 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,6 +70,16 @@ public class DealerSearchActivity extends AppCompatActivity {
 
     private class GetDealerAsync extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(DealerSearchActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -78,17 +89,17 @@ public class DealerSearchActivity extends AppCompatActivity {
 
                     Log.d(TAG, jsonObject.toString());
 
-
+                    progressDialog.dismiss();
                     try {
 
                         String objectString = jsonObject.getString("object");
                         boolean success = jsonObject.getBoolean("success");
-                        String message=jsonObject.getString("message");
+                        String message = jsonObject.getString("message");
 
-                        if(success){
+                        if (success) {
                             JSONArray jsonArray = new JSONArray(objectString);
 
-                            if(jsonArray.length()>0){
+                            if (jsonArray.length() > 0) {
                                 dealers = new ArrayList<>();
 
                                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -130,7 +141,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                                     }
                                 });
                                 dialog.show();
-                            }else {
+                            } else {
                                 Utils.showAlertWithoutTitleDialog(context, getString(R.string.no_dealer_for_given_nic_string), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -140,7 +151,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                             }
 
 
-                        }else {
+                        } else {
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -150,19 +161,16 @@ public class DealerSearchActivity extends AppCompatActivity {
                         }
 
 
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
-
 
 
                 }
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

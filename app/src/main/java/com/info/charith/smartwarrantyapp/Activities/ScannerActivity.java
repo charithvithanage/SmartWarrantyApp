@@ -2,6 +2,7 @@ package com.info.charith.smartwarrantyapp.Activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,7 +55,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_scanner);
 
-        selectedBrand=getIntent().getStringExtra("selected_brand");
+        selectedBrand = getIntent().getStringExtra("selected_brand");
 
         init();
 
@@ -95,16 +95,16 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                     @Override
                     public void onClick(View v) {
 
-                        if(imei.getText().length()==15){
+                        if (imei.getText().length() == 15) {
                             dialog.dismiss();
-                            if(!TextUtils.isEmpty(imei.getText())){
+                            if (!TextUtils.isEmpty(imei.getText())) {
                                 warrantyRequest.setImei(imei.getText().toString());
 
                                 new RequestWarrantyAsync().execute();
                             }
-                        }else {
-                          errorLable.setText("( Enter correct IMEI )");
-                          errorLable.setVisibility(View.VISIBLE);
+                        } else {
+                            errorLable.setText("( Enter correct IMEI )");
+                            errorLable.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -116,7 +116,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private void init() {
         warrantyRequest = new WarrantyRequest();
-        manualBtn=findViewById(R.id.manual);
+        manualBtn = findViewById(R.id.manual);
         contentFrame = findViewById(R.id.content_frame);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -155,7 +155,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
             if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
                 type = "sold device";
-            }else {
+            } else {
                 type = "activated device";
             }
         }
@@ -204,8 +204,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     @Override
     public void handleResult(Result rawResult) {
-        Toast.makeText(this, "Contents = " + rawResult.getText() +
-                ", Format = " + rawResult.getBarcodeFormat().toString(), Toast.LENGTH_SHORT).show();
 
         String barCodeString = rawResult.getText();
 
@@ -225,23 +223,34 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void onResume() {
         super.onResume();
-        if(mScannerView!=null){
+        if (mScannerView != null) {
             mScannerView.setResultHandler(this);
             mScannerView.startCamera();
 
         }
-        }
+    }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(mScannerView!=null){
+        if (mScannerView != null) {
             mScannerView.stopCamera();
 
         }
     }
 
     private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
+
+        ProgressDialog progressDialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(ScannerActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -250,6 +259,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Log.d(TAG, jsonObject.toString());
+                    progressDialog.dismiss();
 
                     String objectOne = null;
                     String objectTwo = null;
@@ -266,29 +276,29 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                             String deviceType = getDeviceType(warranty);
 
-                            if(warranty.getBrand().equals(selectedBrand)){
-                                if (deviceType.equals("new device")||deviceType.equals("activated device")) {
+
+                            if (warranty.getBrand().equals(selectedBrand)) {
+                                if (deviceType.equals("new device") || deviceType.equals("activated device")) {
                                     Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
-                                    intent.putExtra("warrantyString",gson.toJson(warranty));
-                                    intent.putExtra("dealerString",objectTwo);
+                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+                                    intent.putExtra("dealerString", objectTwo);
                                     intent.putExtra("type", deviceType);
                                     intent.putExtra("previous_activity", "scan_activity");
                                     startActivity(intent);
                                 } else if (deviceType.equals("sold device")) {
                                     Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
-                                    intent.putExtra("type",deviceType);
-                                    intent.putExtra("warrantyString",gson.toJson(warranty));
-                                    intent.putExtra("dealerString",objectTwo);
+                                    intent.putExtra("type", deviceType);
+                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+                                    intent.putExtra("dealerString", objectTwo);
                                     intent.putExtra("previous_activity", "scan_activity");
                                     startActivity(intent);
                                 }
-                            }else {
+                            } else {
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "disabled device");
                                 intent.putExtra("previous_activity", "scan_activity");
                                 startActivity(intent);
                             }
-
 
 
                         } else {
@@ -298,12 +308,12 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                 intent.putExtra("type", "unauthorized device");
                                 intent.putExtra("previous_activity", "scan_activity");
                                 startActivity(intent);
-                            } else if(message.equals("Brand not supported.")){
+                            } else if (message.equals("Brand not supported.")) {
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "disabled device");
                                 intent.putExtra("previous_activity", "scan_activity");
                                 startActivity(intent);
-                            }else {
+                            } else {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -322,6 +332,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
