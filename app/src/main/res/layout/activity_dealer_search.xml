@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_color"
+        android:padding="@dimen/pageMargin">
+
+
+        <Button
+            android:id="@+id/btnRegister"
+            style="@style/login_btn_style"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/loginBtnHieght"
+            android:layout_gravity="center_horizontal"
+
+            android:background="@drawable/login_button"
+            android:foregroundGravity="top"
+            android:paddingLeft="@dimen/button_side_padding"
+            android:paddingRight="@dimen/button_side_padding"
+            android:text="Search Dealer"
+            android:textAllCaps="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/dealerNIC"
+            style="@style/login_edit_text_style"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/edit_text_height"
+            android:background="@drawable/edt_bg_normal"
+            android:ems="10"
+            android:focusableInTouchMode="true"
+            android:paddingStart="@dimen/login_edit_text_padding"
+            app:layout_constraintBottom_toTopOf="@+id/btnRegister"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include" />
+
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/lable_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/lableLeftPadding"
+            android:paddingBottom="@dimen/lableBottomPadding"
+            android:text="Dealer NIC"
+            app:layout_constraintBottom_toTopOf="@+id/dealerNIC"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/logo_layout"
+            android:layout_width="379dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></include>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

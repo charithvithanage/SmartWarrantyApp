@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="400dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:gravity="left|center_vertical"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/textView8"
+        style="@style/dialog_title_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="32dp"
+        android:text="IMIE" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:background="@drawable/edt_bg_normal"
+        android:layout_marginLeft="32dp"
+        >
+
+        <EditText
+            android:id="@+id/imei"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="@string/enter_imei"
+            android:inputType="number"
+            android:maxLength="15"></EditText>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/errorIMEILable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="34dp"
+        android:text="TextView"
+        style="@style/edit_text_error_lable_style"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/btnSubmit"
+        style="@style/login_btn_style"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/login_button"
+        android:gravity="center"
+        android:text="Submit"
+        android:textAllCaps="true" />
+</LinearLayout>

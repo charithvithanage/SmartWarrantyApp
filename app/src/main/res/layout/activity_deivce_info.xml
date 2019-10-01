@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include2"
+        layout="@layout/actionbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></include>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/pageMargin">
+
+
+            <Button
+                android:id="@+id/btnSubmit"
+                style="@style/login_btn_style"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/loginBtnHieght"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/login_button"
+                android:foregroundGravity="top"
+                android:paddingLeft="@dimen/button_side_padding"
+                android:paddingRight="@dimen/button_side_padding"
+                android:text="Confirm"
+                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.458"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvServiceWStatus" />
+
+            <TextView
+                android:id="@+id/customerEmail"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+            <TextView
+                android:id="@+id/tvRef"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lableWarrantRefNo" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lableActivatedWDate" />
+
+            <TextView
+                android:id="@+id/tvAccessoryWStatus"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lableAccessoryWStatus" />
+
+            <TextView
+                android:id="@+id/tvDeviceWStatus"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lableDeviceWStatus" />
+
+            <TextView
+                android:id="@+id/tvServiceWStatus"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lableServiceWStatus" />
+
+            <TextView
+                android:id="@+id/imei"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+            <TextView
+                android:id="@+id/city"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+            <TextView
+                android:id="@+id/distric"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView29" />
+
+            <TextView
+                android:id="@+id/dealerName"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+            <TextView
+                android:id="@+id/customerAddress"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:background="@drawable/tv_bg_normal"
+                android:lines="3"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+            <TextView
+                android:id="@+id/customerContactNo"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvHotline"
+
+                />
+
+            <TextView
+                android:id="@+id/customerName"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
+            <TextView
+                android:id="@+id/brand"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+            <TextView
+                android:id="@+id/model"
+                style="@style/content_style"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/text_view_height"
+                android:background="@drawable/tv_bg_normal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/contentPadding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/title_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product Information"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Brand :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <TextView
+                android:id="@+id/textView4"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Model :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/brand" />
+
+            <TextView
+                android:id="@+id/textView10"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Serial/IMEI :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/model" />
+
+            <TextView
+                android:id="@+id/textView13"
+                style="@style/title_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Dealer Information"
+                app:layout_constraintTop_toBottomOf="@+id/imei"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <TextView
+                android:id="@+id/textView15"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Name :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+            <TextView
+                android:id="@+id/textView17"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="City :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dealerName" />
+
+
+            <TextView
+                android:id="@+id/textView19"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Email :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/customerContactNo" />
+
+            <TextView
+                android:id="@+id/textView23"
+                style="@style/title_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Customer Information"
+                app:layout_constraintTop_toBottomOf="@+id/distric"
+                tools:layout_editor_absoluteX="16dp" />
+
+
+            <TextView
+                android:id="@+id/textView26"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Address "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/customerName" />
+
+            <TextView
+                android:id="@+id/tvHotline"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Contact No "
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/customerAddress" />
+
+            <TextView
+                android:id="@+id/textView25"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+            <TextView
+                android:id="@+id/textView29"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="District"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/city" />
+
+            <TextView
+                android:id="@+id/lableWarrantInformation"
+                style="@style/title_text_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="Warranty Information"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/customerEmail" />
+
+            <TextView
+                android:id="@+id/lableWarrantRefNo"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Warranty Ref No :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/lableWarrantInformation" />
+
+            <TextView
+                android:id="@+id/lableActivatedWDate"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Activated Date :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvRef" />
+
+            <TextView
+                android:id="@+id/lableAccessoryWStatus"
+                style="@style/lable_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Accessory W Status :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+
+            <TextView
+                android:id="@+id/lableDeviceWStatus"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Device W Status :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAccessoryWStatus" />
+
+            <TextView
+                android:id="@+id/lableServiceWStatus"
+                style="@style/lable_style"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="@dimen/lableLeftPadding"
+                android:text="Service W Status :"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDeviceWStatus" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
+
+
+
+</LinearLayout>

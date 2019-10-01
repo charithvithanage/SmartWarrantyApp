@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/warrantyViewLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.578">
+
+        <TextView
+            android:id="@+id/tvRef"
+            style="@style/content_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/lableWarrantRefNo"
+            app:layout_constraintTop_toTopOf="parent"></TextView>
+
+        <TextView
+            android:id="@+id/tvDate"
+            style="@style/content_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/lableActivatedWDate"
+            app:layout_constraintTop_toBottomOf="@+id/tvRef" />
+
+        <TextView
+            android:id="@+id/tvAccessoryWStatus"
+            style="@style/content_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/lableAccessoryWStatus"
+            app:layout_constraintTop_toBottomOf="@id/tvDate">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tvDeviceWStatus"
+            style="@style/content_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/lableDeviceWStatus"
+            app:layout_constraintTop_toBottomOf="@+id/tvAccessoryWStatus"></TextView>
+
+        <TextView
+            android:id="@+id/tvServiceWStatus"
+            style="@style/content_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/lableServiceWStatus"
+            app:layout_constraintTop_toBottomOf="@+id/tvDeviceWStatus">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/lableWarrantRefNo"
+            style="@style/lable_style"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Warranty Ref No :"
+            app:layout_constraintBottom_toBottomOf="@id/tvRef"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvRef" />
+
+        <TextView
+            android:id="@+id/lableActivatedWDate"
+            style="@style/lable_style"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Activated Date :"
+            app:layout_constraintBottom_toBottomOf="@id/tvDate"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvDate" />
+
+        <TextView
+            android:id="@+id/lableAccessoryWStatus"
+            style="@style/lable_style"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Accessory W Status :"
+            app:layout_constraintBottom_toBottomOf="@id/tvAccessoryWStatus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvAccessoryWStatus" />
+
+        <TextView
+            android:id="@+id/lableDeviceWStatus"
+            style="@style/lable_style"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Device W Status :"
+            app:layout_constraintBottom_toBottomOf="@id/tvDeviceWStatus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvDeviceWStatus" />
+
+        <TextView
+            android:id="@+id/lableServiceWStatus"
+            style="@style/lable_style"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="Service W Status :"
+            app:layout_constraintBottom_toBottomOf="@id/tvServiceWStatus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvServiceWStatus" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

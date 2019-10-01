@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#9c27b0</color>
+    <color name="colorPrimaryDark">#6a0080</color>
+    <color name="colorAccent">#d05ce3</color>
+
+    <color name="white">#fff</color>
+    <color name="platinum">#FFD9E3EE</color>
+    <color name="black">#000000</color>
+    <color name="charcoal">#324152</color>
+    <color name="orange">#DE000000</color>
+    <color name="fontGray">#898c90</color>
+
+    <color name="textColor">#DE000000</color>
+    <color name="secondoryTextColor">#8CA5C1</color>
+    <color name="bg_color">#3CF8EFFA</color>
+    <color name="red">#FF1100</color>
+
+</resources>
