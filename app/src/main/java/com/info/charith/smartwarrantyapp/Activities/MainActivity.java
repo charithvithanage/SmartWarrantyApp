@@ -96,7 +96,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_report:
                 navController.navigate(R.id.nav_report);
-break;
+                break;
+
+            case R.id.nav_settings:
+                navController.navigate(R.id.nav_settings);
+                break;
 
             case R.id.nav_logout:
 

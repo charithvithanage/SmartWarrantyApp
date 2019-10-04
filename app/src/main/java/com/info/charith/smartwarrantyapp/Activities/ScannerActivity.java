@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.google.zxing.Result;
 import com.info.charith.smartwarrantyapp.CustomViews.CustomZXingScannerView;
+import com.info.charith.smartwarrantyapp.Entities.Product;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Entities.WarrantyRequest;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -99,8 +100,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                             dialog.dismiss();
                             if (!TextUtils.isEmpty(imei.getText())) {
                                 warrantyRequest.setImei(imei.getText().toString());
-
-                                new RequestWarrantyAsync().execute();
+                                new GetProductAsync(selectedBrand).execute();
                             }
                         } else {
                             errorLable.setText("( Enter correct IMEI )");
@@ -149,8 +149,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         String type = "";
 
-        if (warranty.getWarrantyActivatedDate().equals("0000-00-00T00:00:00+00:00")) {
+        if (warranty.getActivationStatus().equals("Enable")) {
             type = "new device";
+        }if(warranty.getActivationStatus().equals("Disable")){
+
         } else {
 
             if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
@@ -209,7 +211,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         warrantyRequest.setImei(barCodeString);
 
-        new RequestWarrantyAsync().execute();
+        new GetProductAsync(selectedBrand).execute();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -278,7 +280,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
 
                             if (warranty.getBrand().equals(selectedBrand)) {
-                                if (deviceType.equals("new device") || deviceType.equals("activated device")) {
+                                if (deviceType.equals("new device") ) {
                                     Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
                                     intent.putExtra("warrantyString", gson.toJson(warranty));
                                     intent.putExtra("dealerString", objectTwo);
@@ -292,8 +294,20 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     intent.putExtra("dealerString", objectTwo);
                                     intent.putExtra("previous_activity", "scan_activity");
                                     startActivity(intent);
+                                }else if( deviceType.equals("activated device")){
+                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+                                    intent.putExtra("dealerString", objectTwo);
+                                    intent.putExtra("type", deviceType);
+                                    intent.putExtra("previous_activity", "scan_activity");
+                                    startActivity(intent);
+                                }else if(deviceType.equals("disabled device")){
+                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                    intent.putExtra("type", "disabled device");
+                                    intent.putExtra("previous_activity", "scan_activity");
+                                    startActivity(intent);
                                 }
-                            } else {
+                            } else  if(deviceType.equals("disabled device")){
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "disabled device");
                                 intent.putExtra("previous_activity", "scan_activity");
@@ -303,17 +317,17 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                         } else {
 
-                            if (message.equals("Invalid country")) {
+                            if (message.equals("Invalid country")||message.equals("No warranty entry found for given entry")) {
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "unauthorized device");
                                 intent.putExtra("previous_activity", "scan_activity");
                                 startActivity(intent);
-                            } else if (message.equals("Brand not supported.")) {
+                            } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "disabled device");
                                 intent.putExtra("previous_activity", "scan_activity");
                                 startActivity(intent);
-                            } else {
+                            } else  {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -347,5 +361,81 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         }
     }
 
+    private class GetProductAsync extends AsyncTask<Void, Void, Void> {
+
+        ProgressDialog progressDialog;
+        String productName;
+
+        public GetProductAsync(String productName) {
+            this.productName = productName;
+        }
+
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(ScannerActivity.this);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            DealerService.getInstance().getProduct(ScannerActivity.this, productName, new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+                    Log.d(TAG, jsonObject.toString());
+                    progressDialog.dismiss();
+
+                    String object = null;
+
+                    try {
+                        boolean success = jsonObject.getBoolean("success");
+                        String message = jsonObject.getString("message");
+
+                        object = jsonObject.getString("object");
+                        Gson gson = new Gson();
+                        Product product = gson.fromJson(object, Product.class);
+
+                        if(product.isBrandStatus()){
+                            warrantyRequest.setProduct(product);
+                            new RequestWarrantyAsync().execute();
+                        }else {
+                            Utils.showAlertWithoutTitleDialog(context, "Brand is not active", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                        }
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+
+                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            });
+
+            return null;
+        }
+    }
 
 }

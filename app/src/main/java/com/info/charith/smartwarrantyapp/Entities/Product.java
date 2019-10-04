@@ -11,7 +11,15 @@ public class Product {
     private String deviceWarrantyPeriod;
     private String serviceWarrantyPeriod;
     private String dapPolicy;
+    private String brandPrefix;
 
+    public String getBrandPrefix() {
+        return brandPrefix;
+    }
+
+    public void setBrandPrefix(String brandPrefix) {
+        this.brandPrefix = brandPrefix;
+    }
 
     public long getId() {
         return id;

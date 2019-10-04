@@ -35,9 +35,9 @@ public class NewDeiveActivity extends AppCompatActivity {
     TextView titleView;
     ImageButton backBtn;
 
-    TextWatcher etContactNoTextWatcher,etEmailTextWatcher;
+    TextWatcher etContactNoTextWatcher, etEmailTextWatcher;
 
-    TextView errorContactNo,errorEmail;
+    TextView errorContactNo, errorEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,54 +63,54 @@ public class NewDeiveActivity extends AppCompatActivity {
 
                 if (!TextUtils.isEmpty(etCustomerName.getText()) || !TextUtils.isEmpty(etCustomerAddress.getText()) || !TextUtils.isEmpty(etCustomerContactNo.getText()) || !TextUtils.isEmpty(etCustomerEmail.getText())) {
 
-                    if(!TextUtils.isEmpty(etCustomerEmail.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText())  ){
+                    if (!TextUtils.isEmpty(etCustomerEmail.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText())) {
 
-                        if(etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)&&etCustomerContactNo.getText().toString().length()==10){
-                           navigateToDeviceInfoActivity();
-                        }else {
+                        if (etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern) && etCustomerContactNo.getText().toString().length() == 10) {
+                            navigateToDeviceInfoActivity();
+                        } else {
 
-                            if(!etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)){
+                            if (!etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)) {
                                 errorEmail.setVisibility(View.VISIBLE);
                                 errorEmail.setText(getString(R.string.wrong_email_pattern));
                                 etCustomerEmail.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                            }else {
+                            } else {
                                 setEmailEditTextBGNormal();
                             }
 
-                            if(etCustomerContactNo.getText().toString().length()!=10){
+                            if (etCustomerContactNo.getText().toString().length() != 10) {
                                 errorContactNo.setVisibility(View.VISIBLE);
                                 errorContactNo.setText(getString(R.string.invalid_contact_no));
                                 etCustomerContactNo.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
 
-                            }else {
+                            } else {
                                 setContactNoEditTextBGNormal();
 
                             }
                         }
 
-                    }else {
-                        if(!TextUtils.isEmpty(etCustomerEmail.getText()) ){
-                            if(!etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)){
+                    } else {
+                        if (!TextUtils.isEmpty(etCustomerEmail.getText())) {
+                            if (!etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)) {
                                 errorEmail.setVisibility(View.VISIBLE);
                                 errorEmail.setText(getString(R.string.wrong_email_pattern));
                                 etCustomerEmail.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                            }else {
+                            } else {
                                 navigateToDeviceInfoActivity();
                             }
-                        }else if(!TextUtils.isEmpty(etCustomerContactNo.getText())  ){
-                            if(etCustomerContactNo.getText().toString().length()!=10){
+                        } else if (!TextUtils.isEmpty(etCustomerContactNo.getText())) {
+                            if (etCustomerContactNo.getText().toString().length() != 10) {
                                 errorContactNo.setVisibility(View.VISIBLE);
                                 errorContactNo.setText(getString(R.string.invalid_contact_no));
                                 etCustomerContactNo.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                            }else {
+                            } else {
                                 navigateToDeviceInfoActivity();
                             }
-                        }else {
+                        } else {
                             navigateToDeviceInfoActivity();
                         }
                     }
 
-                }else {
+                } else {
                     Utils.showAlertWithoutTitleDialog(NewDeiveActivity.this, getString(R.string.enter_single_value), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -148,6 +148,10 @@ public class NewDeiveActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.backBtn);
 
         titleView = findViewById(R.id.title_view);
+        titleView.setText(Utils.stringCapitalize(type));
+
+
+
         btnConfirm = findViewById(R.id.btnConfirm);
         tvBrand = findViewById(R.id.brand);
         tvModel = findViewById(R.id.model);
@@ -219,7 +223,6 @@ public class NewDeiveActivity extends AppCompatActivity {
 
     private void setValues() {
 
-        titleView.setText(getString(R.string.device_info));
         tvBrand.setText(warranty.getBrand());
         tvModel.setText(warranty.getModel());
         tvIMEI.setText(warranty.getImei());
@@ -241,7 +244,7 @@ public class NewDeiveActivity extends AppCompatActivity {
 
     private void setEmailEditTextBGNormal() {
         etCustomerEmail.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
-           errorEmail.setVisibility(View.GONE);
+        errorEmail.setVisibility(View.GONE);
     }
 
     private void setContactNoEditTextBGNormal() {

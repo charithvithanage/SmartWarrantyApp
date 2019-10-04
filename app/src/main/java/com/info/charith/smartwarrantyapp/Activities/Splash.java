@@ -20,7 +20,6 @@ public class Splash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        setContentView(R.layout.activity_splash);
 
         new Handler().postDelayed(new Runnable() {
             @Override

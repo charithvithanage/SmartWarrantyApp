@@ -18,6 +18,34 @@ public class Warranty {
     private String accessoryWarrantyStatus;
     private String deviceWarrantyStatus;
     private String serviceWarrantyStatus;
+    private String activationStatus;
+    private String dapStatus;
+    private String dealerUserName;
+
+
+    public String getActivationStatus() {
+        return activationStatus;
+    }
+
+    public void setActivationStatus(String activationStatus) {
+        this.activationStatus = activationStatus;
+    }
+
+    public String getDapStatus() {
+        return dapStatus;
+    }
+
+    public void setDapStatus(String dapStatus) {
+        this.dapStatus = dapStatus;
+    }
+
+    public String getDealerUserName() {
+        return dealerUserName;
+    }
+
+    public void setDealerUserName(String dealerUserName) {
+        this.dealerUserName = dealerUserName;
+    }
 
     public String getCountry() {
         return country;

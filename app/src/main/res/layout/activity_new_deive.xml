@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/contentLableLeftPadding"
-                android:text="Contact No"
+                android:text="Contact No."
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customerAddress" />
 
@@ -288,7 +288,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/contentLableLeftPadding"
-                android:text="Serial/IMEI "
+                android:text="Serial / IMEI "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/model" />
 

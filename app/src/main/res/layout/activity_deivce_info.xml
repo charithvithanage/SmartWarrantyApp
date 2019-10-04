@@ -39,7 +39,7 @@
                 android:foregroundGravity="top"
                 android:paddingLeft="@dimen/button_side_padding"
                 android:paddingRight="@dimen/button_side_padding"
-                android:text="Confirm"
+                android:text="Ok"
                 android:textAllCaps="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -247,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Brand :"
+                android:text="Brand"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -258,7 +258,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Model :"
+                android:text="Model"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/brand" />
 
@@ -269,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Serial/IMEI :"
+                android:text="Serial / IMEI "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/model" />
 
@@ -290,7 +290,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Name :"
+                android:text="Name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
@@ -301,7 +301,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="City :"
+                android:text="City"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dealerName" />
 
@@ -313,7 +313,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Email :"
+                android:text="Email"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customerContactNo" />
 
@@ -346,7 +346,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Contact No "
+                android:text="Contact No. "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customerAddress" />
 
@@ -386,11 +386,11 @@
             <TextView
                 android:id="@+id/lableWarrantRefNo"
                 style="@style/lable_style"
-                android:layout_width="140dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Warranty Ref No :"
+                android:text="Warranty Refference No."
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/lableWarrantInformation" />
 
@@ -401,7 +401,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Activated Date :"
+                android:text="Activated Date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvRef" />
 
@@ -412,29 +412,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Accessory W Status :"
+                android:text="Accessory Warranty Status"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
             <TextView
                 android:id="@+id/lableDeviceWStatus"
                 style="@style/lable_style"
-                android:layout_width="140dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Device W Status :"
+                android:text="Device Warranty Status"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccessoryWStatus" />
 
             <TextView
                 android:id="@+id/lableServiceWStatus"
                 style="@style/lable_style"
-                android:layout_width="140dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/lableLeftPadding"
-                android:text="Service W Status :"
+                android:text="Service Warranty Status"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDeviceWStatus" />
 

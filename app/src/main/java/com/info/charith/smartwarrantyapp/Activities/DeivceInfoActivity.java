@@ -122,7 +122,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
         tvDeviceWStatus = findViewById(R.id.tvDeviceWStatus);
         tvServiceWStatus = findViewById(R.id.tvServiceWStatus);
 
-        titleView.setText(getString(R.string.device_info));
+        titleView.setText(Utils.stringCapitalize(type));
 
         setValues();
 

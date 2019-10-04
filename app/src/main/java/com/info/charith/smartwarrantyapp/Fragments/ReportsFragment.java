@@ -1,10 +1,9 @@
 package com.info.charith.smartwarrantyapp.Fragments;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,22 +12,24 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.Entities.ActivityReport;
 import com.info.charith.smartwarrantyapp.Entities.SummaryReport;
+import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
+import com.info.charith.smartwarrantyapp.Services.DealerService;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ReportsFragment extends Fragment {
@@ -51,18 +52,21 @@ public class ReportsFragment extends Fragment {
 
         DateTime today = new DateTime();
 
-        activityReports.add(new ActivityReport(today, "charith", "samsung", "s6", "12345667"));
-        activityReports.add(new ActivityReport(today.plusDays(1), "charith", "samsung", "s6", "12345667"));
-        activityReports.add(new ActivityReport(today.plusDays(2), "charith", "samsung", "s6", "12345667"));
-        activityReports.add(new ActivityReport(today.plusDays(3), "charith", "samsung", "s6", "12345667"));
-        activityReports.add(new ActivityReport(today.plusDays(4), "charith", "samsung", "s6", "12345667"));
+//        activityReports.add(new ActivityReport(today, "charith", "samsung", "s6", "12345667"));
+//        activityReports.add(new ActivityReport(today.plusDays(1), "charith", "samsung", "s6", "12345667"));
+//        activityReports.add(new ActivityReport(today.plusDays(2), "charith", "samsung", "s6", "12345667"));
+//        activityReports.add(new ActivityReport(today.plusDays(3), "charith", "samsung", "s6", "12345667"));
+//        activityReports.add(new ActivityReport(today.plusDays(4), "charith", "samsung", "s6", "12345667"));
 
-        summaryReports.add(new SummaryReport(today, "samsung", "s6", 3));
-        summaryReports.add(new SummaryReport(today.plusDays(2), "samsung", "s6", 3));
-        summaryReports.add(new SummaryReport(today.plusDays(3), "samsung", "s6", 3));
-        summaryReports.add(new SummaryReport(today.plusDays(5), "samsung", "s6", 3));
+//        summaryReports.add(new SummaryReport(today, "samsung", "s6", 3));
+//        summaryReports.add(new SummaryReport(today.plusDays(2), "samsung", "s6", 3));
+//        summaryReports.add(new SummaryReport(today.plusDays(3), "samsung", "s6", 3));
+//        summaryReports.add(new SummaryReport(today.plusDays(5), "samsung", "s6", 3));
 
         init(root);
+
+        new GetActivityReportsAsync().execute();
+        new GetSummaryReportsAsync().execute();
 
         selectByDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,51 +115,55 @@ public class ReportsFragment extends Fragment {
         fromDate = new DateTime();
         toDate = fromDate.plusDays(1);
 
-        activityReportsAdapter = new ActivityReportsAdapter(getActivity(), activityReports);
-        activityReportListView.setAdapter(activityReportsAdapter);
-
-        summaryReportsAdapter = new SummaryReportsAdapter(getActivity(), summaryReports);
-        summaryReportListView.setAdapter(summaryReportsAdapter);
 
     }
 
     //Show from date dialog
     public void displayFromDateDialog() {
-        showDateTimePicker();
 
-        fromDate=new DateTime(date.getTimeInMillis());
-        tvFromDate.setText(fromDate.toString("dd MMM YYYY"));
+        final Calendar date;
 
-        if (activityReportsAdapter != null) {
-            activityReportsAdapter.filterByFromDate(beginOfDay(fromDate), endOfDay(toDate));
-        }
+        final Calendar currentDate = Calendar.getInstance();
+        date = Calendar.getInstance();
+        new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                fromDate = new DateTime(date.getTimeInMillis());
+                tvFromDate.setText(fromDate.toString("dd MMM YYYY"));
+            }
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
 
-        if (summaryReportsAdapter != null) {
-            summaryReportsAdapter.filterByFromDate(beginOfDay(fromDate), endOfDay(toDate));
-        }
 
     }
 
     //Show to date dialog
     public void displayToDateDialog() {
+        final Calendar date;
+        final Calendar currentDate = Calendar.getInstance();
+        date = Calendar.getInstance();
+        new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                toDate = new DateTime(date.getTimeInMillis());
+                tvToDate.setText(toDate.toString("dd MMM YYYY"));
 
-        toDate = new DateTime(date.getTimeInMillis());
 
-        if (toDate.getMillis() > fromDate.getMillis()) {
-            tvToDate.setText(toDate.toString("dd MMM YYYY"));
-            if (activityReportsAdapter != null) {
-                activityReportsAdapter.filterByToDate(beginOfDay(fromDate), endOfDay(toDate));
+
+
+                new GetSummaryReportsAsync().execute();
+                new GetActivityReportsAsync().execute();
             }
-            if (summaryReportsAdapter != null) {
-                summaryReportsAdapter.filterByToDate(beginOfDay(fromDate), endOfDay(toDate));
-            }
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
 
-        }
+
     }
 
-    Calendar date;
 
-    public void showDateTimePicker() {
+    public long showDateTimePicker() {
+        final Calendar date;
+
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
         new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -164,6 +172,8 @@ public class ReportsFragment extends Fragment {
                 date.set(year, monthOfYear, dayOfMonth);
             }
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+
+        return date.getTimeInMillis();
     }
 
     private void showFilterFromDateLayout() {
@@ -203,4 +213,103 @@ public class ReportsFragment extends Fragment {
     public static DateTime endOfDay(DateTime date) {
         return date.plusDays(1).minusMinutes(1);
     }
+
+    private class GetActivityReportsAsync extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            DealerService.getInstance().getActivityReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+
+                    try {
+
+                        String objectString = jsonObject.getString("object");
+                        boolean success = jsonObject.getBoolean("success");
+                        Gson gson = new Gson();
+
+                        if (success) {
+                            JSONArray jsonArray = new JSONArray(objectString);
+
+                            if (jsonArray.length() > 0) {
+                                activityReports = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    ActivityReport activityReport = gson.fromJson(jsonArray.getString(i), ActivityReport.class);
+                                    activityReports.add(activityReport);
+                                }
+                            }
+                        }
+
+                        activityReportsAdapter = new ActivityReportsAdapter(getActivity(), activityReports);
+                        activityReportListView.setAdapter(activityReportsAdapter);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+
+                }
+            });
+
+            return null;
+        }
+    }
+
+    private class GetSummaryReportsAsync extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            DealerService.getInstance().getSummaryReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+
+                    try {
+
+                        String objectString = jsonObject.getString("object");
+                        boolean success = jsonObject.getBoolean("success");
+                        Gson gson = new Gson();
+
+                        if (success) {
+                            JSONArray jsonArray = new JSONArray(objectString);
+
+                            if (jsonArray.length() > 0) {
+                                summaryReports = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    SummaryReport summaryReport = gson.fromJson(jsonArray.getString(i), SummaryReport.class);
+                                    summaryReports.add(summaryReport);
+                                }
+                            }
+                        }
+
+                        summaryReportsAdapter = new SummaryReportsAdapter(getActivity(), summaryReports);
+                        summaryReportListView.setAdapter(summaryReportsAdapter);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+
+                }
+            });
+
+            return null;
+        }
+    }
+
 }

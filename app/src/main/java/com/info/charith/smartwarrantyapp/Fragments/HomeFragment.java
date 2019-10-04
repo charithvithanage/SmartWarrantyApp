@@ -62,18 +62,37 @@ public class HomeFragment extends Fragment {
 
         JSONArray jsonArray=new JSONArray(dealer.getEnableBrands());
 
-        for (int i=0;i<jsonArray.length();i++){
+        brands.add(new Brand("Tellko", Utils.GetImage(getActivity(),"Tellko".toLowerCase())));
+        brands.add(new Brand("Xiaomi", Utils.GetImage(getActivity(),"Xiaomi".toLowerCase())));
+        brands.add(new Brand("Samsung", Utils.GetImage(getActivity(),"Samsung".toLowerCase())));
+        brands.add(new Brand("Huawei", Utils.GetImage(getActivity(),"Huawei".toLowerCase())));
 
-            try {
-
-
-                Brand brand=new Brand(jsonArray.getString(i), Utils.GetImage(getActivity(),jsonArray.getString(i).toLowerCase()));
-                brands.add(brand);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
+//        for (int i=0;i<jsonArray.length();i++){
+//
+//            try {
+//
+//
+//                Brand brand=new Brand(jsonArray.getString(i), Utils.GetImage(getActivity(),jsonArray.getString(i).toLowerCase()));
+//
+//
+////                if(brand.getName().toLowerCase().startsWith("t")){
+////                    brands.add(0,brand);
+////
+////                }else if(brand.getName().toLowerCase().startsWith("x")){
+////                    brands.add(1,brand);
+////
+////                }else if(brand.getName().toLowerCase().startsWith("s")){
+////                    brands.add(2,brand);
+////
+////                }else if(brand.getName().toLowerCase().startsWith("h")){
+////                    brands.add(3,brand);
+////
+////                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
 
 
         final BrandAdapter adapter = new BrandAdapter(brands, getActivity());

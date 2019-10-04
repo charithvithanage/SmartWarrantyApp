@@ -11,6 +11,10 @@ public enum Config {
     public static String login_url = ServerUrl + "dealeruserservice/login";
     public static String imei_url = ServerUrl + "dealeruserservice/warranty";
     public static String update_warranty = ServerUrl + "dealeruserservice/updatenewwarranty";
+    public static String change_password= ServerUrl + "dealeruserservice/changepassword";
+    public static String get_product_url= ServerUrl + "dealeruserservice/product/";
+    public static String get_activity_reports_url= ServerUrl + "dealeruserservice/filteractivationlist";
+    public static String get_summary_reports_url= ServerUrl + "dealeruserservice/summarylist/";
 
     public static String date_time_pattern="yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     public static String standard_date_time_pattern="yyyy-MM-dd HH:mm";
