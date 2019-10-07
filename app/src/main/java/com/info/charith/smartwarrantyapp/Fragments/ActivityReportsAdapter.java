@@ -10,20 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.info.charith.smartwarrantyapp.Entities.ActivityReport;
+import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.R;
 
-import org.joda.time.DateTime;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityReportsAdapter extends ArrayAdapter<ActivityReport> {
-    List<ActivityReport> filteredActivityReports;
-    List<ActivityReport> eventList;
+public class ActivityReportsAdapter extends ArrayAdapter<Warranty> {
+    List<Warranty> filteredActivityReports;
+    List<Warranty> eventList;
     Context context;
 
-    public ActivityReportsAdapter(Context context, List<ActivityReport> eventList) {
+    public ActivityReportsAdapter(Context context, List<Warranty> eventList) {
         super(context, 0, eventList);
         this.eventList = eventList;
         this.filteredActivityReports = eventList;
@@ -33,57 +30,33 @@ public class ActivityReportsAdapter extends ArrayAdapter<ActivityReport> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        ActivityReport eventObj = getItem(position);
+        Warranty eventObj = getItem(position);
         ViewHolder holder = null;
         // Check if an existing view is being reused, otherwise inflate the view
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.activity_reports_layout, null);
         holder = new ViewHolder();
-        holder.imei = convertView.findViewById(R.id.tvIMEI);
+        holder.imei = convertView.findViewById(R.id.tvImei);
+        holder.brand = convertView.findViewById(R.id.tvBrand);
+        holder.model = convertView.findViewById(R.id.tvModel);
 
         convertView.setTag(holder);
-        convertView.setTag(R.id.tvIMEI, holder.imei);
+        convertView.setTag(R.id.tvImei, holder.imei);
+        convertView.setTag(R.id.tvBrand, holder.brand);
+        convertView.setTag(R.id.tvModel, holder.model);
 
         holder.imei.setText(eventObj.getImei());
+        holder.brand.setText(eventObj.getBrand());
+        holder.model.setText(eventObj.getModel());
+
 
         return convertView;
     }
 
-
-
-    public void filterByFromDate(DateTime fromDate, DateTime toDate) {
-
-        filteredActivityReports = new ArrayList<ActivityReport>();
-        if (this.eventList.size() != 0 || this.eventList != null) {
-            for (ActivityReport wp : this.eventList) {
-                if (wp.getDate().isAfter(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredActivityReports.add(wp);
-                } else if (wp.getDate().isEqual(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredActivityReports.add(wp);
-                }
-            }
-        }
-
-        notifyDataSetChanged();
-    }
-
-    public void filterByToDate(DateTime fromDate, DateTime toDate) {
-
-        filteredActivityReports = new ArrayList<ActivityReport>();
-        if (this.eventList.size() != 0 || this.eventList != null) {
-            for (ActivityReport wp : this.eventList) {
-                if (wp.getDate().isAfter(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredActivityReports.add(wp);
-                } else if (wp.getDate().isEqual(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredActivityReports.add(wp);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
-
     static class ViewHolder {
         protected TextView imei;
+        protected TextView brand;
+        protected TextView model;
 
     }
 
@@ -100,7 +73,7 @@ public class ActivityReportsAdapter extends ArrayAdapter<ActivityReport> {
 
     @Nullable
     @Override
-    public ActivityReport getItem(int position) {
+    public Warranty getItem(int position) {
         return filteredActivityReports.get(position);
     }
 

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -39,13 +40,12 @@ import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
 
 public class SettingsFragment extends Fragment {
-    EditText usernameEditText, passwordEditText, oldPasswordEditText, confirmPasswordEditText;
+    EditText passwordEditText, oldPasswordEditText, confirmPasswordEditText;
     Button signUpButton;
-    Gson gson = new Gson();
     private static final String TAG = "SmartWarrantyApp";
 
-    TextWatcher userNameTextWatcher, oldPasswordTextWatcher, userPasswordTextWatcher, confirmPasswordTextWatcher;
-    TextView errorUserName, errorPassword, errorConfirmPassword, errorOldPassword;
+    TextWatcher oldPasswordTextWatcher, userPasswordTextWatcher, confirmPasswordTextWatcher;
+    TextView  errorPassword, errorConfirmPassword, errorOldPassword;
     ChangePassword changePassword;
 
     @Nullable
@@ -58,7 +58,7 @@ public class SettingsFragment extends Fragment {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changePassword(usernameEditText.getText().toString(),passwordEditText.getText().toString(),confirmPasswordEditText.getText().toString(),oldPasswordEditText.getText().toString());
+                changePassword(passwordEditText.getText().toString(),confirmPasswordEditText.getText().toString(),oldPasswordEditText.getText().toString());
             }
         });
 
@@ -70,7 +70,6 @@ public class SettingsFragment extends Fragment {
         changePassword = new ChangePassword();
 
 
-        usernameEditText = view.findViewById(R.id.username);
         passwordEditText = view.findViewById(R.id.password);
         oldPasswordEditText = view.findViewById(R.id.oldPassword);
         confirmPasswordEditText = view.findViewById(R.id.confirmPassword);
@@ -78,30 +77,12 @@ public class SettingsFragment extends Fragment {
         errorConfirmPassword = view.findViewById(R.id.errorConfirmPasswordLable);
         errorPassword = view.findViewById(R.id.errorUserPasswordLable);
         errorOldPassword = view.findViewById(R.id.errorOldPasswordLable);
-        errorUserName = view.findViewById(R.id.errorUserNameLable);
 
         setEditTextBGNormal();
 
         signUpButton = view.findViewById(R.id.btnRegister);
 
-        userNameTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                setEditTextBGNormal();
 
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
 
         userPasswordTextWatcher = new TextWatcher() {
             @Override
@@ -157,7 +138,6 @@ public class SettingsFragment extends Fragment {
             }
         };
 
-        usernameEditText.addTextChangedListener(userNameTextWatcher);
         passwordEditText.addTextChangedListener(userPasswordTextWatcher);
         oldPasswordEditText.addTextChangedListener(oldPasswordTextWatcher);
         confirmPasswordEditText.addTextChangedListener(confirmPasswordTextWatcher);
@@ -166,22 +146,28 @@ public class SettingsFragment extends Fragment {
     private void setEditTextBGNormal() {
 
         confirmPasswordEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
-        usernameEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
         passwordEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
         oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
 
         errorPassword.setVisibility(View.GONE);
         errorConfirmPassword.setVisibility(View.GONE);
-        errorUserName.setVisibility(View.GONE);
         errorOldPassword.setVisibility(View.GONE);
     }
 
-    public void changePassword(String username, String password,String confirmPassword, String oldPassword) {
+    public void changePassword(String password,String confirmPassword, String oldPassword) {
 
-        if (isPasswordValid(oldPassword)&&isPasswordValid(password) && isPasswordMatch(password, confirmPassword) && isUserNameValid(username)) {
+        if (isPasswordValid(oldPassword)&&isPasswordValid(password) && isPasswordMatch(password, confirmPassword)) {
 
             if (password.length() > 5) {
-                changePassword.setUsername(username);
+                SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+                Gson gson=new Gson();
+
+                String dealerString=sharedPref.getString("loggedInUser","0");
+                DealerUserMock dealerUserMock=gson.fromJson(dealerString,DealerUserMock.class);
+
+                changePassword.setUsername(dealerUserMock.getUsername());
                 changePassword.setOldPassword(oldPassword);
                 changePassword.setNewPassword(password);
 
@@ -202,13 +188,6 @@ public class SettingsFragment extends Fragment {
                 oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
             }
 
-            if (!isUserNameValid(username)) {
-                errorUserName.setVisibility(View.VISIBLE);
-                errorUserName.setText(getString(R.string.invalid_username));
-                usernameEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-
-
-            }
 
             if (!isPasswordValid(password)) {
                 errorPassword.setVisibility(View.VISIBLE);

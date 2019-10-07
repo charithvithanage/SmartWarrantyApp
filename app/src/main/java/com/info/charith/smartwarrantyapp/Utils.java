@@ -20,7 +20,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Utils {
-    //Change status bar color
+
+    /**
+     * Change status bar color
+     * @param context Context of the activity
+     * @param window
+     */
     public static void changeStatusBarColor(Context context, Window window) {
         if (Build.VERSION.SDK_INT >= 21) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -29,7 +34,11 @@ public class Utils {
         }
     }
 
-    // A placeholder password validation check
+    /**
+     *  A placeholder password validation check
+     * @param password Password of the user
+     * @return true or false
+     */
     public static boolean isPasswordValid(String password) {
         if (password == null) {
             return false;
@@ -38,7 +47,11 @@ public class Utils {
         }
     }
 
-    // A placeholder username validation check
+    /**
+     *  A placeholder username validation check
+     * @param username Username of the user
+     * @return true or false
+     */
     public static boolean isUserNameValid(String username) {
         if (username == null) {
             return false;
@@ -47,17 +60,11 @@ public class Utils {
         }
     }
 
-    // A placeholder username validation check
-    public static boolean isDealerCodeValid(String dealerCode) {
-        if (dealerCode == null) {
-            return false;
-        } else {
-            return !dealerCode.trim().isEmpty();
-        }
-    }
-
-
-    // A placeholder username validation check
+    /**
+     *  A placeholder user nic validation check
+     * @param userNIC NIC of the user
+     * @return true or false
+     */
     public static boolean isUserNICValid(String userNIC) {
         if (userNIC == null) {
             return false;
@@ -66,17 +73,35 @@ public class Utils {
         }
     }
 
+    /**
+     * Check whether the password mathes
+     * @param password User password
+     * @param confirmPassword Confirmation of the given password
+     * @return
+     */
     public static boolean isPasswordMatch(String password, String confirmPassword) {
         return password.equals(confirmPassword);
     }
 
+    /**
+     * Navigate to another activity without navigation history
+     * @param context Context of the current activity
+     * @param activity Context of the second activity
+     */
     public static void navigateWithoutHistory(Context context, Class activity) {
         Intent intent = new Intent(context, activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
-    public static void showAlertWithoutTitleDialog(Context context, String message, final DialogInterface.OnClickListener listener){
+    /**
+     * Display alert dialog without title
+     *
+     * @param context  Context of the activity
+     * @param message  String of the messsage body
+     * @param listener OK button click event listner
+     */
+    public static void showAlertWithoutTitleDialog(Context context, String message, final DialogInterface.OnClickListener listener) {
         new AlertDialog.Builder(context)
                 .setMessage(message)
                 .setCancelable(false)
@@ -84,35 +109,32 @@ public class Utils {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Whatever...
-                        listener.onClick(dialog,which);
+                        listener.onClick(dialog, which);
                     }
                 }).show();
     }
 
-     public static String convertDateTimeStringToString(String dateTimeString) {
-
-        SimpleDateFormat sdf = new SimpleDateFormat(Config.date_time_pattern, Locale.ENGLISH);
-        SimpleDateFormat patern = new SimpleDateFormat(Config.standard_date_time_pattern, Locale.ENGLISH);
-        Date date=null;
-        try {
-            date=sdf.parse(dateTimeString);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return patern.format(date);
-    }
-
+    /**
+     * Returns an Image drawable by the given brand name
+     *
+     * @param c         Context of the activity
+     * @param ImageName Image name
+     * @return Drawable
+     */
     public static Drawable GetImage(Context c, String ImageName) {
         return c.getResources().getDrawable(c.getResources().getIdentifier(ImageName, "mipmap", c.getPackageName()));
     }
 
-    public static String stringCapitalize(String str){
+    /**
+     * First letter of the every word convert to UpperCase
+     *
+     * @param str Title string
+     * @return Capitalized string
+     */
+    public static String stringCapitalize(String str) {
         StringBuilder result = new StringBuilder(str.length());
         String words[] = str.split("\\ ");
-        for (int i = 0; i < words.length; i++)
-        {
+        for (int i = 0; i < words.length; i++) {
             result.append(Character.toUpperCase(words[i].charAt(0))).append(words[i].substring(1)).append(" ");
 
         }

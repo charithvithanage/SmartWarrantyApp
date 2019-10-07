@@ -5,14 +5,35 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tvIMEI"
+        android:id="@+id/tvBrand"
+        style="@style/lable_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/listview_lable_padding"
+        android:paddingTop="@dimen/listview_lable_padding"
+        android:paddingRight="@dimen/listview_lable_padding"
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/textView28"
+        android:id="@+id/tvModel"
+        style="@style/content_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/listview_lable_padding"
+        android:paddingTop="@dimen/listview_lable_padding"
+        android:paddingRight="@dimen/listview_lable_padding"
         android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvImei"
+        style="@style/content_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/listview_lable_padding"
+        android:text="TextView" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/platinum"></View>
 </LinearLayout>

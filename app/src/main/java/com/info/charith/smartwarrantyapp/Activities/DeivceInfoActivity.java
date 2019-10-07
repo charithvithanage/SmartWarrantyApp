@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -24,10 +23,6 @@ import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class DeivceInfoActivity extends AppCompatActivity {
     private static final String TAG = "SmartWarrantyApp";
@@ -65,15 +60,6 @@ public class DeivceInfoActivity extends AppCompatActivity {
         dealer = gson.fromJson(dealerString, Dealer.class);
 
         init();
-
-//        if(type.equals("new device")&&previous_activity.equals("new_device_activity")){
-//            warrantyEditLayout.setVisibility(View.VISIBLE);
-//            warrantyViewLayout.setVisibility(View.GONE);
-//        }else if(type.equals("sold device")&&previous_activity.equals("scan_activity")||type.equals("activated device")&&previous_activity.equals("new_device_activity")){
-//            warrantyEditLayout.setVisibility(View.GONE);
-//            warrantyViewLayout.setVisibility(View.VISIBLE);
-//        }
-
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,55 +112,61 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
         setValues();
 
+        /**
+         * This is a common ui for the device information
+         * Check previous activity
+         * Hide relevant ui elements
+         */
+        if(previous_activity.equals("activation_list_activity")){
+            btnSubmit.setVisibility(View.GONE);
+            tvDistric.setVisibility(View.GONE);
+            tvCity.setVisibility(View.GONE);
+            tvDealerName.setVisibility(View.GONE);
+            findViewById(R.id.textView15).setVisibility(View.GONE);
+            findViewById(R.id.textView17).setVisibility(View.GONE);
+            findViewById(R.id.textView29).setVisibility(View.GONE);
+            findViewById(R.id.textView13).setVisibility(View.GONE);
+        }
+
     }
 
-    private void setValues() {
+    private void setValues()  {
         tvBrand.setText(warranty.getBrand());
         tvModel.setText(warranty.getModel());
         tvIMEI.setText(warranty.getImei());
 
-        if(warranty.getAddress()!=null){
+        if (warranty.getAddress() != null) {
             tvCustomerAddress.setText(warranty.getAddress());
         }
 
 
-        if(warranty.getContactNo()!=null){
+        if (warranty.getContactNo() != null) {
             tvCustomerContactNo.setText(warranty.getContactNo());
 
         }
 
-        if(warranty.getEmail()!=null){
+        if (warranty.getEmail() != null) {
             tvCustomerEmail.setText(warranty.getEmail());
         }
 
 
-        if(warranty.getCustomerName()!=null){
+        if (warranty.getCustomerName() != null) {
             tvCustomerName.setText(warranty.getCustomerName());
         }
 
-        tvDealerName.setText(dealer.getDealerName());
-        tvCity.setText(dealer.getCity());
-        tvDistric.setText(dealer.getDistrict());
-
-
         tvFer.setText(warranty.getReferenceNo());
-
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat(Config.date_time_pattern, Locale.ENGLISH);
-        SimpleDateFormat patern = new SimpleDateFormat(Config.standard_date_time_pattern, Locale.ENGLISH);
-
-        warranty.setWarrantyActivatedDate(sdf.format(c.getTime()));
-        tvActivatedDate.setText(Utils.convertDateTimeStringToString(warranty.getWarrantyActivatedDate()));
-
-
-
+        warranty.setWarrantyActivatedDate(warranty.getWarrantyActivatedDate());
+        tvActivatedDate.setText(warranty.getWarrantyActivatedDate());
         tvAccessoryWStatus.setText(warranty.getAccessoryWarrantyStatus());
         tvDeviceWStatus.setText(warranty.getDeviceWarrantyStatus());
         tvServiceWStatus.setText(warranty.getServiceWarrantyStatus());
 
-
+        if (dealer != null) {
+            tvDealerName.setText(dealer.getDealerName());
+            tvCity.setText(dealer.getCity());
+            tvDistric.setText(dealer.getDistrict());
+        }
     }
-
 
     private class UpdateWarrantyAsync extends AsyncTask<Void, Void, Void> {
 

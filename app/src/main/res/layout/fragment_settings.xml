@@ -32,22 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/confirmPassword" />
 
-    <EditText
-        android:id="@+id/username"
-        style="@style/login_edit_text_style"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/edit_text_height"
-        android:background="@drawable/edt_bg_normal"
-        android:ems="10"
-        android:focusableInTouchMode="true"
-        android:inputType="text"
-        android:paddingStart="@dimen/login_edit_text_padding"
-        app:layout_constraintEnd_toEndOf="parent"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameLable" />
-
-    <EditText
+        <EditText
         android:id="@+id/confirmPassword"
         style="@style/login_edit_text_style"
         android:layout_width="match_parent"
@@ -86,30 +71,8 @@
         app:layout_constraintTop_toBottomOf="@+id/oldPasswordLable"
         tools:layout_editor_absoluteX="31dp" />
 
-    <TextView
-        android:id="@+id/userNameLable"
-        style="@style/lable_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:paddingLeft="@dimen/lableLeftPadding"
-        android:paddingBottom="@dimen/lableBottomPadding"
-        android:text="Username"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-
-    <TextView
-        android:id="@+id/errorUserNameLable"
-        style="@style/edit_text_error_lable_style"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        app:layout_constraintBottom_toTopOf="@+id/username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/userNameLable" />
-
-    <TextView
+        <TextView
         android:id="@+id/errorConfirmPasswordLable"
         style="@style/edit_text_error_lable_style"
         android:layout_width="0dp"
@@ -170,19 +133,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
-    <TextView
-        android:id="@+id/oldPasswordLable"
-        style="@style/lable_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="@dimen/lableLeftPadding"
-        android:paddingBottom="@dimen/lableBottomPadding"
-        android:text="Old Password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        <TextView
+            android:id="@+id/oldPasswordLable"
+            style="@style/lable_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/lableLeftPadding"
+            android:paddingBottom="@dimen/lableBottomPadding"
+            android:text="Old Password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

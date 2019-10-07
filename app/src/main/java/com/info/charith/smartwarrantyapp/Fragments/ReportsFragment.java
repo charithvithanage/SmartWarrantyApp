@@ -2,11 +2,13 @@ package com.info.charith.smartwarrantyapp.Fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -18,8 +20,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Entities.ActivityReport;
+import com.info.charith.smartwarrantyapp.Activities.DeivceInfoActivity;
+import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
 import com.info.charith.smartwarrantyapp.Entities.SummaryReport;
+import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.DealerService;
@@ -40,7 +44,7 @@ public class ReportsFragment extends Fragment {
     TextView tvFromDate, tvToDate;
     private ActivityReportsAdapter activityReportsAdapter;
     SummaryReportsAdapter summaryReportsAdapter;
-    List<ActivityReport> activityReports = new ArrayList<>();
+    List<Warranty> activityReports = new ArrayList<>();
     List<SummaryReport> summaryReports = new ArrayList<>();
     ListView activityReportListView, summaryReportListView;
 
@@ -51,13 +55,6 @@ public class ReportsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_reports, container, false);
 
         DateTime today = new DateTime();
-
-//        activityReports.add(new ActivityReport(today, "charith", "samsung", "s6", "12345667"));
-//        activityReports.add(new ActivityReport(today.plusDays(1), "charith", "samsung", "s6", "12345667"));
-//        activityReports.add(new ActivityReport(today.plusDays(2), "charith", "samsung", "s6", "12345667"));
-//        activityReports.add(new ActivityReport(today.plusDays(3), "charith", "samsung", "s6", "12345667"));
-//        activityReports.add(new ActivityReport(today.plusDays(4), "charith", "samsung", "s6", "12345667"));
-
 //        summaryReports.add(new SummaryReport(today, "samsung", "s6", 3));
 //        summaryReports.add(new SummaryReport(today.plusDays(2), "samsung", "s6", 3));
 //        summaryReports.add(new SummaryReport(today.plusDays(3), "samsung", "s6", 3));
@@ -112,6 +109,21 @@ public class ReportsFragment extends Fragment {
         activityReportListView = root.findViewById(R.id.activityReportsListView);
         summaryReportListView = root.findViewById(R.id.summaryReportsListView);
 
+
+        activityReportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Warranty warranty = activityReportsAdapter.getItem(position);
+                Gson gson = new Gson();
+                Intent intent = new Intent(getActivity(), DeivceInfoActivity.class);
+                intent.putExtra("type", "Waranty Details");
+                intent.putExtra("warrantyString", gson.toJson(warranty));
+                intent.putExtra("previous_activity", "activation_list_activity");
+                getActivity().startActivity(intent);
+
+            }
+        });
+
         fromDate = new DateTime();
         toDate = fromDate.plusDays(1);
 
@@ -148,32 +160,12 @@ public class ReportsFragment extends Fragment {
                 date.set(year, monthOfYear, dayOfMonth);
                 toDate = new DateTime(date.getTimeInMillis());
                 tvToDate.setText(toDate.toString("dd MMM YYYY"));
-
-
-
-
                 new GetSummaryReportsAsync().execute();
                 new GetActivityReportsAsync().execute();
             }
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
 
 
-    }
-
-
-    public long showDateTimePicker() {
-        final Calendar date;
-
-        final Calendar currentDate = Calendar.getInstance();
-        date = Calendar.getInstance();
-        new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
-            }
-        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
-
-        return date.getTimeInMillis();
     }
 
     private void showFilterFromDateLayout() {
@@ -236,7 +228,7 @@ public class ReportsFragment extends Fragment {
                             if (jsonArray.length() > 0) {
                                 activityReports = new ArrayList<>();
                                 for (int i = 0; i < jsonArray.length(); i++) {
-                                    ActivityReport activityReport = gson.fromJson(jsonArray.getString(i), ActivityReport.class);
+                                    Warranty activityReport = gson.fromJson(jsonArray.getString(i), Warranty.class);
                                     activityReports.add(activityReport);
                                 }
                             }

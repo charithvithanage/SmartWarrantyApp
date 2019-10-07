@@ -49,6 +49,11 @@ public class DealerInfoActivity extends AppCompatActivity {
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                /**
+                 * If dealer details are correct
+                 * User can register by clicking confirm button
+                 */
                 new RegisterAsync().execute();
             }
         });
@@ -83,6 +88,11 @@ public class DealerInfoActivity extends AppCompatActivity {
         tvDealerStatus.setText(checkStatus(dealer.isActive()));
     }
 
+    /**
+     * Check the dealer active status
+     * @param active Dealer active status
+     * @return Active / Inactive string
+     */
     private String checkStatus(boolean active) {
 
         String status = "Active";

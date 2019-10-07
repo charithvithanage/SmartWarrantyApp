@@ -61,6 +61,12 @@ public class DealerSearchActivity extends AppCompatActivity {
 
                 if (!TextUtils.isEmpty(etDealerNIC.getText())) {
                     dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
+
+                    /**
+                     * Enter dealer's NIC
+                     * And get dealer's dealerships from the server
+                     * User can select dealer ship and go to the sign up page
+                     */
                     new GetDealerAsync().execute();
                 }
             }
