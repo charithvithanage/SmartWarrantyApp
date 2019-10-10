@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
+import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
@@ -68,6 +70,21 @@ public class DeivceInfoActivity extends AppCompatActivity {
                 if (type.equals("sold device")) {
                     Utils.navigateWithoutHistory(DeivceInfoActivity.this, MainActivity.class);
                 } else {
+
+                    if (warranty.getActivationStatus().equals("Enable") || warranty.getActivationStatus().equals("Enable with Date")) {
+
+                        SharedPreferences sharedPref = getSharedPreferences(
+                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+                        Gson gson = new Gson();
+
+                        String dealerString = sharedPref.getString("loggedInUser", "0");
+                        DealerUserMock dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
+
+                        warranty.setDealerCode(dealer.getDealerCode());
+                        warranty.setDealerUserName(dealerUserMock.getUsername());
+                    }
+
                     new UpdateWarrantyAsync().execute();
                 }
 
@@ -117,7 +134,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
          * Check previous activity
          * Hide relevant ui elements
          */
-        if(previous_activity.equals("activation_list_activity")){
+        if (previous_activity.equals("activation_list_activity")) {
             btnSubmit.setVisibility(View.GONE);
             tvDistric.setVisibility(View.GONE);
             tvCity.setVisibility(View.GONE);
@@ -130,7 +147,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
     }
 
-    private void setValues()  {
+    private void setValues() {
         tvBrand.setText(warranty.getBrand());
         tvModel.setText(warranty.getModel());
         tvIMEI.setText(warranty.getImei());

@@ -13,7 +13,8 @@
         <item
             android:id="@+id/nav_report"
             android:icon="@mipmap/reports"
-            android:title="@string/menu_reports" />
+            android:title="@string/menu_reports"
+            />
 
         <item
             android:id="@+id/nav_about"
@@ -25,10 +26,7 @@
             android:icon="@mipmap/settings"
             android:title="@string/menu_settings" />
 
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@mipmap/logout"
-            android:title="@string/menu_share" />
+
 
     </group>
 

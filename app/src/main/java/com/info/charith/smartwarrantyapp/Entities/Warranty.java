@@ -21,7 +21,24 @@ public class Warranty {
     private String activationStatus;
     private String dapStatus;
     private String dealerUserName;
+    private String reference;
+    private String uploadDate;
 
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public String getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
+    }
 
     public String getActivationStatus() {
         return activationStatus;

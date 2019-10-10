@@ -1,11 +1,15 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.info.charith.smartwarrantyapp.R;
+import com.info.charith.smartwarrantyapp.SampleBootReceiver;
 import com.info.charith.smartwarrantyapp.Utils;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public NavController navController;
 
     public NavigationView navigationView;
+
+    LinearLayout logoutBtn;
 
 
     @Override
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private void init() {
@@ -55,10 +63,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer_layout);
 
         navigationView = findViewById(R.id.nav_view);
+        logoutBtn=navigationView.findViewById(R.id.nav_logout);
+
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(getString(R.string.logout_confirmation_message))
+                        .setCancelable(false)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences sharedPref = getSharedPreferences(
+                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString("loggedInUser", "0");
+                                editor.putString("accessToken", "0");
+                                editor.putString("refreshToken", "0");
+                                editor.putString("userDealer", "0");
+                                editor.commit();
+                                Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+            }
+        });
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
+//        enableAlarm();
 
+    }
+
+    private void enableAlarm() {
+        ComponentName receiver = new ComponentName(MainActivity.this, SampleBootReceiver.class);
+        PackageManager pm = getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     @Override
@@ -102,34 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navController.navigate(R.id.nav_settings);
                 break;
 
-            case R.id.nav_logout:
-
-
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage(getString(R.string.logout_confirmation_message))
-                        .setCancelable(false)
-                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SharedPreferences sharedPref = getSharedPreferences(
-                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("loggedInUser", "0");
-                                editor.putString("accessToken", "0");
-                                editor.putString("refreshToken", "0");
-                                editor.putString("userDealer", "0");
-                                editor.commit();
-                                Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
-
-                            }
-                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
-
-                break;
 
         }
         return true;

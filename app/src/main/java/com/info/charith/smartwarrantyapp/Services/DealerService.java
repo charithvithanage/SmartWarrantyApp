@@ -86,10 +86,12 @@ public class DealerService {
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        Log.d(TAG, Config.get_activity_reports_url);
-        String uri = String.format(Config.get_activity_reports_url+"?from=%1$s&to=%2$s",
+        String uri = String.format(Config.get_activity_reports_url + "?from=%1$s&to=%2$s",
                 fromDate,
                 toDate);
+        Log.d(TAG, uri);
+        Log.d(TAG, accessToken);
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, uri, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -124,13 +126,16 @@ public class DealerService {
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final String accessToken = sharedPref.getString("accessToken", null);
         Gson gson = new Gson();
-        Dealer dealer=gson.fromJson(sharedPref.getString("userDealer",null),Dealer.class);
+        Dealer dealer = gson.fromJson(sharedPref.getString("userDealer", null), Dealer.class);
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        Log.d(TAG, Config.get_summary_reports_url);
+        String uri = String.format(Config.get_summary_reports_url + dealer.getDealerCode() + "?from=%1$s&to=%2$s",
+                fromDate,
+                toDate);
+        Log.d(TAG, uri);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.get_activity_reports_url+dealer.getDealerCode(), null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, uri, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 callback.onSuccess(context, response);
@@ -150,14 +155,6 @@ public class DealerService {
 
 
                 return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("from", fromDate);
-                params.put("to", toDate);
-                return params;
             }
         };
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -211,6 +208,44 @@ public class DealerService {
 
         queue.add(jsonObjectRequest);
     }
+
+    public void getWarrantyFromIMEI(final Context context, final AsyncListner callback) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        final String accessToken = sharedPref.getString("accessToken", null);
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+
+        Log.d(TAG, Config.check_access_token);
+        Log.d(TAG, accessToken);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.check_access_token, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                callback.onSuccess(context, response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(context, error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer " + accessToken);
+
+                return headers;
+            }
+        };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(jsonObjectRequest);
+    }
+
 
     public void getProduct(final Context context, String productName, final AsyncListner callback) {
         SharedPreferences sharedPref = context.getSharedPreferences(

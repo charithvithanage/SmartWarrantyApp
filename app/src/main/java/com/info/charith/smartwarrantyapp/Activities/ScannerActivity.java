@@ -307,7 +307,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     intent.putExtra("previous_activity", "scan_activity");
                                     startActivity(intent);
                                 }
-                            } else  if(deviceType.equals("disabled device")){
+                            } else {
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "disabled device");
                                 intent.putExtra("previous_activity", "scan_activity");

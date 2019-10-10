@@ -13,9 +13,6 @@ import androidx.annotation.Nullable;
 import com.info.charith.smartwarrantyapp.Entities.SummaryReport;
 import com.info.charith.smartwarrantyapp.R;
 
-import org.joda.time.DateTime;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class SummaryReportsAdapter extends ArrayAdapter<SummaryReport> {
@@ -41,49 +38,28 @@ public class SummaryReportsAdapter extends ArrayAdapter<SummaryReport> {
         convertView = inflater.inflate(R.layout.summary_reports_layout, null);
         holder = new com.info.charith.smartwarrantyapp.Fragments.SummaryReportsAdapter.ViewHolder();
         holder.brand = convertView.findViewById(R.id.brand);
+        holder.qty = convertView.findViewById(R.id.tvQty);
+        holder.brand = convertView.findViewById(R.id.tvBrand);
+        holder.model = convertView.findViewById(R.id.tvModel);
 
         convertView.setTag(holder);
-        convertView.setTag(R.id.brand, holder.brand);
+        convertView.setTag(R.id.tvImei, holder.qty);
+        convertView.setTag(R.id.tvBrand, holder.brand);
+        convertView.setTag(R.id.tvModel, holder.model);
 
-        holder.brand.setText(eventObj.getBrand());
-
+        holder.qty.setText(String.valueOf(eventObj.getQty()));
+        holder.brand.setText(eventObj.getBrandName());
+        holder.model.setText(eventObj.getModel());
         return convertView;
     }
 
 
-    public void filterByFromDate(DateTime fromDate, DateTime toDate) {
 
-        filteredSummaryReports = new ArrayList<SummaryReport>();
-        if (this.eventList.size() != 0 || this.eventList != null) {
-            for (SummaryReport wp : this.eventList) {
-                if (wp.getDate().isAfter(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredSummaryReports.add(wp);
-                } else if (wp.getDate().isEqual(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredSummaryReports.add(wp);
-                }
-            }
-        }
-
-        notifyDataSetChanged();
-    }
-
-    public void filterByToDate(DateTime fromDate, DateTime toDate) {
-
-        filteredSummaryReports = new ArrayList<SummaryReport>();
-        if (this.eventList.size() != 0 || this.eventList != null) {
-            for (SummaryReport wp : this.eventList) {
-                if (wp.getDate().isAfter(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredSummaryReports.add(wp);
-                } else if (wp.getDate().isEqual(fromDate.getMillis()) && wp.getDate().isBefore(toDate.getMillis())) {
-                    filteredSummaryReports.add(wp);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
 
     static class ViewHolder {
+        protected TextView qty;
         protected TextView brand;
+        protected TextView model;
 
     }
 

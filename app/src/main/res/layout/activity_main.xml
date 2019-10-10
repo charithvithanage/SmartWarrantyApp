@@ -20,7 +20,39 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer">
+        app:menu="@menu/activity_main_drawer"
+        app:itemTextAppearance="@style/navigation_view_item_style"
+
+        >
+
+        <LinearLayout
+            android:id="@+id/nav_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="32dp">
+
+
+            <ImageView
+                android:layout_width="@dimen/design_navigation_icon_size"
+                android:layout_height="@dimen/design_navigation_icon_size"
+                android:src="@mipmap/logout" />
+
+            <TextView
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="32dp"
+                android:text="@string/menu_share"
+                style="@style/navigation_view_item_style"
+               />
+        </LinearLayout>
+
 
     </com.google.android.material.navigation.NavigationView>
 

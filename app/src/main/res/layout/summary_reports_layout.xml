@@ -5,8 +5,38 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/brand"
+        android:id="@+id/tvBrand"
+        style="@style/list_view_lable_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/listview_lable_padding"
+        android:paddingTop="16dp"
+        android:paddingRight="@dimen/listview_lable_padding"
         android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvModel"
+        style="@style/list_view_content_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/listview_lable_padding"
+        android:paddingTop="8dp"
+        android:paddingRight="@dimen/listview_lable_padding"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvQty"
+        style="@style/list_view_content_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/listview_lable_padding"
+        android:paddingTop="8dp"
+        android:paddingRight="@dimen/listview_lable_padding"
+        android:paddingBottom="16dp"
+        android:text="TextView" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/platinum"></View>
 </LinearLayout>

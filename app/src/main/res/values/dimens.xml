@@ -49,6 +49,8 @@
     <dimen name="filterBtnPaddingBottom">12dp</dimen>
     <dimen name="filterBtnBottomMargin">20dp</dimen>
     <dimen name="page_padding">8dp</dimen>
-    <dimen name="listview_lable_padding">4dp</dimen>
+    <dimen name="listview_lable_padding">16dp</dimen>
+
+    <dimen name="design_navigation_icon_size">16dp</dimen>
 
 </resources>
