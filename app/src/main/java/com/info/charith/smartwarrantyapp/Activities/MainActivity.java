@@ -25,6 +25,10 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.SampleBootReceiver;
 import com.info.charith.smartwarrantyapp.Utils;
 
+import org.joda.time.DateTime;
+
+import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public Toolbar toolbar;
@@ -43,17 +47,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        SharedPreferences sharedPref = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String logoutTimeString = sharedPref.getString("logoutTime", null);
+
+        DateTime now=new DateTime();
+
+        if(now.isAfter(dateStringToDateTime(logoutTimeString))){
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(getString(R.string.access_token_expired_message))
+                    .setCancelable(false)
+                    .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+                        }
+                    }).show();
+        }else {
+            init();
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
+            NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 
-        NavigationUI.setupWithNavController(navigationView, navController);
+            NavigationUI.setupWithNavController(navigationView, navController);
 
-        navigationView.setNavigationItemSelectedListener(this);
+            navigationView.setNavigationItemSelectedListener(this);
+        }
+
 
     }
 
@@ -63,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer_layout);
 
         navigationView = findViewById(R.id.nav_view);
-        logoutBtn=navigationView.findViewById(R.id.nav_logout);
+        logoutBtn = navigationView.findViewById(R.id.nav_logout);
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 editor.putString("accessToken", "0");
                                 editor.putString("refreshToken", "0");
                                 editor.putString("userDealer", "0");
+                                editor.putString("logoutTime", null);
                                 editor.commit();
                                 Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
 

@@ -20,8 +20,14 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Date;
+
+import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
+import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
 
 public class DealerInfoActivity extends AppCompatActivity {
     private static final String TAG = "SmartWarrantyApp";
@@ -136,6 +142,8 @@ public class DealerInfoActivity extends AppCompatActivity {
                         boolean success = jsonObject.getBoolean("success");
 
                         if (success) {
+
+                            DateTime dateTime=new DateTime();
                             loggedInUser = jsonObject.getString("objectOne");
                             accessToken = jsonObject.getString("accessToken");
                             refreshToken = jsonObject.getString("refreshToken");
@@ -148,6 +156,7 @@ public class DealerInfoActivity extends AppCompatActivity {
                             editor.putString("accessToken", accessToken);
                             editor.putString("refreshToken", refreshToken);
                             editor.putString("userDealer", userDealer);
+                            editor.putString("logoutTime",dateTimeToString(endOfDay(dateTime)));
 
                             editor.commit();
 

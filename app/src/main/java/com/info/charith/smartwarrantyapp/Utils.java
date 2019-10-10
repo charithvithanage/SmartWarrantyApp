@@ -142,4 +142,37 @@ public class Utils {
         return result.toString();
 
     }
+
+    /**
+     * Set date time to 23.50
+     * @param date selected date time
+     * @return end of the day time
+     */
+    public static DateTime endOfDay(DateTime date) {
+//        return date.plusDays(1).minusMinutes(1);
+        return date.plusMinutes(15);
+
+    }
+
+    public static String dateTimeToString(DateTime dateTime) {
+        String str = null;
+        if (dateTime != null) {
+            str = dateTime.toString("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        }
+        return str;
+    }
+
+
+    public static DateTime dateStringToDateTime(String dateTime) {
+        DateTime date = null;
+
+        if (dateTime != null) {
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                    .withLocale(Locale.getDefault());
+            date = fmt.parseDateTime(dateTime);
+        }
+
+        return date;
+    }
+
 }

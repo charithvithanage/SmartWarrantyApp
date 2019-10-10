@@ -209,16 +209,18 @@ public class DealerService {
         queue.add(jsonObjectRequest);
     }
 
-    public void getWarrantyFromIMEI(final Context context, final AsyncListner callback) {
+    public void checkAccessToken(final Context context, final AsyncListner callback) {
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final String accessToken = sharedPref.getString("accessToken", null);
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-
         Log.d(TAG, Config.check_access_token);
-        Log.d(TAG, accessToken);
+
+        if(accessToken!=null){
+            Log.d(TAG, accessToken);
+        }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.check_access_token, null, new Response.Listener<JSONObject>() {
             @Override
@@ -228,7 +230,7 @@ public class DealerService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                callback.onError(context, error.toString());
+                callback.onError(context, String.valueOf(error.networkResponse.statusCode));
             }
         }) {
             @Override

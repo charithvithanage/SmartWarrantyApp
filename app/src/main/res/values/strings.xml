@@ -43,4 +43,7 @@
     <string name="invalid_contact_no">( Invalid contact no )</string>
     <string name="waiting">Waiting........</string>
     <string name="logout_confirmation_message">Do you want to logout?</string>
+    <string name="access_token_expired_message">Token expired. Please login again</string>
+    <string name="date_pattern">dd/MM/YYY</string>
+    <string name="time_pattern">hh:mma</string>
 </resources>

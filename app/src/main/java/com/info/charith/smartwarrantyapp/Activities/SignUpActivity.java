@@ -26,9 +26,12 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
+import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordMatch;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
@@ -310,6 +313,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                         if (success) {
+
 
                             Intent intent = new Intent(SignUpActivity.this, DealerInfoActivity.class);
                             intent.putExtra("dealerString", jsonObject.getString("dealer"));

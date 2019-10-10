@@ -22,9 +22,12 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
+import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
 
@@ -182,6 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                             String userDealer=null;
                             String accessToken = null;
                             String refreshToken = null;
+                            DateTime dateTime=new DateTime();
                             try {
                                 loggedInUser = jsonObject.getString("objectOne");
                                 accessToken = jsonObject.getString("accessToken");
@@ -199,6 +203,8 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("accessToken", accessToken);
                             editor.putString("refreshToken", refreshToken);
                             editor.putString("userDealer", userDealer);
+                            editor.putString("logoutTime",dateTimeToString(endOfDay(dateTime)));
+
                             editor.commit();
 
                             Utils.navigateWithoutHistory(LoginActivity.this, MainActivity.class);
