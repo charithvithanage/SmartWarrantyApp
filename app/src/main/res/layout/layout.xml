@@ -94,7 +94,7 @@
             style="@style/lable_style"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:text="Activated Date :"
+            android:text="Warranty Start Date :"
             app:layout_constraintBottom_toBottomOf="@id/tvDate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvDate" />

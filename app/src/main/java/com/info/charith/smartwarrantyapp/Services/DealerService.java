@@ -209,20 +209,20 @@ public class DealerService {
         queue.add(jsonObjectRequest);
     }
 
-    public void checkAccessToken(final Context context, final AsyncListner callback) {
+    public void logout(final Context context, String username, final AsyncListner callback) {
         SharedPreferences sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         final String accessToken = sharedPref.getString("accessToken", null);
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        Log.d(TAG, Config.check_access_token);
+        Log.d(TAG, Config.logout_url + username);
 
-        if(accessToken!=null){
+        if (accessToken != null) {
             Log.d(TAG, accessToken);
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.check_access_token, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.logout_url + username, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 callback.onSuccess(context, response);
@@ -230,7 +230,7 @@ public class DealerService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                callback.onError(context, String.valueOf(error.networkResponse.statusCode));
+                callback.onError(context, error.toString());
             }
         }) {
             @Override
@@ -276,6 +276,39 @@ public class DealerService {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
                 headers.put("Authorization", "Bearer " + accessToken);
+
+                return headers;
+            }
+        };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(jsonObjectRequest);
+    }
+
+    public void getDealerFromDealerCode(final Context context, String dealerCode, final AsyncListner callback) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        Log.d(TAG, Config.get_dealer_from_code_url + dealerCode);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.get_dealer_from_code_url + dealerCode, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                callback.onSuccess(context, response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(context, error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
 
                 return headers;
             }

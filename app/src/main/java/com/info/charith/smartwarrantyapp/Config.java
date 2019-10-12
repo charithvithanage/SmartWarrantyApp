@@ -15,11 +15,13 @@ public enum Config {
     public static String get_product_url= ServerUrl + "dealeruserservice/product/";
     public static String get_activity_reports_url= ServerUrl + "dealeruserservice/filteractivationlist";
     public static String get_summary_reports_url= ServerUrl + "dealeruserservice/summarylist/";
-    public static String check_access_token= ServerUrl + "dealeruserservice/isexpired";
+    public static String get_dealer_from_code_url= ServerUrl + "adminuserservice/dealer/";
+    public static String logout_url= ServerUrl + "dealeruserservice/logout/";
 
     public static String date_time_pattern="yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     public static String standard_date_time_pattern="yyyy-MM-dd HH:mm";
     public String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    public String passwordPattern = ".*[a-zA-Z].*";
 
 
 }

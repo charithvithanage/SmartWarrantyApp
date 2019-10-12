@@ -36,7 +36,6 @@ public class DealerInfoActivity extends AppCompatActivity {
     String dealerUserMockString;
     String dealerString;
     Dealer dealer;
-
     Gson gson = new Gson();
     TextView tvDealerCode, tvDealerName, tvAddress, tvCity, tvDistric, tvOwnerName, tvNIC, tvContactNo, tvEmail, tvDealerStatus;
 
@@ -57,7 +56,7 @@ public class DealerInfoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 /**
-                 * If dealer details are correct
+                 * If dealer's details are correct
                  * User can register by clicking confirm button
                  */
                 new RegisterAsync().execute();
@@ -189,7 +188,7 @@ public class DealerInfoActivity extends AppCompatActivity {
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
 
-                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

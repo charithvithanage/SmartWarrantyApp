@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
 
         init();
 
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +115,9 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText.addTextChangedListener(userNameTextWatcher);
     }
 
+    /**
+     * Set edit text background to normal state
+     */
     private void setEditTextBGNormal() {
         usernameEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
         passwordEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
@@ -124,10 +126,19 @@ public class LoginActivity extends AppCompatActivity {
         errorUserName.setVisibility(View.GONE);
     }
 
+    /**
+     * Login method
+     * @param username
+     * @param password
+     */
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
         if (isUserNameValid(username) && isPasswordValid(password)) {
 
+            /**
+             * If password length is greater than 5
+             * User can login
+             */
             if(password.length()>5){
                 credential.setUsername(username);
                 credential.setPassword(password);
@@ -156,6 +167,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * User login to the server
+     */
     private class LoginUserAsync extends AsyncTask<Void, Void, Void> {
 
         ProgressDialog progressDialog;
@@ -196,6 +210,9 @@ public class LoginActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
+                            /**
+                             * Set logged in user ,access token ,refresh token, dealer, and automatically logout time in shared preference
+                             */
                             SharedPreferences sharedPref = context.getSharedPreferences(
                                     getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPref.edit();
@@ -230,7 +247,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
 
-                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

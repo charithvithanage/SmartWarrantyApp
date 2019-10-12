@@ -149,8 +149,8 @@ public class Utils {
      * @return end of the day time
      */
     public static DateTime endOfDay(DateTime date) {
-//        return date.plusDays(1).minusMinutes(1);
-        return date.plusMinutes(15);
+        return date.plusDays(1).minusMinutes(1);
+//        return date.plusMinutes(1);
 
     }
 

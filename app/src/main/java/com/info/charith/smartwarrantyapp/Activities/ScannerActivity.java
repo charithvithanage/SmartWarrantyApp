@@ -51,6 +51,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     ViewGroup contentFrame;
     String selectedBrand;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,20 +143,30 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                 contentFrame.addView(mScannerView);
             }
+        }else {
+            mScannerView = new ZXingScannerView(this) {
+
+                @Override
+                protected IViewFinder createViewFinderView(Context context) {
+                    return new CustomZXingScannerView(context);
+                }
+
+            };
+
+            contentFrame.addView(mScannerView);
         }
 
     }
 
     private String getDeviceType(Warranty warranty) {
 
-        String type = "";
+        String type;
 
         if (warranty.getActivationStatus().equals("Enable")) {
             type = "new device";
-        }if(warranty.getActivationStatus().equals("Disable")){
-
+        }else if(warranty.getActivationStatus().equals("Disable")){
+            type = "disabled device";
         } else {
-
             if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
                 type = "sold device";
             } else {
@@ -243,16 +255,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(ScannerActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -282,6 +284,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                             if (warranty.getBrand().equals(selectedBrand)) {
                                 if (deviceType.equals("new device") ) {
                                     Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
+                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
                                     intent.putExtra("warrantyString", gson.toJson(warranty));
                                     intent.putExtra("dealerString", objectTwo);
                                     intent.putExtra("type", deviceType);
@@ -348,7 +351,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
 
-                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -363,7 +366,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private class GetProductAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
         String productName;
 
         public GetProductAsync(String productName) {
@@ -387,7 +389,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Log.d(TAG, jsonObject.toString());
-                    progressDialog.dismiss();
 
                     String object = null;
 
@@ -416,6 +417,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        progressDialog.dismiss();
+
                     }
 
 

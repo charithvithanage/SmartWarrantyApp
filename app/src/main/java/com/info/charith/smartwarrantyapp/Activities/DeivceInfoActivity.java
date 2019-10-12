@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
@@ -24,6 +25,7 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DeivceInfoActivity extends AppCompatActivity {
@@ -36,7 +38,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
     TextView tvBrand, tvModel, tvIMEI, tvDealerName, tvCity, tvDistric;
     TextView tvCustomerName, tvCustomerAddress, tvCustomerContactNo, tvCustomerEmail;
     TextView tvFer, tvActivatedDate, tvAccessoryWStatus, tvDeviceWStatus, tvServiceWStatus;
-    String warrantyString, dealerString;
+    String warrantyString;
     Warranty warranty;
     Dealer dealer;
 
@@ -50,16 +52,48 @@ public class DeivceInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deivce_info);
 
-
+        /**
+         * Change status bar color programmatically
+         */
         Utils.changeStatusBarColor(DeivceInfoActivity.this, getWindow());
 
         warrantyString = getIntent().getStringExtra("warrantyString");
-        dealerString = getIntent().getStringExtra("dealerString");
         type = getIntent().getStringExtra("type");
         previous_activity = getIntent().getStringExtra("previous_activity");
-
         warranty = gson.fromJson(warrantyString, Warranty.class);
-        dealer = gson.fromJson(dealerString, Dealer.class);
+
+        new GetDealerAsync(DeivceInfoActivity.this, warranty.getDealerCode(), new AsyncListner() {
+            @Override
+            public void onSuccess(Context context, JSONObject jsonObject) {
+
+                try {
+                    boolean success = jsonObject.getBoolean("success");
+
+                    if (success) {
+                        String objectOne = jsonObject.getString("object");
+                        Gson gson = new Gson();
+                        dealer = gson.fromJson(objectOne, Dealer.class);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (dealer != null) {
+                    tvDealerName.setText(dealer.getDealerName());
+                    tvCity.setText(dealer.getCity());
+                    tvDistric.setText(dealer.getDistrict());
+                }
+            }
+
+            @Override
+            public void onError(Context context, String error) {
+
+            }
+        }).execute();
+
+
 
         init();
 
@@ -71,21 +105,15 @@ public class DeivceInfoActivity extends AppCompatActivity {
                     Utils.navigateWithoutHistory(DeivceInfoActivity.this, MainActivity.class);
                 } else {
 
-                    if (warranty.getActivationStatus().equals("Enable") || warranty.getActivationStatus().equals("Enable with Date")) {
+                    /**
+                     * If activation status are Enable or Enable with Date
+                     * Dealer's details should set to the warranty object manually
+                     */
 
-                        SharedPreferences sharedPref = getSharedPreferences(
-                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
-                        Gson gson = new Gson();
-
-                        String dealerString = sharedPref.getString("loggedInUser", "0");
-                        DealerUserMock dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
-
-                        warranty.setDealerCode(dealer.getDealerCode());
-                        warranty.setDealerUserName(dealerUserMock.getUsername());
-                    }
-
-                    new UpdateWarrantyAsync().execute();
+                    Intent intent = new Intent(DeivceInfoActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+//                    new UpdateWarrantyAsync().execute();
                 }
 
 
@@ -106,7 +134,6 @@ public class DeivceInfoActivity extends AppCompatActivity {
     private void init() {
         titleView = findViewById(R.id.title_view);
         backBtn = findViewById(R.id.backBtn);
-
         btnSubmit = findViewById(R.id.btnSubmit);
         tvBrand = findViewById(R.id.brand);
         tvModel = findViewById(R.id.model);
@@ -118,13 +145,11 @@ public class DeivceInfoActivity extends AppCompatActivity {
         tvCustomerContactNo = findViewById(R.id.customerContactNo);
         tvCustomerEmail = findViewById(R.id.customerEmail);
         tvCustomerName = findViewById(R.id.customerName);
-
         tvFer = findViewById(R.id.tvRef);
         tvActivatedDate = findViewById(R.id.tvDate);
         tvAccessoryWStatus = findViewById(R.id.tvAccessoryWStatus);
         tvDeviceWStatus = findViewById(R.id.tvDeviceWStatus);
         tvServiceWStatus = findViewById(R.id.tvServiceWStatus);
-
         titleView.setText(Utils.stringCapitalize(type));
 
         setValues();
@@ -147,6 +172,9 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Set values to text fields
+     */
     private void setValues() {
         tvBrand.setText(warranty.getBrand());
         tvModel.setText(warranty.getModel());
@@ -174,17 +202,37 @@ public class DeivceInfoActivity extends AppCompatActivity {
         tvFer.setText(warranty.getReferenceNo());
         warranty.setWarrantyActivatedDate(warranty.getWarrantyActivatedDate());
         tvActivatedDate.setText(warranty.getWarrantyActivatedDate());
-        tvAccessoryWStatus.setText(warranty.getAccessoryWarrantyStatus());
-        tvDeviceWStatus.setText(warranty.getDeviceWarrantyStatus());
-        tvServiceWStatus.setText(warranty.getServiceWarrantyStatus());
+        if(warranty.getAccessoryWarrantyStatus().equals("Defect After Purchase")){
+            tvAccessoryWStatus.setText("DAP");
+        }else {
+            tvAccessoryWStatus.setText(warranty.getAccessoryWarrantyStatus());
 
-        if (dealer != null) {
-            tvDealerName.setText(dealer.getDealerName());
-            tvCity.setText(dealer.getCity());
-            tvDistric.setText(dealer.getDistrict());
         }
+
+        if(warranty.getDeviceWarrantyStatus().equals("Defect After Purchase")){
+            tvDeviceWStatus.setText("DAP");
+
+        }else {
+            tvDeviceWStatus.setText(warranty.getDeviceWarrantyStatus());
+
+        }
+
+        if(warranty.getServiceWarrantyStatus().equals("Defect After Purchase")){
+            tvServiceWStatus.setText("DAP");
+
+        }else {
+            tvServiceWStatus.setText(warranty.getServiceWarrantyStatus());
+
+        }
+
+
+
     }
 
+
+    /**
+     * Update warranty to the server
+     */
     private class UpdateWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
         ProgressDialog progressDialog;
@@ -204,9 +252,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Log.d(TAG, jsonObject.toString());
-                    progressDialog = new ProgressDialog(DeivceInfoActivity.this);
-                    progressDialog.setMessage(getString(R.string.waiting));
-                    progressDialog.show();
+                    progressDialog.dismiss();
                     Intent intent = new Intent(DeivceInfoActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -216,7 +262,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
                 public void onError(Context context, String error) {
                     progressDialog = new ProgressDialog(DeivceInfoActivity.this);
                     progressDialog.setMessage(getString(R.string.waiting));
-                    progressDialog.show();
+                    progressDialog.dismiss();
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

@@ -13,6 +13,36 @@
         android:background="@color/bg_color"
         android:padding="@dimen/pageMargin">
 
+        <LinearLayout
+            android:id="@+id/textContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnRegister">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="Already have an account? "
+                android:textColor="@color/charcoal"
+                android:textSize="@dimen/medium_font_size" />
+
+            <TextView
+                android:id="@+id/signIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="Login"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/medium_font_size" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnRegister"
@@ -21,16 +51,27 @@
             android:layout_height="@dimen/loginBtnHieght"
             android:layout_gravity="center_horizontal"
 
+            android:layout_marginTop="60dp"
             android:background="@drawable/login_button"
             android:foregroundGravity="top"
             android:paddingLeft="@dimen/button_side_padding"
             android:paddingRight="@dimen/button_side_padding"
             android:text="Search Dealer"
             android:textAllCaps="true"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dealerNIC" />
+
+        <TextView
+            android:id="@+id/errorUserNICLable"
+            style="@style/edit_text_error_lable_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            app:layout_constraintBottom_toTopOf="@+id/dealerNIC"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView5" />
 
         <EditText
             android:id="@+id/dealerNIC"
@@ -40,24 +81,26 @@
             android:background="@drawable/edt_bg_normal"
             android:ems="10"
             android:focusableInTouchMode="true"
+            android:maxLength="13"
             android:paddingStart="@dimen/login_edit_text_padding"
-            app:layout_constraintBottom_toTopOf="@+id/btnRegister"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.875"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/include" />
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <TextView
             android:id="@+id/textView5"
             style="@style/lable_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
             android:paddingLeft="@dimen/lableLeftPadding"
             android:paddingBottom="@dimen/lableBottomPadding"
             android:text="Dealer NIC"
-            app:layout_constraintBottom_toTopOf="@+id/dealerNIC"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.012"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/include" />
 
         <include
             android:id="@+id/include"

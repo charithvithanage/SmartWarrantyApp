@@ -1,12 +1,13 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,13 +22,22 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.Entities.Dealer;
+import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.Warranty;
+import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
-import com.info.charith.smartwarrantyapp.SampleBootReceiver;
+import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
+import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
+import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -41,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     LinearLayout logoutBtn;
 
+    DealerUserMock dealerUserMock;
+
+    Gson gson=new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +63,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String logoutTimeString = sharedPref.getString("logoutTime", null);
+        String loggedInUser=sharedPref.getString("loggedInUser",null);
+
+        dealerUserMock=gson.fromJson(loggedInUser,DealerUserMock.class);
 
         DateTime now=new DateTime();
 
+        /**
+         * Get saved logout time(This time will save when user logged in)
+         * Compare both time
+         * If current time is after the saved time
+         * Display a alert to the user to logout from the app
+         * And navigate to login page
+         */
         if(now.isAfter(dateStringToDateTime(logoutTimeString))){
             new AlertDialog.Builder(MainActivity.this)
                     .setMessage(getString(R.string.access_token_expired_message))
                     .setCancelable(false)
-                    .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+                            new LogoutAsync().execute();
                         }
                     }).show();
         }else {
@@ -68,13 +91,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
             NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
-
             NavigationUI.setupWithNavController(navigationView, navController);
-
             navigationView.setNavigationItemSelectedListener(this);
+
         }
 
 
@@ -84,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
-
         navigationView = findViewById(R.id.nav_view);
         logoutBtn = navigationView.findViewById(R.id.nav_logout);
 
@@ -120,18 +139,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
-//        enableAlarm();
-
-    }
-
-    private void enableAlarm() {
-        ComponentName receiver = new ComponentName(MainActivity.this, SampleBootReceiver.class);
-        PackageManager pm = getPackageManager();
-
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
     }
 
     @Override
@@ -144,7 +151,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(getString(R.string.back_confirmation_message))
+                    .setCancelable(false)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).show();
         }
     }
 
@@ -180,6 +200,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
 
     }
+
+    private class LogoutAsync extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            DealerService.getInstance().logout(MainActivity.this, dealerUserMock.getUsername(),new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+                    Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+                    Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+                }
+            });
+
+            return null;
+        }
+    }
+
+
+
+
 
 
 }

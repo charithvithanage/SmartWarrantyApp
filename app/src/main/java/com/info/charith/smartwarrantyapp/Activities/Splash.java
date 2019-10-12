@@ -56,19 +56,6 @@ public class Splash extends AppCompatActivity {
                 }
 
 
-//                Utils.navigateWithoutHistory(Splash.this, PlainActivity.class);
-//                SharedPreferences sharedPref = getSharedPreferences(
-//                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-//
-
-//                final String loggedInLawyer = sharedPref.getString("loggedInUser", "0");
-//                final String accessToken = sharedPref.getString("accessToken", "0");
-//
-//                if (!loggedInLawyer.equals("0") && !accessToken.equals("0")) {
-//                    Utils.navigateWithoutHistory(Splash.this, MainActivity.class);
-//                } else {
-//                    Utils.navigateWithoutHistory(Splash.this, LoginActivity.class);
-//                }
             }
         }, 1000);
     }

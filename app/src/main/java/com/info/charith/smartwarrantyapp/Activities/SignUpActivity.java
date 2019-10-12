@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -88,8 +89,9 @@ public class SignUpActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    int pos = userNICEditText.getText().length();
-                                    userNICEditText.requestFocus(pos);
+
+//                                                                   int pos = userNICEditText.getText().length();
+//                                    userNICEditText.requestFocus(pos);
                                 }
                             });
                         }
@@ -112,11 +114,32 @@ public class SignUpActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    int pos = userNICEditText.getText().length();
-                                    userNICEditText.requestFocus(pos);
+//                                    int pos = userNICEditText.getText().length();
+//                                    userNICEditText.requestFocus(pos);
                                 }
                             });
                         }
+                    }
+                }
+            }
+        });
+
+        usernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String str = usernameEditText.getText().toString();
+                    if (str.length() > 2) {
+
+                    } else {
+                        Utils.showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.invalid_username), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                int pos = usernameEditText.getText().length();
+                                usernameEditText.requestFocus(pos);
+                            }
+                        });
                     }
                 }
             }
@@ -241,7 +264,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         if (isUserNICValid(userNIC) && isPasswordValid(password) && isPasswordMatch(password, confirmPassword) && isUserNameValid(username)) {
 
-            if (password.length() > 5) {
+            if (password.length() > 5 && password.matches(Config.Instance.passwordPattern)) {
                 dealerUserMock.setDealerCode(dealer.getDealerCode());
                 dealerUserMock.setNic(userNIC);
                 dealerUserMock.setUsername(username);
@@ -249,9 +272,21 @@ public class SignUpActivity extends AppCompatActivity {
 
                 new ConfirmRegistrationDataAsync().execute();
             } else {
-                errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getString(R.string.password_length_wrong));
-                passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                if(!password.matches(Config.Instance.passwordPattern)){
+                    errorPassword.setVisibility(View.VISIBLE);
+                    errorPassword.setText(getString(R.string.password_pattern_wrong));
+                    passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+
+                }else {
+                    if(password.length() < 6){
+                        errorPassword.setVisibility(View.VISIBLE);
+                        errorPassword.setText(getString(R.string.password_length_wrong));
+                        passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+
+                    }
+                }
+
+
             }
 
 
@@ -339,7 +374,7 @@ public class SignUpActivity extends AppCompatActivity {
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
 
-                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

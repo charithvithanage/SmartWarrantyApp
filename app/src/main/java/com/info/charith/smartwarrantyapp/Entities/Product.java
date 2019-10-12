@@ -12,6 +12,15 @@ public class Product {
     private String serviceWarrantyPeriod;
     private String dapPolicy;
     private String brandPrefix;
+    private String imgBase64;
+
+    public String getImgBase64() {
+        return imgBase64;
+    }
+
+    public void setImgBase64(String imgBase64) {
+        this.imgBase64 = imgBase64;
+    }
 
     public String getBrandPrefix() {
         return brandPrefix;

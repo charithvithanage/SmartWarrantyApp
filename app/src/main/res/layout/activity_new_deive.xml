@@ -12,6 +12,7 @@
         layout="@layout/actionbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></include>
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -53,11 +54,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edit_text_height"
                 android:background="@drawable/edt_bg_normal"
-                android:focusableInTouchMode="true"
                 android:gravity="center_vertical"
+                android:inputType="text"
                 android:paddingStart="@dimen/contentPadding"
-                app:layout_constraintTop_toBottomOf="@id/textView27"
-                 />
+                app:layout_constraintTop_toBottomOf="@id/textView27" />
 
             <EditText
                 android:id="@+id/customerAddress"
@@ -65,9 +65,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/edit_text_height"
                 android:background="@drawable/edt_bg_normal"
-                android:ems="10"
-                android:focusableInTouchMode="true"
-                android:lines="3"
+                android:inputType="textPostalAddress"
                 android:paddingStart="@dimen/contentPadding"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,8 +78,6 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/edit_text_height"
                 android:background="@drawable/edt_bg_normal"
-                android:ems="10"
-                android:focusableInTouchMode="true"
                 android:gravity="center_vertical"
                 android:inputType="phone"
                 android:maxLength="10"
@@ -96,9 +92,9 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/edit_text_height"
                 android:background="@drawable/edt_bg_normal"
-                android:ems="10"
-                android:focusableInTouchMode="true"
                 android:gravity="center_vertical"
+                android:inputType="textEmailAddress"
+
                 android:paddingStart="@dimen/contentPadding"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -347,7 +343,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
 
 
 </LinearLayout>

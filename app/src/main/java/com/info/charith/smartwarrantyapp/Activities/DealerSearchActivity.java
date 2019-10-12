@@ -7,11 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +35,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
+
 public class DealerSearchActivity extends AppCompatActivity {
 
     Button btnSearch;
@@ -40,6 +45,9 @@ public class DealerSearchActivity extends AppCompatActivity {
     private static final String TAG = "SmartWarrantyApp";
     Gson gson = new Gson();
     List<Dealer> dealers = new ArrayList<>();
+    TextView loginButton;
+    TextWatcher userNICTextWatcher;
+    TextView errorNIC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,24 +62,138 @@ public class DealerSearchActivity extends AppCompatActivity {
         dealerRequest = new DealerRequest();
         btnSearch = findViewById(R.id.btnRegister);
         etDealerNIC = findViewById(R.id.dealerNIC);
+        loginButton = findViewById(R.id.signIn);
+        errorNIC = findViewById(R.id.errorUserNICLable);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (!TextUtils.isEmpty(etDealerNIC.getText())) {
-                    dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
 
-                    /**
-                     * Enter dealer's NIC
-                     * And get dealer's dealerships from the server
-                     * User can select dealer ship and go to the sign up page
-                     */
-                    new GetDealerAsync().execute();
+                    String str = etDealerNIC.getText().toString();
+                    if (str.length() == 13) {
+
+                        if (!str.matches("[0-9]+")) {
+                            errorNIC.setVisibility(View.VISIBLE);
+                            errorNIC.setText(getString(R.string.invalid_user_nic));
+                            etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+//                            Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                    int pos = etDealerNIC.getText().length();
+//                                    etDealerNIC.requestFocus(pos);
+//                                }
+//                            });
+                        }else {
+                            dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
+
+                            /**
+                             * Enter dealer's NIC
+                             * And get dealer's dealerships from the server
+                             * User can select dealer ship and go to the sign up page
+                             */
+                            new GetDealerAsync().execute();
+                        }
+
+                    } else {
+                        if (str.length() == 10) {
+                            String lastCharacter = str.substring(str.length() - 1);
+                            if (!lastCharacter.toLowerCase().equals("v")) {
+
+                                if (!lastCharacter.toLowerCase().equals("x")) {
+                                    errorNIC.setVisibility(View.VISIBLE);
+                                    errorNIC.setText(getString(R.string.invalid_user_nic));
+                                    etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                                }else {
+                                    dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
+
+                                    /**
+                                     * Enter dealer's NIC
+                                     * And get dealer's dealerships from the server
+                                     * User can select dealer ship and go to the sign up page
+                                     */
+                                    new GetDealerAsync().execute();
+                                }
+//                                Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        int pos = etDealerNIC.getText().length();
+//                                        etDealerNIC.requestFocus(pos);
+//                                    }
+//                                });
+
+                            }else {
+                                dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
+
+                                /**
+                                 * Enter dealer's NIC
+                                 * And get dealer's dealerships from the server
+                                 * User can select dealer ship and go to the sign up page
+                                 */
+                                new GetDealerAsync().execute();
+                            }
+                        } else {
+
+                            errorNIC.setVisibility(View.VISIBLE);
+                            errorNIC.setText(getString(R.string.invalid_user_nic));
+                            etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+//                            Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                    int pos = etDealerNIC.getText().length();
+//                                    etDealerNIC.requestFocus(pos);
+//                                }
+//                            });
+                        }
+                    }
+
+                }else {
+                    if (!isUserNICValid(etDealerNIC.getText().toString())) {
+                        errorNIC.setVisibility(View.VISIBLE);
+                        errorNIC.setText(getString(R.string.invalid_user_nic));
+                        etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                    }
                 }
             }
         });
 
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigateWithoutHistory(DealerSearchActivity.this, LoginActivity.class);
+            }
+        });
+
+        userNICTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                setEditTextBGNormal();
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        etDealerNIC.addTextChangedListener(userNICTextWatcher);
+
+
+    }
+
+    private void setEditTextBGNormal() {
+        etDealerNIC.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
+        errorNIC.setVisibility(View.GONE);
     }
 
     private class GetDealerAsync extends AsyncTask<Void, Void, Void> {
@@ -177,7 +299,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                 @Override
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
-                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

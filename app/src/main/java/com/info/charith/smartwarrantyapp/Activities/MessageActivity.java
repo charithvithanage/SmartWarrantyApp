@@ -32,7 +32,6 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-
         Utils.changeStatusBarColor(MessageActivity.this, getWindow());
 
         type = getIntent().getStringExtra("type");
@@ -45,13 +44,18 @@ public class MessageActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * Check previous activity
+                 * If the previous activity is scan activity and type is activated device
+                 * Navigate to the new device activity to enter customer details
+                 * Else navigate to home fragment
+                 */
                 if (type.equals("activated device") && previous_activity.equals("scan_activity")) {
                     Intent intent = new Intent(MessageActivity.this, NewDeiveActivity.class);
                     intent.putExtra("type", type);
                     intent.putExtra("previous_activity", "message_activity");
                     intent.putExtra("warrantyString", warrantyString);
                     intent.putExtra("dealerString", dealerString);
-
                     startActivity(intent);
                 } else {
                     Intent intent = new Intent(MessageActivity.this, MainActivity.class);
@@ -69,6 +73,10 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Check type and previous activity
+         * According to that display relevant message in the body
+         */
         if (type.equals("activated device") && previous_activity.equals("scan_activity")) {
             imageView.setImageDrawable(getResources().getDrawable(R.mipmap.tick));
             tvEnglish.setText(Html.fromHtml("This device is already activated.<br/>Please enter customer information."));
@@ -97,7 +105,6 @@ public class MessageActivity extends AppCompatActivity {
         titleView = findViewById(R.id.title_view);
         imageView = findViewById(R.id.imageView3);
         titleView.setText(Utils.stringCapitalize(type));
-
         backBtn = findViewById(R.id.backBtn);
         btnSubmit = findViewById(R.id.btnSubmit);
         tvEnglish = findViewById(R.id.tvEnglish);
