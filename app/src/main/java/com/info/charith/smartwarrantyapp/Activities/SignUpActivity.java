@@ -77,44 +77,14 @@ public class SignUpActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String str = userNICEditText.getText().toString();
-                    if (str.length() == 13) {
 
-                        if (!str.matches("[0-9]+")) {
-                            Utils.showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-
-//                                                                   int pos = userNICEditText.getText().length();
-//                                    userNICEditText.requestFocus(pos);
-                                }
-                            });
-                        }
-
-                    } else {
-                        if (str.length() == 10) {
-                            String lastCharacter = str.substring(str.length() - 1);
-                            if (!lastCharacter.toLowerCase().equals("v")) {
-                                Utils.showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        int pos = userNICEditText.getText().length();
-                                        userNICEditText.requestFocus(pos);
-                                    }
-                                });
-                            }
-                        } else {
-                            Utils.showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-//                                    int pos = userNICEditText.getText().length();
-//                                    userNICEditText.requestFocus(pos);
-                                }
-                            });
-                        }
+                    if (!isUserNICValid(str)) {
+                        errorNIC.setVisibility(View.VISIBLE);
+                        errorNIC.setText(getString(R.string.invalid_user_nic));
+                        userNICEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
                     }
+
+
                 }
             }
         });
@@ -124,17 +94,12 @@ public class SignUpActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     String str = usernameEditText.getText().toString();
-                    if (str.length() > 2) {
-
-                    } else {
-                        Utils.showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.invalid_username), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                int pos = usernameEditText.getText().length();
-                                usernameEditText.requestFocus(pos);
-                            }
-                        });
+                    if (!isUserNameValid(str)) {
+                        errorUserName.setVisibility(View.VISIBLE);
+                        errorUserName.setText(getString(R.string.invalid_username));
+                        usernameEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                    }else {
+                        setEditTextBGNormal();
                     }
                 }
             }
@@ -301,7 +266,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
 
-
             if (!isUserNameValid(username)) {
                 errorUserName.setVisibility(View.VISIBLE);
                 errorUserName.setText(getString(R.string.invalid_username));
@@ -311,7 +275,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             if (!isPasswordValid(password)) {
                 errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getPasswordValidStatus(SignUpActivity.this,password));
+                errorPassword.setText(getPasswordValidStatus(SignUpActivity.this, password));
                 passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
 
             }
@@ -324,6 +288,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
     }
+
 
     private class ConfirmRegistrationDataAsync extends AsyncTask<Void, Void, Void> {
 
@@ -390,3 +355,5 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 }
+
+

@@ -47,7 +47,7 @@ public class Utils {
      * @param password Password of the user
      * @return true or false
      */
-    public static String getPasswordValidStatus(Context context,String password) {
+    public static String getPasswordValidStatus(Context context, String password) {
 
         String validStatus = null;
 
@@ -102,11 +102,18 @@ public class Utils {
      * @return true or false
      */
     public static boolean isUserNameValid(String username) {
+        Boolean valid;
         if (username == null) {
-            return false;
+            valid = false;
         } else {
-            return !username.trim().isEmpty();
+
+            if (username.length() > 2) {
+                valid = true;
+            } else {
+                valid = false;
+            }
         }
+        return valid;
     }
 
     /**
@@ -116,11 +123,68 @@ public class Utils {
      * @return true or false
      */
     public static boolean isUserNICValid(String userNIC) {
+        Boolean valid = null;
         if (userNIC == null) {
-            return false;
+            valid = false;
         } else {
-            return !userNIC.trim().isEmpty();
+
+            if (userNIC.length() == 13) {
+
+                if (!userNIC.matches("[0-9]+")) {
+                    valid = false;
+                } else {
+                    valid = true;
+                }
+
+            } else if (userNIC.length() == 10) {
+
+                String lastCharacter = userNIC.substring(userNIC.length() - 1);
+                if (lastCharacter.toLowerCase().equals("v")) {
+                    valid = true;
+                } else if (lastCharacter.toLowerCase().equals("x")) {
+                    valid = true;
+                } else {
+                    valid = false;
+                }
+
+            } else {
+                valid = false;
+
+            }
         }
+        return valid;
+    }
+
+    public static String getUserNICValidStatus(String userNIC) {
+        String valid = null;
+        if (userNIC == null) {
+            valid = "Empty User NIC";
+        } else {
+
+            if (userNIC.length() == 13) {
+
+                if (!userNIC.matches("[0-9]+")) {
+                    valid = "Invalid NIC";
+                } else {
+                    valid = "Valid";
+                }
+
+            } else if (userNIC.length() == 10) {
+
+                String lastCharacter = userNIC.substring(userNIC.length() - 1);
+                if (lastCharacter.toLowerCase().equals("v")) {
+                    valid = "Valid";
+                } else if (lastCharacter.toLowerCase().equals("x")) {
+                    valid = "Valid";
+                } else {
+                    valid = "Invalid NIC";
+                }
+
+            } else {
+                valid = "Invalid NIC";
+            }
+        }
+        return valid;
     }
 
     /**
