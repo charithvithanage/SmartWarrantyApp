@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.info.charith.smartwarrantyapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launch"
@@ -10,11 +13,12 @@
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".Activities.ForgotPassword" android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" ></activity>
         <activity
             android:name=".Activities.Splash"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,63 +27,59 @@
         </activity>
         <activity
             android:name=".Activities.DealerSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MessageActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.DeivceInfoActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Activities.NewDeiveActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Activities.ScannerActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait" /> <!-- <activity android:name=".ui.ScanActivity"></activity> -->
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- <activity android:name=".ui.ScanActivity"></activity> -->
         <activity
             android:name=".Activities.DealerInfoActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Activities.SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="84f48e1fd1a4aee92ecfcd9c7ae40e5cd7a57ea3" />
-
-
-        <!--This goes inside the application tags-->
-        <!--This is the receiver you called when the alarm was executed-->
-        <receiver android:name="AlarmBroadcaster" />
-
+            android:value="84f48e1fd1a4aee92ecfcd9c7ae40e5cd7a57ea3" /> <!-- This goes inside the application tags -->
+        <!-- This is the receiver you called when the alarm was executed -->
+        <receiver android:name=".AlarmBroadcaster" />
         <receiver
-            android:name="SampleBootReceiver"
+            android:name=".SampleBootReceiver"
             android:enabled="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="NotificationTrigger"
+            android:name=".NotificationTrigger"
             android:exported="false" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
 </manifest>

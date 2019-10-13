@@ -51,6 +51,7 @@ public class NewDeiveActivity extends AppCompatActivity {
     TextWatcher etContactNoTextWatcher, etEmailTextWatcher;
     TextView errorContactNo, errorEmail;
     String waranntyRequest;
+    ImageButton homeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +134,14 @@ public class NewDeiveActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigateWithoutHistory(NewDeiveActivity.this,MainActivity.class);
+            }
+        });
+
     }
 
     /**
@@ -186,6 +195,8 @@ public class NewDeiveActivity extends AppCompatActivity {
         etCustomerName = findViewById(R.id.customerName);
         errorContactNo = findViewById(R.id.errorContactNo);
         errorEmail = findViewById(R.id.errorEmail);
+        homeBtn = findViewById(R.id.btnHome);
+        homeBtn.setVisibility(View.VISIBLE);
 
         new GetDealerAsync(NewDeiveActivity.this, warranty.getDealerCode(), new AsyncListner() {
             @Override

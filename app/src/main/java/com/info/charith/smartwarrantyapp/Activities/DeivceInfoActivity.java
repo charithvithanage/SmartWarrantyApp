@@ -46,6 +46,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
     TextView titleView;
     ImageButton backBtn;
+    ImageButton homeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +128,13 @@ public class DeivceInfoActivity extends AppCompatActivity {
             }
         });
 
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigateWithoutHistory(DeivceInfoActivity.this,MainActivity.class);
+            }
+        });
+
 
     }
 
@@ -151,6 +159,8 @@ public class DeivceInfoActivity extends AppCompatActivity {
         tvDeviceWStatus = findViewById(R.id.tvDeviceWStatus);
         tvServiceWStatus = findViewById(R.id.tvServiceWStatus);
         titleView.setText(Utils.stringCapitalize(type));
+        homeBtn = findViewById(R.id.btnHome);
+        homeBtn.setVisibility(View.VISIBLE);
 
         setValues();
 

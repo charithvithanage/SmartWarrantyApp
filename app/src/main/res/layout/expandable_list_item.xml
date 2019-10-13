@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nav_about"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="@dimen/design_navigation_icon_size"
+        android:layout_height="@dimen/design_navigation_icon_size"
+        android:src="@mipmap/settings" />
+
+    <TextView
+        android:id="@+id/tvMenu"
+        style="@style/navigation_view_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:paddingStart="32dp"
+        android:text="@string/menu_about" />
+</LinearLayout>

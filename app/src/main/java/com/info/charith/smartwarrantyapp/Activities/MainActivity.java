@@ -3,14 +3,15 @@ package com.info.charith.smartwarrantyapp.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,23 +24,24 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Entities.Dealer;
+import com.info.charith.smartwarrantyapp.Adapters.CustomExpandableListAdapter;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
-import com.info.charith.smartwarrantyapp.Entities.Warranty;
+import com.info.charith.smartwarrantyapp.Entities.ExpandableListDataPump;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.joda.time.DateTime;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
-import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
-import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public Toolbar toolbar;
 
@@ -53,7 +55,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     DealerUserMock dealerUserMock;
 
-    Gson gson=new Gson();
+    Gson gson = new Gson();
+
+    ExpandableListView expandableListView;
+    ExpandableListAdapter expandableListAdapter;
+    List<String> expandableListTitle;
+    HashMap<String, List<String>> expandableListDetail;
+
+    LinearLayout nav_home, nav_reports, nav_about;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +72,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String logoutTimeString = sharedPref.getString("logoutTime", null);
-        String loggedInUser=sharedPref.getString("loggedInUser",null);
+        String loggedInUser = sharedPref.getString("loggedInUser", null);
 
-        dealerUserMock=gson.fromJson(loggedInUser,DealerUserMock.class);
+        dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
 
-        DateTime now=new DateTime();
+        DateTime now = new DateTime();
 
         /**
          * Get saved logout time(This time will save when user logged in)
@@ -76,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          * Display a alert to the user to logout from the app
          * And navigate to login page
          */
-        if(now.isAfter(dateStringToDateTime(logoutTimeString))){
+        if (now.isAfter(dateStringToDateTime(logoutTimeString))) {
             new AlertDialog.Builder(MainActivity.this)
                     .setMessage(getString(R.string.access_token_expired_message))
                     .setCancelable(false)
@@ -86,14 +95,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             new LogoutAsync().execute();
                         }
                     }).show();
-        }else {
+        } else {
             init();
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
             NavigationUI.setupWithNavController(navigationView, navController);
-            navigationView.setNavigationItemSelectedListener(this);
 
         }
 
@@ -106,6 +114,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         logoutBtn = navigationView.findViewById(R.id.nav_logout);
+
+        nav_home = navigationView.findViewById(R.id.nav_home);
+        nav_reports = navigationView.findViewById(R.id.nav_report);
+        nav_about = navigationView.findViewById(R.id.nav_about);
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +150,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        nav_home.setOnClickListener(this);
+        nav_reports.setOnClickListener(this);
+        nav_about.setOnClickListener(this);
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        expandableListDetail = ExpandableListDataPump.getData();
+        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
+        expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
+        expandableListView.setAdapter(expandableListAdapter);
+
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                expandableListView.collapseGroup(groupPosition);
+                drawerLayout.closeDrawers();
+                navController.navigate(R.id.nav_settings);
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -168,14 +202,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-        menuItem.setChecked(true);
+    @Override
+    public void onClick(View v) {
 
         drawerLayout.closeDrawers();
 
-        int id = menuItem.getItemId();
+        int id = v.getId();
 
         switch (id) {
 
@@ -190,15 +223,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_report:
                 navController.navigate(R.id.nav_report);
                 break;
-
-            case R.id.nav_settings:
-                navController.navigate(R.id.nav_settings);
-                break;
-
-
         }
-        return true;
-
     }
 
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
@@ -206,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DealerService.getInstance().logout(MainActivity.this, dealerUserMock.getUsername(),new AsyncListner() {
+            DealerService.getInstance().logout(MainActivity.this, dealerUserMock.getUsername(), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
@@ -221,10 +246,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return null;
         }
     }
-
-
-
-
 
 
 }

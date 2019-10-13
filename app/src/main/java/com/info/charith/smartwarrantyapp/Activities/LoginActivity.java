@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
 import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
+import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
 
@@ -37,8 +38,8 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     TextView signUpButton;
     Credential credential;
-    TextView errorUserName, errorPassword;
-    TextWatcher userNameTextWatcher,  userPasswordTextWatcher;
+    TextView errorUserName, errorPassword, forgotPasswordLink;
+    TextWatcher userNameTextWatcher, userPasswordTextWatcher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,15 @@ public class LoginActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.btnRegister);
         errorUserName = findViewById(R.id.errorUserNameLable);
         errorPassword = findViewById(R.id.errorPasswordLable);
+        forgotPasswordLink = findViewById(R.id.fogotPasswordLink);
+
+        forgotPasswordLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPassword.class);
+                startActivity(intent);
+            }
+        });
 
         userNameTextWatcher = new TextWatcher() {
             @Override
@@ -128,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Login method
+     *
      * @param username
      * @param password
      */
@@ -139,15 +150,9 @@ public class LoginActivity extends AppCompatActivity {
              * If password length is greater than 5
              * User can login
              */
-            if(password.length()>5){
-                credential.setUsername(username);
-                credential.setPassword(password);
-                new LoginUserAsync().execute();
-            }else {
-                errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getString(R.string.password_length_wrong));
-                passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-            }
+            credential.setUsername(username);
+            credential.setPassword(password);
+            new LoginUserAsync().execute();
 
         } else {
             if (!isUserNameValid(username)) {
@@ -158,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (!isPasswordValid(password)) {
                 errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getString(R.string.invalid_password));
+                errorPassword.setText(getPasswordValidStatus(LoginActivity.this, password));
                 passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
 
             }
@@ -194,12 +199,12 @@ public class LoginActivity extends AppCompatActivity {
                     try {
                         boolean success = jsonObject.getBoolean("success");
 
-                        if(success){
+                        if (success) {
                             String loggedInUser = null;
-                            String userDealer=null;
+                            String userDealer = null;
                             String accessToken = null;
                             String refreshToken = null;
-                            DateTime dateTime=new DateTime();
+                            DateTime dateTime = new DateTime();
                             try {
                                 loggedInUser = jsonObject.getString("objectOne");
                                 accessToken = jsonObject.getString("accessToken");
@@ -220,13 +225,13 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("accessToken", accessToken);
                             editor.putString("refreshToken", refreshToken);
                             editor.putString("userDealer", userDealer);
-                            editor.putString("logoutTime",dateTimeToString(endOfDay(dateTime)));
+                            editor.putString("logoutTime", dateTimeToString(endOfDay(dateTime)));
 
                             editor.commit();
 
                             Utils.navigateWithoutHistory(LoginActivity.this, MainActivity.class);
-                        }else {
-                            String message=jsonObject.getString("message");
+                        } else {
+                            String message = jsonObject.getString("message");
 
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,7 +63,8 @@ public class DealerInfoActivity extends AppCompatActivity {
                 new RegisterAsync().execute();
             }
         });
-    }
+
+       }
 
     private void init() {
         btnConfirm = findViewById(R.id.btnRegister);
@@ -76,6 +78,7 @@ public class DealerInfoActivity extends AppCompatActivity {
         tvContactNo = findViewById(R.id.contactNo);
         tvEmail = findViewById(R.id.email);
         tvDealerStatus = findViewById(R.id.dealerStatus);
+
 
         setValues();
     }
@@ -95,6 +98,7 @@ public class DealerInfoActivity extends AppCompatActivity {
 
     /**
      * Check the dealer active status
+     *
      * @param active Dealer active status
      * @return Active / Inactive string
      */
@@ -142,7 +146,7 @@ public class DealerInfoActivity extends AppCompatActivity {
 
                         if (success) {
 
-                            DateTime dateTime=new DateTime();
+                            DateTime dateTime = new DateTime();
                             loggedInUser = jsonObject.getString("objectOne");
                             accessToken = jsonObject.getString("accessToken");
                             refreshToken = jsonObject.getString("refreshToken");
@@ -155,13 +159,13 @@ public class DealerInfoActivity extends AppCompatActivity {
                             editor.putString("accessToken", accessToken);
                             editor.putString("refreshToken", refreshToken);
                             editor.putString("userDealer", userDealer);
-                            editor.putString("logoutTime",dateTimeToString(endOfDay(dateTime)));
+                            editor.putString("logoutTime", dateTimeToString(endOfDay(dateTime)));
 
                             editor.commit();
 
 
                             Utils.navigateWithoutHistory(DealerInfoActivity.this, MainActivity.class);
-                        }else {
+                        } else {
                             String message = jsonObject.getString("message");
 
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {

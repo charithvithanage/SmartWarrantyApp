@@ -26,6 +26,7 @@ public class MessageActivity extends AppCompatActivity {
     TextView titleView;
     ImageButton backBtn;
     ImageView imageView;
+    ImageButton homeBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,13 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigateWithoutHistory(MessageActivity.this,MainActivity.class);
+            }
+        });
+
         /**
          * Check type and previous activity
          * According to that display relevant message in the body
@@ -112,6 +120,7 @@ public class MessageActivity extends AppCompatActivity {
         tvTamil = findViewById(R.id.tvTamil);
         tvHotline = findViewById(R.id.tvHotline);
         tvHotline.setVisibility(View.GONE);
-
+        homeBtn = findViewById(R.id.btnHome);
+        homeBtn.setVisibility(View.VISIBLE);
     }
 }

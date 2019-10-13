@@ -4,10 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Fragments.SettingsFragment;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -23,6 +29,7 @@ public class Utils {
 
     /**
      * Change status bar color
+     *
      * @param context Context of the activity
      * @param window
      */
@@ -35,20 +42,62 @@ public class Utils {
     }
 
     /**
-     *  A placeholder password validation check
+     * A placeholder password validation check
+     *
      * @param password Password of the user
      * @return true or false
      */
-    public static boolean isPasswordValid(String password) {
+    public static String getPasswordValidStatus(Context context,String password) {
+
+        String validStatus = null;
+
         if (password == null) {
-            return false;
+            validStatus = context.getString(R.string.password_empty);
         } else {
-            return !password.trim().isEmpty();
+
+            if (password.length() > 5 && password.matches(Config.Instance.passwordPattern)) {
+                validStatus = "Valid";
+            } else {
+                if (!password.matches(Config.Instance.passwordPattern)) {
+                    validStatus = context.getString(R.string.password_pattern_wrong);
+                } else {
+                    if (password.length() < 6) {
+                        validStatus = context.getString(R.string.password_length_wrong);
+                    }
+                }
+            }
         }
+
+        return validStatus;
+    }
+
+    public static boolean isPasswordValid(String password) {
+
+        boolean valid = false;
+
+        if (password == null) {
+            valid = false;
+        } else {
+
+            if (password.length() > 5 && password.matches(Config.Instance.passwordPattern)) {
+                valid = true;
+            } else {
+                if (!password.matches(Config.Instance.passwordPattern)) {
+                    valid = false;
+                } else {
+                    if (password.length() < 6) {
+                        valid = false;
+                    }
+                }
+            }
+        }
+
+        return valid;
     }
 
     /**
-     *  A placeholder username validation check
+     * A placeholder username validation check
+     *
      * @param username Username of the user
      * @return true or false
      */
@@ -61,7 +110,8 @@ public class Utils {
     }
 
     /**
-     *  A placeholder user nic validation check
+     * A placeholder user nic validation check
+     *
      * @param userNIC NIC of the user
      * @return true or false
      */
@@ -75,7 +125,8 @@ public class Utils {
 
     /**
      * Check whether the password mathes
-     * @param password User password
+     *
+     * @param password        User password
      * @param confirmPassword Confirmation of the given password
      * @return
      */
@@ -85,7 +136,8 @@ public class Utils {
 
     /**
      * Navigate to another activity without navigation history
-     * @param context Context of the current activity
+     *
+     * @param context  Context of the current activity
      * @param activity Context of the second activity
      */
     public static void navigateWithoutHistory(Context context, Class activity) {
@@ -145,6 +197,7 @@ public class Utils {
 
     /**
      * Set date time to 23.50
+     *
      * @param date selected date time
      * @return end of the day time
      */

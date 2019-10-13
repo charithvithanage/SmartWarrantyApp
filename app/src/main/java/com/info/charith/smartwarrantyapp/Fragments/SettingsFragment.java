@@ -3,7 +3,6 @@ package com.info.charith.smartwarrantyapp.Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,10 +19,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigator;
 
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Activities.DealerInfoActivity;
-import com.info.charith.smartwarrantyapp.Activities.SignUpActivity;
 import com.info.charith.smartwarrantyapp.Entities.ChangePassword;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -34,10 +32,10 @@ import com.info.charith.smartwarrantyapp.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static androidx.navigation.Navigation.findNavController;
+import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordMatch;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
-import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
-import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
 
 public class SettingsFragment extends Fragment {
     EditText passwordEditText, oldPasswordEditText, confirmPasswordEditText;
@@ -156,47 +154,41 @@ public class SettingsFragment extends Fragment {
 
     public void changePassword(String password,String confirmPassword, String oldPassword) {
 
+
         if (isPasswordValid(oldPassword)&&isPasswordValid(password) && isPasswordMatch(password, confirmPassword)) {
 
-            if (password.length() > 5) {
-                SharedPreferences sharedPref = getActivity().getSharedPreferences(
-                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(
+                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-                Gson gson=new Gson();
+            Gson gson=new Gson();
 
-                String dealerString=sharedPref.getString("loggedInUser","0");
-                DealerUserMock dealerUserMock=gson.fromJson(dealerString,DealerUserMock.class);
+            String dealerString=sharedPref.getString("loggedInUser","0");
+            DealerUserMock dealerUserMock=gson.fromJson(dealerString,DealerUserMock.class);
 
-                changePassword.setUsername(dealerUserMock.getUsername());
-                changePassword.setOldPassword(oldPassword);
-                changePassword.setNewPassword(password);
+            changePassword.setUsername(dealerUserMock.getUsername());
+            changePassword.setOldPassword(oldPassword);
+            changePassword.setNewPassword(password);
 
 
-                new ChangePasswordAsync().execute();
-            } else {
-                errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getString(R.string.password_length_wrong));
-                passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-            }
-
+            new ChangePasswordAsync().execute();
 
         } else {
 
             if (!isPasswordValid(oldPassword)) {
                 errorOldPassword.setVisibility(View.VISIBLE);
-                errorOldPassword.setText(getString(R.string.invalid_password));
+                errorOldPassword.setText(getPasswordValidStatus(getActivity(),oldPassword));
                 oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
             }
 
 
             if (!isPasswordValid(password)) {
                 errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getString(R.string.invalid_user_password));
+                errorPassword.setText(getPasswordValidStatus(getActivity(),password));
                 passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
 
             }
 
-            if (!isPasswordMatch(password, confirmPassword)) {
+            if(password.matches(confirmPassword)){
                 errorConfirmPassword.setVisibility(View.VISIBLE);
                 errorConfirmPassword.setText(getString(R.string.invalid_user_password_not_match));
                 confirmPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
@@ -231,8 +223,8 @@ public class SettingsFragment extends Fragment {
 
 
                         if (success) {
-                            getActivity().onBackPressed();
-
+                            findNavController(getParentFragment().getView())
+                                    .navigate(R.id.nav_home);
                         } else {
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override

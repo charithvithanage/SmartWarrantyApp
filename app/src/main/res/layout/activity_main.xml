@@ -19,39 +19,143 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"
         app:itemTextAppearance="@style/navigation_view_item_style"
-
         >
 
         <LinearLayout
-            android:id="@+id/nav_logout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="32dp">
+            android:layout_height="match_parent" android:orientation="vertical">
+            <include layout="@layout/nav_header_main"></include>
 
-
-            <ImageView
-                android:layout_width="@dimen/design_navigation_icon_size"
-                android:layout_height="@dimen/design_navigation_icon_size"
-                android:src="@mipmap/logout" />
-
-            <TextView
-                android:id="@+id/logout"
+            <LinearLayout
+                android:id="@+id/nav_home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="32dp"
-                android:text="@string/menu_share"
-                style="@style/navigation_view_item_style"
-               />
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:background="@color/bg_color">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/home" />
+
+                <TextView
+                    android:id="@+id/home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="32dp"
+                    android:text="HOME"
+                    style="@style/navigation_view_item_style"
+                    android:background="@android:color/transparent"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:background="@color/bg_color">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/reports" />
+
+                <TextView
+                    android:id="@+id/reports"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="32dp"
+                    android:text="REPORTS"
+                    style="@style/navigation_view_item_style"
+                    android:background="@android:color/transparent"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:background="@color/bg_color">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/about" />
+
+                <TextView
+                    android:id="@+id/about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="32dp"
+                    android:text="ABOUT"
+                    style="@style/navigation_view_item_style"
+                    android:background="@android:color/transparent"
+                    />
+            </LinearLayout>
+
+            <ExpandableListView
+                android:id="@+id/expandableListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:background="@color/bg_color"
+                android:choiceMode="singleChoice"
+                android:groupIndicator="@null"
+                android:divider="@null"></ExpandableListView>
+
+            <LinearLayout
+                android:id="@+id/nav_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="32dp"
+                android:background="@color/bg_color">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/logout" />
+
+                <TextView
+                    android:id="@+id/logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="32dp"
+                    android:text="@string/menu_share"
+                    style="@style/navigation_view_item_style"
+                    android:background="@android:color/transparent"
+                    />
+            </LinearLayout>
         </LinearLayout>
+
 
 
     </com.google.android.material.navigation.NavigationView>

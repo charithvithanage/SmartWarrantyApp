@@ -248,6 +248,36 @@ public class DealerService {
         queue.add(jsonObjectRequest);
     }
 
+    public void fogotPassword(final Context context, String username, final AsyncListner callback) {
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        Log.d(TAG, Config.forgot_password_url + username);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Config.forgot_password_url + username, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                callback.onSuccess(context, response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(context, error.toString());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+
+                return headers;
+            }
+        };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(jsonObjectRequest);
+    }
+
 
     public void getProduct(final Context context, String productName, final AsyncListner callback) {
         SharedPreferences sharedPref = context.getSharedPreferences(

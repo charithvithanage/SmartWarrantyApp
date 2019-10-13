@@ -12,14 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -27,12 +24,10 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
-import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
+import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordMatch;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
@@ -264,30 +259,37 @@ public class SignUpActivity extends AppCompatActivity {
 
         if (isUserNICValid(userNIC) && isPasswordValid(password) && isPasswordMatch(password, confirmPassword) && isUserNameValid(username)) {
 
-            if (password.length() > 5 && password.matches(Config.Instance.passwordPattern)) {
-                dealerUserMock.setDealerCode(dealer.getDealerCode());
-                dealerUserMock.setNic(userNIC);
-                dealerUserMock.setUsername(username);
-                dealerUserMock.setPassword(password);
+//            if (password.length() > 5 && password.matches(Config.Instance.passwordPattern)) {
+//                dealerUserMock.setDealerCode(dealer.getDealerCode());
+//                dealerUserMock.setNic(userNIC);
+//                dealerUserMock.setUsername(username);
+//                dealerUserMock.setPassword(password);
+//
+//                new ConfirmRegistrationDataAsync().execute();
+//            } else {
+//                if(!password.matches(Config.Instance.passwordPattern)){
+//                    errorPassword.setVisibility(View.VISIBLE);
+//                    errorPassword.setText(getString(R.string.password_pattern_wrong));
+//                    passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+//
+//                }else {
+//                    if(password.length() < 6){
+//                        errorPassword.setVisibility(View.VISIBLE);
+//                        errorPassword.setText(getString(R.string.password_length_wrong));
+//                        passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+//
+//                    }
+//                }
+//
+//
+//            }
 
-                new ConfirmRegistrationDataAsync().execute();
-            } else {
-                if(!password.matches(Config.Instance.passwordPattern)){
-                    errorPassword.setVisibility(View.VISIBLE);
-                    errorPassword.setText(getString(R.string.password_pattern_wrong));
-                    passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+            dealerUserMock.setDealerCode(dealer.getDealerCode());
+            dealerUserMock.setNic(userNIC);
+            dealerUserMock.setUsername(username);
+            dealerUserMock.setPassword(password);
 
-                }else {
-                    if(password.length() < 6){
-                        errorPassword.setVisibility(View.VISIBLE);
-                        errorPassword.setText(getString(R.string.password_length_wrong));
-                        passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-
-                    }
-                }
-
-
-            }
+            new ConfirmRegistrationDataAsync().execute();
 
 
         } else {
@@ -298,17 +300,18 @@ public class SignUpActivity extends AppCompatActivity {
                 userNICEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
             }
 
+
+
             if (!isUserNameValid(username)) {
                 errorUserName.setVisibility(View.VISIBLE);
                 errorUserName.setText(getString(R.string.invalid_username));
                 usernameEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-
-
             }
+
 
             if (!isPasswordValid(password)) {
                 errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getString(R.string.invalid_user_password));
+                errorPassword.setText(getPasswordValidStatus(SignUpActivity.this,password));
                 passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
 
             }
