@@ -18,6 +18,7 @@ public enum Config {
     public static String get_dealer_from_code_url= ServerUrl + "adminuserservice/dealer/";
     public static String logout_url= ServerUrl + "dealeruserservice/logout/";
     public static String forgot_password_url= ServerUrl + "dealeruserservice/forgotpassword/";
+    public static String get_products_url= ServerUrl + "dealeruserservice/brandlist/";
 
     public static String date_time_pattern="yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     public static String standard_date_time_pattern="yyyy-MM-dd HH:mm";

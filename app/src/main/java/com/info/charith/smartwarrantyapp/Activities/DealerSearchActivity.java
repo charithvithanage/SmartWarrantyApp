@@ -69,87 +69,16 @@ public class DealerSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!TextUtils.isEmpty(etDealerNIC.getText())) {
+                if (isUserNICValid(etDealerNIC.getText().toString())) {
 
-                    String str = etDealerNIC.getText().toString();
-                    if (str.length() == 13) {
+                    dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
 
-                        if (!str.matches("[0-9]+")) {
-                            errorNIC.setVisibility(View.VISIBLE);
-                            errorNIC.setText(getString(R.string.invalid_user_nic));
-                            etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-//                            Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                    int pos = etDealerNIC.getText().length();
-//                                    etDealerNIC.requestFocus(pos);
-//                                }
-//                            });
-                        }else {
-                            dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
-
-                            /**
-                             * Enter dealer's NIC
-                             * And get dealer's dealerships from the server
-                             * User can select dealer ship and go to the sign up page
-                             */
-                            new GetDealerAsync().execute();
-                        }
-
-                    } else {
-                        if (str.length() == 10) {
-                            String lastCharacter = str.substring(str.length() - 1);
-                            if (!lastCharacter.toLowerCase().equals("v")) {
-
-                                if (!lastCharacter.toLowerCase().equals("x")) {
-                                    errorNIC.setVisibility(View.VISIBLE);
-                                    errorNIC.setText(getString(R.string.invalid_user_nic));
-                                    etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                                }else {
-                                    dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
-
-                                    /**
-                                     * Enter dealer's NIC
-                                     * And get dealer's dealerships from the server
-                                     * User can select dealer ship and go to the sign up page
-                                     */
-                                    new GetDealerAsync().execute();
-                                }
-//                                Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        dialog.dismiss();
-//                                        int pos = etDealerNIC.getText().length();
-//                                        etDealerNIC.requestFocus(pos);
-//                                    }
-//                                });
-
-                            }else {
-                                dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
-
-                                /**
-                                 * Enter dealer's NIC
-                                 * And get dealer's dealerships from the server
-                                 * User can select dealer ship and go to the sign up page
-                                 */
-                                new GetDealerAsync().execute();
-                            }
-                        } else {
-
-                            errorNIC.setVisibility(View.VISIBLE);
-                            errorNIC.setText(getString(R.string.invalid_user_nic));
-                            etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-//                            Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.invalid_user_nic), new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                    int pos = etDealerNIC.getText().length();
-//                                    etDealerNIC.requestFocus(pos);
-//                                }
-//                            });
-                        }
-                    }
+                    /**
+                     * Enter dealer's NIC
+                     * And get dealer's dealerships from the server
+                     * User can select dealer ship and go to the sign up page
+                     */
+                    new GetDealerAsync().execute();
 
                 }else {
                     if (!isUserNICValid(etDealerNIC.getText().toString())) {

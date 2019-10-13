@@ -75,31 +75,47 @@ public class SignUpActivity extends AppCompatActivity {
         userNICEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String str = userNICEditText.getText().toString();
 
-                    if (!isUserNICValid(str)) {
-                        errorNIC.setVisibility(View.VISIBLE);
-                        errorNIC.setText(getString(R.string.invalid_user_nic));
-                        userNICEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                if(hasFocus){
+                    if (usernameEditText.hasFocus()) {
+                        if (!isUserNameValid(usernameEditText.getText().toString())) {
+                            errorUserName.setVisibility(View.VISIBLE);
+                            errorUserName.setText(getString(R.string.invalid_username));
+                            usernameEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                        }
                     }
-
-
                 }
+
             }
         });
 
         usernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    String str = usernameEditText.getText().toString();
-                    if (!isUserNameValid(str)) {
+                if (hasFocus) {
+                    if (!isUserNICValid(userNICEditText.getText().toString())) {
+                        errorNIC.setVisibility(View.VISIBLE);
+                        errorNIC.setText(getString(R.string.invalid_user_nic));
+                        userNICEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                    }
+                }
+            }
+        });
+
+        passwordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (!isUserNICValid(userNICEditText.getText().toString())) {
+                        errorNIC.setVisibility(View.VISIBLE);
+                        errorNIC.setText(getString(R.string.invalid_user_nic));
+                        userNICEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                    }
+
+                    if (!isUserNameValid(usernameEditText.getText().toString())) {
                         errorUserName.setVisibility(View.VISIBLE);
                         errorUserName.setText(getString(R.string.invalid_username));
                         usernameEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                    }else {
-                        setEditTextBGNormal();
                     }
                 }
             }
@@ -223,39 +239,12 @@ public class SignUpActivity extends AppCompatActivity {
     public void signup(String userNIC, String username, String password, String confirmPassword) {
 
         if (isUserNICValid(userNIC) && isPasswordValid(password) && isPasswordMatch(password, confirmPassword) && isUserNameValid(username)) {
-
-//            if (password.length() > 5 && password.matches(Config.Instance.passwordPattern)) {
-//                dealerUserMock.setDealerCode(dealer.getDealerCode());
-//                dealerUserMock.setNic(userNIC);
-//                dealerUserMock.setUsername(username);
-//                dealerUserMock.setPassword(password);
-//
-//                new ConfirmRegistrationDataAsync().execute();
-//            } else {
-//                if(!password.matches(Config.Instance.passwordPattern)){
-//                    errorPassword.setVisibility(View.VISIBLE);
-//                    errorPassword.setText(getString(R.string.password_pattern_wrong));
-//                    passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-//
-//                }else {
-//                    if(password.length() < 6){
-//                        errorPassword.setVisibility(View.VISIBLE);
-//                        errorPassword.setText(getString(R.string.password_length_wrong));
-//                        passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-//
-//                    }
-//                }
-//
-//
-//            }
-
             dealerUserMock.setDealerCode(dealer.getDealerCode());
             dealerUserMock.setNic(userNIC);
             dealerUserMock.setUsername(username);
             dealerUserMock.setPassword(password);
 
             new ConfirmRegistrationDataAsync().execute();
-
 
         } else {
 

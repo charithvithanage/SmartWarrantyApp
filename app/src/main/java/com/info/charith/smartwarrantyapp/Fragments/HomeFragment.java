@@ -71,6 +71,12 @@ public class HomeFragment extends Fragment {
 
         jsonArray = new JSONArray();
 
+        brands = new ArrayList<>();
+        recyclerView = root.findViewById(R.id.recycleView);
+
+        MyLayoutManager = new LinearLayoutManager(getActivity());
+        MyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
         new GetDealerAsync(getActivity(), dealerUserMock.getDealerCode(), new AsyncListner() {
             @Override
 
@@ -98,39 +104,17 @@ public class HomeFragment extends Fragment {
                     e.printStackTrace();
                 }
 
-                jsonArray = new JSONArray(dealer.getEnableBrands());
+                new GetProductsAsync().execute();
 
-//                    jsonArray = sortBrands(new JSONArray(dealer.getEnableBrands()));
-                atomicInteger = new AtomicInteger(jsonArray.length());
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
-                        new GetProductAsync(jsonArray.getString(i)).execute();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+
             }
 
             @Override
             public void onError(Context context, String error) {
-//                jsonArray = sortBrands(new JSONArray(dealer.getEnableBrands()));
-                jsonArray = new JSONArray(dealer.getEnableBrands());
-                atomicInteger = new AtomicInteger(jsonArray.length());
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    try {
-                        new GetProductAsync(jsonArray.getString(i)).execute();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }).execute();
 
-        brands = new ArrayList<>();
-        recyclerView = root.findViewById(R.id.recycleView);
 
-        MyLayoutManager = new LinearLayoutManager(getActivity());
-        MyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
 
     }
@@ -230,6 +214,65 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+            return null;
+        }
+    }
+
+    private class GetProductsAsync extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            DealerService.getInstance().getProductList(getActivity(), dealer.getDealerCode(), new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+                    String object = null;
+
+                    try {
+                        object = jsonObject.getString("object");
+
+                        jsonArray = new JSONArray(object);
+
+                        if (jsonArray.length() > 0) {
+                            brands = new ArrayList<>();
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+                                brands.add(dealer);
+                            }
+                        }
+
+                        adapter = new BrandAdapter(brands, getActivity());
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(MyLayoutManager);
+
+                        adapter.setMyClickListener(new BrandAdapter.MyClickListener() {
+                            @Override
+                            public void onItemClick(View v, int position) {
+
+                                Product selectedBrand = brands.get(position);
+                                Intent intent = new Intent(getActivity(), ScannerActivity.class);
+                                intent.putExtra("selected_brand", selectedBrand.getBrandName());
+                                startActivity(intent);
+                            }
+                        });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+
+                }
+            });
             return null;
         }
     }
