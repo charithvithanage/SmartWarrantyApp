@@ -19,6 +19,7 @@ import com.info.charith.smartwarrantyapp.Activities.MainActivity;
 import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
 import com.info.charith.smartwarrantyapp.Adapters.BrandAdapter;
 import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
+import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Entities.Product;
@@ -61,7 +62,6 @@ public class HomeFragment extends Fragment {
 
     private void init(View root) {
 
-
         SharedPreferences sharedPref = getActivity().getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String loggedInUser = sharedPref.getString("loggedInUser", null);
@@ -77,276 +77,40 @@ public class HomeFragment extends Fragment {
         MyLayoutManager = new LinearLayoutManager(getActivity());
         MyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        new GetDealerAsync(getActivity(), dealerUserMock.getDealerCode(), new AsyncListner() {
-            @Override
-
-            public void onSuccess(Context context, JSONObject jsonObject) {
-                String objectOne = null;
-
-                try {
-                    boolean success = jsonObject.getBoolean("success");
-                    String message = jsonObject.getString("message");
-
-                    if (success) {
-                        objectOne = jsonObject.getString("object");
-                        Gson gson = new Gson();
-                        dealer = gson.fromJson(objectOne, Dealer.class);
-
-                        SharedPreferences sharedPref = context.getSharedPreferences(
-                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("userDealer", gson.toJson(dealer));
-                        editor.commit();
-                    }
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                new GetProductsAsync().execute();
-
-
-            }
-
-            @Override
-            public void onError(Context context, String error) {
-            }
-        }).execute();
-
-
-
-
-    }
-
-    private JSONArray sortBrands(JSONArray brands) {
-
-        JSONArray tempBrands = new JSONArray();
-
-        for (int i = 0; i < brands.length(); i++) {
-//            try {
-//                if (brands.getString(i).startsWith("T")) {
-//                    tempBrands.put(0, brands.getString(i));
-//                } else if (brands.getString(i).startsWith("X")) {
-//                    tempBrands.put(1, brands.get(i));
-//                } else if (brands.getString(i).startsWith("S")) {
-//                    tempBrands.put(2, brands.get(i));
-//                } else if (brands.getString(i).startsWith("H")) {
-//                    tempBrands.put(3, brands.get(i));
-//                } else {
-//                    if (i > 2) {
-//                        tempBrands.put(i, brands.get(i));
-//                    } else {
-//                        tempBrands.put((i + 3), brands.get(i));
-//                    }
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
+        if(Config.Instance.getEnabledBrands()!=null){
+            brands=Config.Instance.getEnabledBrands();
+        }else {
+            String enabledBrandsString = sharedPref.getString("enabledBrands", "0");
 
             try {
-                if (brands.getString(i).startsWith("T")) {
-                    tempBrands.put(0, brands.getString(i));
-                } else if (brands.getString(i).startsWith("X")) {
-                    tempBrands.put(1, brands.get(i));
-                } else {
-                    tempBrands.put(brands.get(i));
+                jsonArray = new JSONArray(enabledBrandsString);
+                if (jsonArray.length() > 0) {
+                    brands = new ArrayList<>();
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+                        brands.add(dealer);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        return tempBrands;
+        adapter = new BrandAdapter(brands, getActivity());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(MyLayoutManager);
 
+        adapter.setMyClickListener(new BrandAdapter.MyClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+
+                Product selectedBrand = brands.get(position);
+                Intent intent = new Intent(getActivity(), ScannerActivity.class);
+                intent.putExtra("selected_brand", selectedBrand.getBrandName());
+                startActivity(intent);
+            }
+        });
     }
-
-    private class GetProductAsync extends AsyncTask<Void, Void, Void> {
-
-        String productName;
-
-        public GetProductAsync(String productName) {
-            this.productName = productName;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            DealerService.getInstance().getProduct(getActivity(), productName, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-
-                    String object = null;
-
-                    try {
-                        object = jsonObject.getString("object");
-                        Gson gson = new Gson();
-                        Product product = gson.fromJson(object, Product.class);
-
-                        brands.add(product);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (atomicInteger.decrementAndGet() == 0) {
-                        adapter = new BrandAdapter(brands, getActivity());
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(MyLayoutManager);
-
-                        adapter.setMyClickListener(new BrandAdapter.MyClickListener() {
-                            @Override
-                            public void onItemClick(View v, int position) {
-
-                                Product selectedBrand = brands.get(position);
-                                Intent intent = new Intent(getActivity(), ScannerActivity.class);
-                                intent.putExtra("selected_brand", selectedBrand.getBrandName());
-                                startActivity(intent);
-                            }
-                        });
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-
-                }
-            });
-
-            return null;
-        }
-    }
-
-    private class GetProductsAsync extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            DealerService.getInstance().getProductList(getActivity(), dealer.getDealerCode(), new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    String object = null;
-
-                    try {
-                        object = jsonObject.getString("object");
-
-                        jsonArray = new JSONArray(object);
-
-                        if (jsonArray.length() > 0) {
-                            brands = new ArrayList<>();
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
-                                brands.add(dealer);
-                            }
-                        }
-
-                        adapter = new BrandAdapter(brands, getActivity());
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(MyLayoutManager);
-
-                        adapter.setMyClickListener(new BrandAdapter.MyClickListener() {
-                            @Override
-                            public void onItemClick(View v, int position) {
-
-                                Product selectedBrand = brands.get(position);
-                                Intent intent = new Intent(getActivity(), ScannerActivity.class);
-                                intent.putExtra("selected_brand", selectedBrand.getBrandName());
-                                startActivity(intent);
-                            }
-                        });
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-
-                }
-            });
-            return null;
-        }
-    }
-
-//    private class GetDealerAsync extends AsyncTask<Void, Void, Void> {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            jsonArray=new JSONArray();
-//
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//
-//            DealerService.getInstance().getDealerFromDealerCode(getActivity(), dealerUserMock.getDealerCode(), new AsyncListner() {
-//                @Override
-//                public void onSuccess(Context context, JSONObject jsonObject) {
-//                    String objectOne = null;
-//
-//                    try {
-//                        boolean success = jsonObject.getBoolean("success");
-//                        String message = jsonObject.getString("message");
-//
-//                        if (success) {
-//                            objectOne = jsonObject.getString("object");
-//                            Gson gson = new Gson();
-//                            dealer = gson.fromJson(objectOne, Dealer.class);
-//
-//                            SharedPreferences sharedPref = context.getSharedPreferences(
-//                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-//                            SharedPreferences.Editor editor = sharedPref.edit();
-//                            editor.putString("userDealer", gson.toJson(dealer));
-//                            editor.commit();
-//                        }
-//
-//
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    jsonArray = new JSONArray(dealer.getEnableBrands());
-//
-////                    jsonArray = sortBrands(new JSONArray(dealer.getEnableBrands()));
-//                    atomicInteger = new AtomicInteger(jsonArray.length());
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        try {
-//                            new GetProductAsync(jsonArray.getString(i)).execute();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onError(Context context, String error) {
-////                    jsonArray = sortBrands(new JSONArray(dealer.getEnableBrands()));
-//                    jsonArray = new JSONArray(dealer.getEnableBrands());
-//                    atomicInteger = new AtomicInteger(jsonArray.length());
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        try {
-//                            new GetProductAsync(jsonArray.getString(i)).execute();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            });
-//
-//            return null;
-//        }
-//    }
-
 
 }

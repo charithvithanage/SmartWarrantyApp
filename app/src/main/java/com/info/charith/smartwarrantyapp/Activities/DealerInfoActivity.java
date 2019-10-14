@@ -15,17 +15,25 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
+import com.info.charith.smartwarrantyapp.AsyncTasks.GetProductsAsync;
+import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
+import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.Product;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
 import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
@@ -44,6 +52,11 @@ public class DealerInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dealer_info);
+
+        /**
+         * Change status bar color programmatically
+         */
+        Utils.changeStatusBarColor(DealerInfoActivity.this, getWindow());
 
         dealerUserMockString = getIntent().getStringExtra("dealerUserMockString");
         dealerString = getIntent().getStringExtra("dealerString");
@@ -164,7 +177,89 @@ public class DealerInfoActivity extends AppCompatActivity {
                             editor.commit();
 
 
-                            Utils.navigateWithoutHistory(DealerInfoActivity.this, MainActivity.class);
+                            gson = new Gson();
+                            DealerUserMock dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
+                            dealer = gson.fromJson(userDealer, Dealer.class);
+
+                            new GetDealerAsync(DealerInfoActivity.this, dealerUserMock.getDealerCode(), new AsyncListner() {
+                                @Override
+
+                                public void onSuccess(Context context, JSONObject jsonObject) {
+                                    String objectOne = null;
+
+                                    try {
+                                        boolean success = jsonObject.getBoolean("success");
+                                        String message = jsonObject.getString("message");
+
+                                        if (success) {
+                                            objectOne = jsonObject.getString("object");
+
+                                            dealer = gson.fromJson(objectOne, Dealer.class);
+
+                                            SharedPreferences sharedPref = context.getSharedPreferences(
+                                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putString("userDealer", gson.toJson(dealer));
+                                            editor.commit();
+                                        }
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    new GetProductsAsync(DealerInfoActivity.this, dealer.getDealerCode(), new AsyncListner() {
+                                        @Override
+                                        public void onSuccess(Context context, JSONObject jsonObject) {
+                                            String object = null;
+
+                                            try {
+                                                object = jsonObject.getString("object");
+
+                                                JSONArray jsonArray = new JSONArray(object);
+                                                List<Product> brands = new ArrayList<>();
+
+
+                                                if (jsonArray.length() > 0) {
+                                                    brands = new ArrayList<>();
+
+                                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                                        Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+                                                        brands.add(dealer);
+                                                    }
+                                                }
+
+
+                                                SharedPreferences sharedPref = context.getSharedPreferences(
+                                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPref.edit();
+                                                editor.putString("enabledBrands", object);
+                                                editor.commit();
+                                                Config.Instance.setEnabledBrands(brands);
+                                                Utils.navigateWithoutHistory(context, MainActivity.class);
+
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Context context, String error) {
+
+                                        }
+                                    }).execute();
+
+
+                                }
+
+                                @Override
+                                public void onError(Context context, String error) {
+                                }
+                            }).execute();
+
+
+                            
                         } else {
                             String message = jsonObject.getString("message");
 

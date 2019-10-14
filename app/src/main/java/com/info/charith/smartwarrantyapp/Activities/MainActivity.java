@@ -69,6 +69,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         * Change status bar color programmatically
+         */
+        Utils.changeStatusBarColor(MainActivity.this, getWindow());
+
+
         SharedPreferences sharedPref = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String logoutTimeString = sharedPref.getString("logoutTime", null);

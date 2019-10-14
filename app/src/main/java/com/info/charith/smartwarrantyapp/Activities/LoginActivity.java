@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,15 +17,30 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.info.charith.smartwarrantyapp.Adapters.BrandAdapter;
+import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
+import com.info.charith.smartwarrantyapp.AsyncTasks.GetProductsAsync;
+import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Credential;
+import com.info.charith.smartwarrantyapp.Entities.Dealer;
+import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.Product;
+import com.info.charith.smartwarrantyapp.Fragments.HomeFragment;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
+import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
 import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
@@ -45,6 +61,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        /**
+         * Change status bar color programmatically
+         */
+        Utils.changeStatusBarColor(LoginActivity.this, getWindow());
 
         init();
 
@@ -182,6 +202,8 @@ public class LoginActivity extends AppCompatActivity {
     private class LoginUserAsync extends AsyncTask<Void, Void, Void> {
 
         ProgressDialog progressDialog;
+        Dealer dealer;
+        Gson gson;
 
         @Override
         protected void onPreExecute() {
@@ -233,7 +255,87 @@ public class LoginActivity extends AppCompatActivity {
 
                             editor.commit();
 
-                            Utils.navigateWithoutHistory(LoginActivity.this, MainActivity.class);
+                            gson = new Gson();
+                            DealerUserMock dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
+                            dealer = gson.fromJson(userDealer, Dealer.class);
+
+                            new GetDealerAsync(LoginActivity.this, dealerUserMock.getDealerCode(), new AsyncListner() {
+                                @Override
+
+                                public void onSuccess(Context context, JSONObject jsonObject) {
+                                    String objectOne = null;
+
+                                    try {
+                                        boolean success = jsonObject.getBoolean("success");
+                                        String message = jsonObject.getString("message");
+
+                                        if (success) {
+                                            objectOne = jsonObject.getString("object");
+
+                                            dealer = gson.fromJson(objectOne, Dealer.class);
+
+                                            SharedPreferences sharedPref = context.getSharedPreferences(
+                                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPref.edit();
+                                            editor.putString("userDealer", gson.toJson(dealer));
+                                            editor.commit();
+                                        }
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    new GetProductsAsync(LoginActivity.this, dealer.getDealerCode(), new AsyncListner() {
+                                        @Override
+                                        public void onSuccess(Context context, JSONObject jsonObject) {
+                                            String object = null;
+
+                                            try {
+                                                object = jsonObject.getString("object");
+
+                                                JSONArray jsonArray = new JSONArray(object);
+                                                List<Product> brands = new ArrayList<>();
+
+
+                                                if (jsonArray.length() > 0) {
+                                                    brands = new ArrayList<>();
+
+                                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                                        Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+                                                        brands.add(dealer);
+                                                    }
+                                                }
+
+
+                                                SharedPreferences sharedPref = context.getSharedPreferences(
+                                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPref.edit();
+                                                editor.putString("enabledBrands", object);
+                                                editor.commit();
+                                                Config.Instance.setEnabledBrands(brands);
+                                                Utils.navigateWithoutHistory(context, MainActivity.class);
+
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(Context context, String error) {
+
+                                        }
+                                    }).execute();
+
+
+                                }
+
+                                @Override
+                                public void onError(Context context, String error) {
+                                }
+                            }).execute();
+
                         } else {
                             String message = jsonObject.getString("message");
 
@@ -268,4 +370,68 @@ public class LoginActivity extends AppCompatActivity {
             return null;
         }
     }
+
+//    private class GetProductsAsync extends AsyncTask<Void, Void, Void> {
+//
+//        String dealerCode;
+//        Gson gson = new Gson();
+//
+//        public GetProductsAsync(String dealerCode) {
+//            this.dealerCode = dealerCode;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            DealerService.getInstance().getProductList(LoginActivity.this, dealerCode, new AsyncListner() {
+//                @Override
+//                public void onSuccess(Context context, JSONObject jsonObject) {
+//                    String object = null;
+//
+//                    try {
+//                        object = jsonObject.getString("object");
+//
+//                        JSONArray jsonArray = new JSONArray(object);
+//                        List<Product> brands = new ArrayList<>();
+//
+//
+//                        if (jsonArray.length() > 0) {
+//                            brands = new ArrayList<>();
+//
+//                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+//                                brands.add(dealer);
+//                            }
+//                        }
+//
+//
+//                        SharedPreferences sharedPref = context.getSharedPreferences(
+//                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                        SharedPreferences.Editor editor = sharedPref.edit();
+//                        editor.putString("enabledBrands", object);
+//                        editor.commit();
+//                        Config.Instance.setEnabledBrands(brands);
+//                        Utils.navigateWithoutHistory(LoginActivity.this, MainActivity.class);
+//
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//
+//                @Override
+//                public void onError(Context context, String error) {
+//
+//                }
+//            });
+//            return null;
+//        }
+//    }
+
 }

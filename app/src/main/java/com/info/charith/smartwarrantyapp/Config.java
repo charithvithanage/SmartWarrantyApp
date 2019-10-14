@@ -1,5 +1,9 @@
 package com.info.charith.smartwarrantyapp;
 
+import com.info.charith.smartwarrantyapp.Entities.Product;
+
+import java.util.List;
+
 public enum Config {
     Instance;
 
@@ -25,5 +29,13 @@ public enum Config {
     public String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     public String passwordPattern = ".*[a-zA-Z].*";
 
+    public List<Product> enabledBrands=null;
 
+    public List<Product> getEnabledBrands() {
+        return enabledBrands;
+    }
+
+    public void setEnabledBrands(List<Product> enabledBrands) {
+        this.enabledBrands = enabledBrands;
+    }
 }

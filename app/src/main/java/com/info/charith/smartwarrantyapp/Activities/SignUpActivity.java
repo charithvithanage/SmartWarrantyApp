@@ -51,6 +51,11 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        /**
+         * Change status bar color programmatically
+         */
+        Utils.changeStatusBarColor(SignUpActivity.this, getWindow());
+
         dealerString = getIntent().getStringExtra("dealerString");
         dealer = gson.fromJson(dealerString, Dealer.class);
 

@@ -53,6 +53,10 @@ public class DealerSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dealer_search);
+        /**
+         * Change status bar color programmatically
+         */
+        Utils.changeStatusBarColor(DealerSearchActivity.this, getWindow());
 
         init();
     }

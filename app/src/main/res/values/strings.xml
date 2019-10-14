@@ -35,7 +35,6 @@
     <string name="menu_reports">Reports</string>
     <string name="menu_settings">SETTINGS</string>
     <string name="menu_change_password">Change Password</string>
-    <string name="enter_imei">Enter the IMEI</string>
     <string name="no_permission_to_camera">Camera access restricted or denieded. Can configure it from settings.</string>
     <string name="device_info">Device Information</string>
     <string name="contact_no_start_wrong">( Should start with 0 )</string>
