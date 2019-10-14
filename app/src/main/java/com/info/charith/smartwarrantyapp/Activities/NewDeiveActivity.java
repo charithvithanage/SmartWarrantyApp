@@ -1,7 +1,5 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,12 +10,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
@@ -211,6 +210,13 @@ public class NewDeiveActivity extends AppCompatActivity {
         if (type.equals("new device")) {
             warranty.setActivationStatus("Enable with Date");
             dealerCode=dealerUserMock.getDealerCode();
+        }else if (type.equals("activated device")) {
+            warranty.setActivationStatus("Enable with Date");
+            if(warranty.getDealerCode()!=null){
+                dealerCode=warranty.getDealerCode();
+            }else {
+                dealerCode=dealerUserMock.getDealerCode();
+            }
         }else {
             dealerCode=warranty.getDealerCode();
         }
