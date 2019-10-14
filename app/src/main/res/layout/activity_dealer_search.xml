@@ -83,6 +83,7 @@
             android:focusableInTouchMode="true"
             android:maxLength="13"
             android:paddingStart="@dimen/login_edit_text_padding"
+            android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.875"
             app:layout_constraintStart_toStartOf="parent"

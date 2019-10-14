@@ -199,8 +199,14 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void afterTextChanged(Editable et) {
+                String s=et.toString();
+                if(!s.equals(s.toUpperCase()))
+                {
+                    s=s.toUpperCase();
+                    userNICEditText.setText(s);
+                    userNICEditText.setSelection(userNICEditText.length()); //fix reverse texting
+                }
             }
         };
 

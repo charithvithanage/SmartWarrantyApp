@@ -69,6 +69,28 @@ public class DealerSearchActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.signIn);
         errorNIC = findViewById(R.id.errorUserNICLable);
 
+        etDealerNIC.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+            }
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+            }
+            @Override
+            public void afterTextChanged(Editable et) {
+                String s=et.toString();
+                if(!s.equals(s.toUpperCase()))
+                {
+                    s=s.toUpperCase();
+                    etDealerNIC.setText(s);
+                    etDealerNIC.setSelection(etDealerNIC.length()); //fix reverse texting
+                }
+            }
+        });
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

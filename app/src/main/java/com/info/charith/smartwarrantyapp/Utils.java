@@ -139,9 +139,9 @@ public class Utils {
             } else if (userNIC.length() == 10) {
 
                 String lastCharacter = userNIC.substring(userNIC.length() - 1);
-                if (lastCharacter.toLowerCase().equals("v")) {
+                if (lastCharacter.equals("V")) {
                     valid = true;
-                } else if (lastCharacter.toLowerCase().equals("x")) {
+                } else if (lastCharacter.equals("X")) {
                     valid = true;
                 } else {
                     valid = false;

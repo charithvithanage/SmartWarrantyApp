@@ -207,7 +207,7 @@
             android:layout_marginTop="16dp"
             android:paddingLeft="@dimen/lableLeftPadding"
             android:paddingBottom="@dimen/lableBottomPadding"
-            android:text="ConfirmPassword"
+            android:text="Confirm Password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

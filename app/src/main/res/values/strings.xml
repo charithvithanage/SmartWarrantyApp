@@ -42,11 +42,11 @@
     <string name="wrong_email_pattern">( Wrong email pattern )</string>
     <string name="invalid_contact_no">( Invalid contact no )</string>
     <string name="waiting">Waiting........</string>
-    <string name="logout_confirmation_message">Are you sure you want exit?</string>
+    <string name="logout_confirmation_message">Are you sure you want logout?</string>
     <string name="access_token_expired_message">Token expired. Please login again</string>
     <string name="date_pattern">dd/MM/YYY</string>
     <string name="time_pattern">hh:mma</string>
-    <string name="back_confirmation_message">Do you want to go back?</string>
+    <string name="back_confirmation_message">Are you sure you want exit?</string>
     <string name="server_error">Server Error</string>
     <string name="password_pattern_wrong">( Password should be contain one letter )</string>
     <string name="password_empty">Empty password</string>
