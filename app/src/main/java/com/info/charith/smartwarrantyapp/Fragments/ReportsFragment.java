@@ -212,7 +212,7 @@ public class ReportsFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DealerService.getInstance().getActivityReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
+            DealerService.getInstance().getActivityReports(getActivity(), fromDate.toString("yyyy/MM/dd"), toDate.toString("yyyy/MM/dd"), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
 
@@ -261,7 +261,7 @@ public class ReportsFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DealerService.getInstance().getSummaryReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
+            DealerService.getInstance().getSummaryReports(getActivity(), fromDate.toString("yyyy/MM/dd"), toDate.toString("yyyy/MM/dd"), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
 

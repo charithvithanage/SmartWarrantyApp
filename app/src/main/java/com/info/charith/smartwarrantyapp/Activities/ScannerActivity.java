@@ -166,10 +166,16 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
             type = "new device";
         }else if(warranty.getActivationStatus().equals("Disable")){
             type = "disabled device";
-        } else {
-            if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
-                type = "sold device";
-            } else {
+        } else if(warranty.getActivationStatus().equals("Enable with Date")){
+            type = "sold device";
+        }else {
+            if(warranty.getCustomerName()!=null&&warranty.getEmail()!=null&&warranty.getContactNo()!=null&&warranty.getAddress()!=null){
+                if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
+                    type = "sold device";
+                } else {
+                    type = "activated device";
+                }
+            }else {
                 type = "activated device";
             }
         }

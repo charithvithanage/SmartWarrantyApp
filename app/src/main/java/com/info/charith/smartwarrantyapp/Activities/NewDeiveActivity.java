@@ -52,6 +52,8 @@ public class NewDeiveActivity extends AppCompatActivity {
     TextView errorContactNo, errorEmail;
     String waranntyRequest;
     ImageButton homeBtn;
+    String dealerCode=null;
+    DealerUserMock dealerUserMock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,7 +164,7 @@ public class NewDeiveActivity extends AppCompatActivity {
             Gson gson = new Gson();
 
             String dealerString = sharedPref.getString("loggedInUser", "0");
-            DealerUserMock dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
+            dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
 
             warranty.setDealerCode(dealer.getDealerCode());
             warranty.setDealerUserName(dealerUserMock.getUsername());
@@ -198,7 +200,22 @@ public class NewDeiveActivity extends AppCompatActivity {
         homeBtn = findViewById(R.id.btnHome);
         homeBtn.setVisibility(View.VISIBLE);
 
-        new GetDealerAsync(NewDeiveActivity.this, warranty.getDealerCode(), new AsyncListner() {
+        SharedPreferences sharedPref = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        Gson gson = new Gson();
+
+        String dealerString = sharedPref.getString("loggedInUser", "0");
+        dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
+
+        if (type.equals("new device")) {
+            warranty.setActivationStatus("Enable with Date");
+            dealerCode=dealerUserMock.getDealerCode();
+        }else {
+            dealerCode=warranty.getDealerCode();
+        }
+
+        new GetDealerAsync(NewDeiveActivity.this, dealerCode, new AsyncListner() {
             @Override
             public void onSuccess(Context context, JSONObject jsonObject) {
 

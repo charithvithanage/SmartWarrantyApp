@@ -164,10 +164,6 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-
-        credential.setUsername(username);
-        credential.setPassword(password);
-        new LoginUserAsync().execute();
         if (isUserNameValid(username) && isPasswordValid(password)) {
 
             /**
