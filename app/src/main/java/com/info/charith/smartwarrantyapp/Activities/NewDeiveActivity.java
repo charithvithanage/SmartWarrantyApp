@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,9 +40,14 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.info.charith.smartwarrantyapp.Utils.capitalize;
 
 public class NewDeiveActivity extends AppCompatActivity {
 
+    private static final String TAG = "SmartWarrantyApp";
     String previous_activity;
     String type;
     Button btnConfirm;
@@ -53,11 +59,11 @@ public class NewDeiveActivity extends AppCompatActivity {
     Dealer dealer;
     TextView titleView;
     ImageButton backBtn;
-    TextWatcher etContactNoTextWatcher, etEmailTextWatcher,etAddressTextWatcher,etNameTextWatcher;
+    TextWatcher etContactNoTextWatcher, etEmailTextWatcher, etAddressTextWatcher, etNameTextWatcher;
     TextView errorContactNo, errorEmail;
     String waranntyRequest;
     ImageButton homeBtn;
-    String dealerCode=null;
+    String dealerCode = null;
     DealerUserMock dealerUserMock;
 
     @Override
@@ -66,7 +72,6 @@ public class NewDeiveActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_deive);
 
         Utils.changeStatusBarColor(NewDeiveActivity.this, getWindow());
-
         type = getIntent().getStringExtra("type");
         warrantyString = getIntent().getStringExtra("warrantyString");
         previous_activity = getIntent().getStringExtra("previous_activity");
@@ -145,7 +150,7 @@ public class NewDeiveActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigateWithoutHistory(NewDeiveActivity.this,MainActivity.class);
+                Utils.navigateWithoutHistory(NewDeiveActivity.this, MainActivity.class);
             }
         });
 
@@ -215,16 +220,16 @@ public class NewDeiveActivity extends AppCompatActivity {
 
         if (type.equals("new device")) {
             warranty.setActivationStatus("Enable with Date");
-            dealerCode=dealerUserMock.getDealerCode();
-        }else if (type.equals("activated device")) {
+            dealerCode = dealerUserMock.getDealerCode();
+        } else if (type.equals("activated device")) {
             warranty.setActivationStatus("Enable with Date");
-            if(warranty.getDealerCode()!=null){
-                dealerCode=warranty.getDealerCode();
-            }else {
-                dealerCode=dealerUserMock.getDealerCode();
+            if (warranty.getDealerCode() != null) {
+                dealerCode = warranty.getDealerCode();
+            } else {
+                dealerCode = dealerUserMock.getDealerCode();
             }
-        }else {
-            dealerCode=warranty.getDealerCode();
+        } else {
+            dealerCode = warranty.getDealerCode();
         }
 
         new GetDealerAsync(NewDeiveActivity.this, dealerCode, new AsyncListner() {
@@ -307,7 +312,7 @@ public class NewDeiveActivity extends AppCompatActivity {
             }
         };
 
-        etNameTextWatcher=new TextWatcher() {
+        etNameTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -320,11 +325,16 @@ public class NewDeiveActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                etCustomerName.setText(capitalizeFirstLetter(s.toString()));
+                String str = s.toString();
+                etCustomerName.removeTextChangedListener(this);
+                str = capitalize(str);
+                etCustomerName.setText(str);
+                etCustomerName.setSelection(etCustomerName.length());
+                etCustomerName.addTextChangedListener(etNameTextWatcher);
             }
         };
 
-        etAddressTextWatcher=new TextWatcher() {
+        etAddressTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -337,8 +347,13 @@ public class NewDeiveActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                etCustomerName.setText(capitalizeFirstLetter(s.toString()));
 
+                String str = s.toString();
+                etCustomerAddress.removeTextChangedListener(this);
+                str = capitalize(str);
+                etCustomerAddress.setText(str);
+                etCustomerAddress.setSelection(etCustomerAddress.length());
+                etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
             }
         };
 
@@ -348,18 +363,7 @@ public class NewDeiveActivity extends AppCompatActivity {
         etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
     }
 
-    private String capitalizeFirstLetter(String str){
-        InputStream targetStream = new ByteArrayInputStream(str.getBytes());
-        Scanner in = new Scanner(targetStream);
-        String line = in.nextLine();
-        String upper_case_line = "";
-        Scanner lineScan = new Scanner(line);
-        while(lineScan.hasNext()) {
-            String word = lineScan.next();
-            upper_case_line += Character.toUpperCase(word.charAt(0)) + word.substring(1) + " ";
-        }
-       return upper_case_line.trim();
-    }
+
 
 
     /**
