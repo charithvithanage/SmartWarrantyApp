@@ -17,4 +17,6 @@
     <color name="red">#FF1100</color>
     <color name="divider_color">#898c90</color>
 
+    <color name="button_click_bg_color">#b25eba</color>
+
 </resources>

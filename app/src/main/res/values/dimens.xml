@@ -52,5 +52,6 @@
     <dimen name="listview_lable_padding">16dp</dimen>
 
     <dimen name="design_navigation_icon_size">20dp</dimen>
+    <dimen name="button_radius">3dp</dimen>
 
 </resources>
