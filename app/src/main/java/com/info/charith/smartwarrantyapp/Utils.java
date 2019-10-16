@@ -138,14 +138,21 @@ public class Utils {
 
             } else if (userNIC.length() == 10) {
 
+                String first9Characters = userNIC.substring(0, 9);
+
                 String lastCharacter = userNIC.substring(userNIC.length() - 1);
-                if (lastCharacter.equals("V")) {
-                    valid = true;
-                } else if (lastCharacter.equals("X")) {
-                    valid = true;
-                } else {
+                if(first9Characters.matches("[0-9]+")){
+                    if (lastCharacter.equals("V")) {
+                        valid = true;
+                    } else if (lastCharacter.equals("X")) {
+                        valid = true;
+                    } else {
+                        valid = false;
+                    }
+                }else {
                     valid = false;
                 }
+
 
             } else {
                 valid = false;

@@ -1,6 +1,7 @@
 package com.info.charith.smartwarrantyapp.Fragments;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,7 +22,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.Activities.DeivceInfoActivity;
-import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
+import com.info.charith.smartwarrantyapp.Adapters.ActivityReportsAdapter;
+import com.info.charith.smartwarrantyapp.Adapters.SummaryReportsAdapter;
 import com.info.charith.smartwarrantyapp.Entities.SummaryReport;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -47,6 +49,10 @@ public class ReportsFragment extends Fragment {
     List<Warranty> activityReports = new ArrayList<>();
     List<SummaryReport> summaryReports = new ArrayList<>();
     ListView activityReportListView, summaryReportListView;
+    ProgressDialog progressDialog;
+    TextView tvTotal;
+    String activationReportsSize, summaryReportsSize = null;
+    boolean showActivationLayout = true;
 
 
     @Nullable
@@ -54,16 +60,8 @@ public class ReportsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_reports, container, false);
 
-        DateTime today = new DateTime();
-//        summaryReports.add(new SummaryReport(today, "samsung", "s6", 3));
-//        summaryReports.add(new SummaryReport(today.plusDays(2), "samsung", "s6", 3));
-//        summaryReports.add(new SummaryReport(today.plusDays(3), "samsung", "s6", 3));
-//        summaryReports.add(new SummaryReport(today.plusDays(5), "samsung", "s6", 3));
-
         init(root);
 
-        new GetActivityReportsAsync().execute();
-        new GetSummaryReportsAsync().execute();
 
         selectByDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +103,7 @@ public class ReportsFragment extends Fragment {
         toDateLayout = root.findViewById(R.id.toDateLayout);
         tvFromDate = root.findViewById(R.id.tvFromDate);
         tvToDate = root.findViewById(R.id.tvToDate);
+        tvTotal = root.findViewById(R.id.tvTotal);
 
         activityReportListView = root.findViewById(R.id.activityReportsListView);
         summaryReportListView = root.findViewById(R.id.summaryReportsListView);
@@ -116,7 +115,7 @@ public class ReportsFragment extends Fragment {
                 Warranty warranty = activityReportsAdapter.getItem(position);
                 Gson gson = new Gson();
                 Intent intent = new Intent(getActivity(), DeivceInfoActivity.class);
-                intent.putExtra("type", "Waranty Details");
+                intent.putExtra("type", "Warranty Details");
                 intent.putExtra("warrantyString", gson.toJson(warranty));
                 intent.putExtra("previous_activity", "activation_list_activity");
                 getActivity().startActivity(intent);
@@ -125,8 +124,19 @@ public class ReportsFragment extends Fragment {
         });
 
         fromDate = new DateTime();
-        toDate = fromDate.plusDays(1);
+        fromDate = fromDate.minusDays(1);
+        toDate = new DateTime();
 
+        tvFromDate.setText(toDate.toString("dd MMM YYYY"));
+        tvToDate.setText(toDate.toString("dd MMM YYYY"));
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.waiting));
+
+        showActivationLayout = true;
+
+        new GetActivityReportsAsync().execute();
+        new GetSummaryReportsAsync().execute();
 
     }
 
@@ -143,6 +153,8 @@ public class ReportsFragment extends Fragment {
                 date.set(year, monthOfYear, dayOfMonth);
                 fromDate = new DateTime(date.getTimeInMillis());
                 tvFromDate.setText(fromDate.toString("dd MMM YYYY"));
+                new GetSummaryReportsAsync().execute();
+                new GetActivityReportsAsync().execute();
             }
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
 
@@ -184,6 +196,9 @@ public class ReportsFragment extends Fragment {
 
         activityReportListView.setVisibility(View.VISIBLE);
         summaryReportListView.setVisibility(View.GONE);
+
+        tvTotal.setText(activationReportsSize);
+
     }
 
     private void selectSummaryReports() {
@@ -194,6 +209,8 @@ public class ReportsFragment extends Fragment {
 
         summaryReportListView.setVisibility(View.VISIBLE);
         activityReportListView.setVisibility(View.GONE);
+        tvTotal.setText(summaryReportsSize);
+
     }
 
     //return time as 12.00 am time of given date
@@ -208,11 +225,17 @@ public class ReportsFragment extends Fragment {
 
     private class GetActivityReportsAsync extends AsyncTask<Void, Void, Void> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.show();
+
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DealerService.getInstance().getActivityReports(getActivity(), fromDate.toString("yyyy/MM/dd"), toDate.toString("yyyy/MM/dd"), new AsyncListner() {
+            DealerService.getInstance().getActivityReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
 
@@ -234,6 +257,12 @@ public class ReportsFragment extends Fragment {
                             }
                         }
 
+                        activationReportsSize = String.valueOf(activityReports.size());
+
+                        if(showActivationLayout){
+                            tvTotal.setText(activationReportsSize);
+                        }
+
                         activityReportsAdapter = new ActivityReportsAdapter(getActivity(), activityReports);
                         activityReportListView.setAdapter(activityReportsAdapter);
 
@@ -242,12 +271,13 @@ public class ReportsFragment extends Fragment {
                         e.printStackTrace();
                     }
 
+                    progressDialog.dismiss();
 
                 }
 
                 @Override
                 public void onError(Context context, String error) {
-
+                    progressDialog.dismiss();
                 }
             });
 
@@ -261,7 +291,7 @@ public class ReportsFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DealerService.getInstance().getSummaryReports(getActivity(), fromDate.toString("yyyy/MM/dd"), toDate.toString("yyyy/MM/dd"), new AsyncListner() {
+            DealerService.getInstance().getSummaryReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
 
@@ -281,6 +311,13 @@ public class ReportsFragment extends Fragment {
                                     summaryReports.add(summaryReport);
                                 }
                             }
+                        }
+
+                        summaryReportsSize = String.valueOf(summaryReports.size());
+
+
+                        if(!showActivationLayout){
+                            tvTotal.setText(summaryReportsSize);
                         }
 
                         summaryReportsAdapter = new SummaryReportsAdapter(getActivity(), summaryReports);

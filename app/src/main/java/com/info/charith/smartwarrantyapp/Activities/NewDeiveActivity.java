@@ -31,8 +31,14 @@ import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Scanner;
 
 public class NewDeiveActivity extends AppCompatActivity {
 
@@ -47,7 +53,7 @@ public class NewDeiveActivity extends AppCompatActivity {
     Dealer dealer;
     TextView titleView;
     ImageButton backBtn;
-    TextWatcher etContactNoTextWatcher, etEmailTextWatcher;
+    TextWatcher etContactNoTextWatcher, etEmailTextWatcher,etAddressTextWatcher,etNameTextWatcher;
     TextView errorContactNo, errorEmail;
     String waranntyRequest;
     ImageButton homeBtn;
@@ -301,10 +307,60 @@ public class NewDeiveActivity extends AppCompatActivity {
             }
         };
 
+        etNameTextWatcher=new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etCustomerName.setText(capitalizeFirstLetter(s.toString()));
+            }
+        };
+
+        etAddressTextWatcher=new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etCustomerName.setText(capitalizeFirstLetter(s.toString()));
+
+            }
+        };
 
         etCustomerContactNo.addTextChangedListener(etContactNoTextWatcher);
         etCustomerEmail.addTextChangedListener(etEmailTextWatcher);
+        etCustomerName.addTextChangedListener(etNameTextWatcher);
+        etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
     }
+
+    private String capitalizeFirstLetter(String str){
+        InputStream targetStream = new ByteArrayInputStream(str.getBytes());
+        Scanner in = new Scanner(targetStream);
+        String line = in.nextLine();
+        String upper_case_line = "";
+        Scanner lineScan = new Scanner(line);
+        while(lineScan.hasNext()) {
+            String word = lineScan.next();
+            upper_case_line += Character.toUpperCase(word.charAt(0)) + word.substring(1) + " ";
+        }
+       return upper_case_line.trim();
+    }
+
 
     /**
      * Set values to text fields

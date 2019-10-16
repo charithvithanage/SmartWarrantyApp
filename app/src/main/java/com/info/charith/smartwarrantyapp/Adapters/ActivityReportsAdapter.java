@@ -1,4 +1,4 @@
-package com.info.charith.smartwarrantyapp.Fragments;
+package com.info.charith.smartwarrantyapp.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -39,15 +39,21 @@ public class ActivityReportsAdapter extends ArrayAdapter<Warranty> {
         holder.imei = convertView.findViewById(R.id.tvImei);
         holder.brand = convertView.findViewById(R.id.tvBrand);
         holder.model = convertView.findViewById(R.id.tvModel);
+        holder.user = convertView.findViewById(R.id.tvUser);
+        holder.date = convertView.findViewById(R.id.tvDate);
 
         convertView.setTag(holder);
         convertView.setTag(R.id.tvImei, holder.imei);
         convertView.setTag(R.id.tvBrand, holder.brand);
         convertView.setTag(R.id.tvModel, holder.model);
+        convertView.setTag(R.id.tvUser, holder.user);
+        convertView.setTag(R.id.tvDate, holder.date);
 
         holder.imei.setText(eventObj.getImei());
         holder.brand.setText(eventObj.getBrand());
         holder.model.setText(eventObj.getModel());
+        holder.user.setText(eventObj.getCustomerName());
+        holder.model.setText(eventObj.getWarrantyActivatedDate());
 
 
         return convertView;
@@ -57,6 +63,8 @@ public class ActivityReportsAdapter extends ArrayAdapter<Warranty> {
         protected TextView imei;
         protected TextView brand;
         protected TextView model;
+        protected TextView user;
+        protected TextView date;
 
     }
 

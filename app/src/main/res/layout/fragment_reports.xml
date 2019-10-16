@@ -175,6 +175,27 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/filterBtnPaddingLeft">
+
+                <TextView
+                    style="@style/lable_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total   :    "></TextView>
+
+                <TextView
+                    android:id="@+id/tvTotal"
+                    style="@style/lable_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total"></TextView>
+            </LinearLayout>
+
 
             <RelativeLayout
                 android:id="@+id/byDateLayout"

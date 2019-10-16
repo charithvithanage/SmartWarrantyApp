@@ -13,8 +13,12 @@
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ForgotPassword" android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
+        <activity android:name=".Activities.ChangePasswordActivity" android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Activities.ForgotPassword"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.Splash"
             android:screenOrientation="portrait"
@@ -36,11 +40,11 @@
         <activity
             android:name=".Activities.DeivceInfoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.NewDeiveActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.ScannerActivity"
             android:screenOrientation="portrait"
@@ -48,7 +52,7 @@
         <activity
             android:name=".Activities.DealerInfoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.SignUpActivity"
             android:label="@string/title_activity_sign_up"

@@ -1,4 +1,4 @@
-package com.info.charith.smartwarrantyapp.Fragments;
+package com.info.charith.smartwarrantyapp.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -32,11 +32,11 @@ public class SummaryReportsAdapter extends ArrayAdapter<SummaryReport> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         SummaryReport eventObj = getItem(position);
-        com.info.charith.smartwarrantyapp.Fragments.SummaryReportsAdapter.ViewHolder holder = null;
+        SummaryReportsAdapter.ViewHolder holder = null;
         // Check if an existing view is being reused, otherwise inflate the view
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.summary_reports_layout, null);
-        holder = new com.info.charith.smartwarrantyapp.Fragments.SummaryReportsAdapter.ViewHolder();
+        holder = new SummaryReportsAdapter.ViewHolder();
         holder.brand = convertView.findViewById(R.id.brand);
         holder.qty = convertView.findViewById(R.id.tvQty);
         holder.brand = convertView.findViewById(R.id.tvBrand);

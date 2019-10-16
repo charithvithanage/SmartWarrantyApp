@@ -57,12 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Gson gson = new Gson();
 
-    ExpandableListView expandableListView;
-    ExpandableListAdapter expandableListAdapter;
-    List<String> expandableListTitle;
-    HashMap<String, List<String>> expandableListDetail;
-
-    LinearLayout nav_home, nav_reports, nav_about;
+    LinearLayout nav_home, nav_reports, nav_about, nav_settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nav_home = navigationView.findViewById(R.id.nav_home);
         nav_reports = navigationView.findViewById(R.id.nav_report);
         nav_about = navigationView.findViewById(R.id.nav_about);
+        nav_settings = navigationView.findViewById(R.id.nav_settings);
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,25 +155,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nav_home.setOnClickListener(this);
         nav_reports.setOnClickListener(this);
         nav_about.setOnClickListener(this);
+        nav_settings.setOnClickListener(this);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
-        expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        expandableListDetail = ExpandableListDataPump.getData();
-        expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new CustomExpandableListAdapter(this, expandableListTitle, expandableListDetail);
-        expandableListView.setAdapter(expandableListAdapter);
-
-        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                expandableListView.collapseGroup(groupPosition);
-                drawerLayout.closeDrawers();
-                navController.navigate(R.id.nav_settings);
-                return false;
-            }
-        });
 
     }
 
@@ -228,6 +208,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.nav_report:
                 navController.navigate(R.id.nav_report);
+                break;
+
+            case R.id.nav_settings:
+                navController.navigate(R.id.nav_settings);
                 break;
         }
     }

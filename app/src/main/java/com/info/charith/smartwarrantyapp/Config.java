@@ -27,7 +27,7 @@ public enum Config {
     public static String date_time_pattern="yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     public static String standard_date_time_pattern="yyyy-MM-dd HH:mm";
     public String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    public String passwordPattern = ".*[a-zA-Z].*";
+    public String passwordPattern = ".*([a-zA-Z].*[0-9]|[0-9].*[a-zA-Z]).*";
 
     public List<Product> enabledBrands=null;
 

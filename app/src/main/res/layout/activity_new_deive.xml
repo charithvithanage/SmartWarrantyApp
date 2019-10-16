@@ -36,14 +36,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/login_button"
-                android:foregroundGravity="top"
-                android:paddingStart="@dimen/button_side_padding"
-                android:paddingRight="@dimen/button_side_padding"
+                android:gravity="center"
                 android:text="Confirm"
                 android:textAllCaps="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.458"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customerEmail" />
 
@@ -182,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/contentLableLeftPadding"
-                android:text="Contact No."
+                android:text="Contact No"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customerAddress" />
 
@@ -284,7 +281,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:paddingStart="@dimen/contentLableLeftPadding"
-                android:text="Serial / IMEI "
+                android:text="IMEI "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/model" />
 

@@ -58,6 +58,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_scanner);
 
+        Utils.changeStatusBarColor(ScannerActivity.this, getWindow());
+
         selectedBrand = getIntent().getStringExtra("selected_brand");
 
         init();
@@ -306,6 +308,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     startActivity(intent);
                                 }else if( deviceType.equals("activated device")){
                                     Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
                                     intent.putExtra("warrantyString", gson.toJson(warranty));
                                     intent.putExtra("dealerString", objectTwo);
                                     intent.putExtra("type", deviceType);
@@ -318,10 +321,13 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     startActivity(intent);
                                 }
                             } else {
-                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                intent.putExtra("type", "disabled device");
-                                intent.putExtra("previous_activity", "scan_activity");
-                                startActivity(intent);
+                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+                                    }
+                                });
                             }
 
 

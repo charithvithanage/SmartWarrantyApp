@@ -1,91 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Activities.MessageActivity">
 
     <include
         android:id="@+id/include2"
         layout="@layout/actionbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"></include>
+        android:layout_height="wrap_content"></include>
 
 
-    <Button
-        android:id="@+id/btnSubmit"
-        style="@style/login_btn_style"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/loginBtnHieght"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="48dp"
-        android:background="@drawable/login_button"
-        android:foregroundGravity="top"
-        android:paddingLeft="@dimen/button_side_padding"
-        android:paddingRight="@dimen/button_side_padding"
-        android:text="Ok"
-        android:textAllCaps="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHotline" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvEnglish"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:gravity="center"-->
+    <!--        android:padding="@dimen/edit_text_padding"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.498"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/imageView3" />-->
 
-    <TextView
-        android:id="@+id/tvEnglish"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/edit_text_padding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvSinhala"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="60dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:padding="@dimen/edit_text_padding"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/tvEnglish" />-->
 
-    <TextView
-        android:id="@+id/tvSinhala"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:gravity="center"
-        android:padding="@dimen/edit_text_padding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvEnglish" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvTamil"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="60dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:padding="@dimen/edit_text_padding"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/tvSinhala" />-->
 
-    <TextView
-        android:id="@+id/tvTamil"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:gravity="center"
-        android:padding="@dimen/edit_text_padding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSinhala" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvHotline"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="32dp"-->
+    <!--        android:gravity="center_horizontal"-->
+    <!--        android:text="Hotline 0715173173"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="24sp"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/btnSubmit"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/tvTamil" />-->
 
-    <TextView
-        android:id="@+id/tvHotline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:gravity="center_horizontal"
-        android:text="Hotline 0715173173"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSubmit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTamil" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="80dp"
-        android:layout_height="227dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include2"
-        app:srcCompat="@mipmap/tick" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@mipmap/already_activated" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            style="@style/login_btn_style"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/loginBtnHieght"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_button"
+            android:foregroundGravity="top"
+            android:paddingLeft="@dimen/button_side_padding"
+            android:paddingRight="@dimen/button_side_padding"
+            android:text="Ok"
+            android:textAllCaps="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

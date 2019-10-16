@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingStart="32dp"
-                    android:text="HOME"
+                    android:text="Home"
                     style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
                     />
@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingStart="32dp"
-                    android:text="REPORTS"
+                    android:text="Reports"
                     style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
                     />
@@ -108,25 +108,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingStart="32dp"
-                    android:text="ABOUT"
+                    android:text="About"
                     style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
                     />
             </LinearLayout>
 
-            <ExpandableListView
-                android:id="@+id/expandableListView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:background="@color/bg_color"
-                android:choiceMode="singleChoice"
-                android:groupIndicator="@null"
-                android:divider="@null"></ExpandableListView>
-
             <LinearLayout
-                android:id="@+id/nav_logout"
+                android:id="@+id/nav_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -134,25 +123,60 @@
                 android:paddingRight="16dp"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
-                android:paddingBottom="32dp"
                 android:background="@color/bg_color">
 
 
                 <ImageView
                     android:layout_width="@dimen/design_navigation_icon_size"
                     android:layout_height="@dimen/design_navigation_icon_size"
-                    android:src="@mipmap/logout" />
+                    android:src="@mipmap/settings"/>
 
                 <TextView
-                    android:id="@+id/logout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingStart="32dp"
-                    android:text="@string/menu_share"
+                    android:text="Settings"
                     style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
                     />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_weight="1">
+                <LinearLayout
+                    android:id="@+id/nav_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="horizontal"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="32dp"
+                    android:background="@color/bg_color">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/design_navigation_icon_size"
+                        android:layout_height="@dimen/design_navigation_icon_size"
+                        android:src="@mipmap/logout" />
+
+                    <TextView
+                        android:id="@+id/logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:paddingStart="32dp"
+                        android:text="@string/menu_share"
+                        style="@style/navigation_view_item_style"
+                        android:background="@android:color/transparent"
+                        />
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 
