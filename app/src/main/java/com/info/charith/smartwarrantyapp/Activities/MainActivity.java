@@ -224,6 +224,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             DealerService.getInstance().logout(MainActivity.this, dealerUserMock.getUsername(), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+                    SharedPreferences sharedPref = context.getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("logoutTime", null);
+                    editor.commit();
                     Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
                 }
 

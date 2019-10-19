@@ -41,6 +41,8 @@ import org.json.JSONObject;
 import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
+import static androidx.navigation.fragment.NavHostFragment.findNavController;
+
 public class ScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
     WarrantyRequest warrantyRequest;
@@ -325,6 +327,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+                                        onBackPressed();
 
                                     }
                                 });

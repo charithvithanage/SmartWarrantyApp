@@ -18,5 +18,6 @@
     <color name="divider_color">#898c90</color>
 
     <color name="button_click_bg_color">#b25eba</color>
+    <color name="list_item_click_bg_color">#e6e7e8</color>
 
 </resources>

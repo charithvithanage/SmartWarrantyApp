@@ -210,7 +210,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
             }
 
-            if(password.matches(confirmPassword)){
+            if(!password.matches(confirmPassword)){
                 errorConfirmPassword.setVisibility(View.VISIBLE);
                 errorConfirmPassword.setText(getString(R.string.invalid_user_password_not_match));
                 confirmPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
@@ -250,12 +250,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
 
                         } else {
-                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            errorOldPassword.setVisibility(View.VISIBLE);
+                            errorOldPassword.setText(message);
+                            oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

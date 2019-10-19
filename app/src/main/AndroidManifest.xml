@@ -72,18 +72,7 @@
             android:name="io.fabric.ApiKey"
             android:value="84f48e1fd1a4aee92ecfcd9c7ae40e5cd7a57ea3" /> <!-- This goes inside the application tags -->
         <!-- This is the receiver you called when the alarm was executed -->
-        <receiver android:name=".AlarmBroadcaster" />
-        <receiver
-            android:name=".SampleBootReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
-        <service
-            android:name=".NotificationTrigger"
-            android:exported="false" />
     </application>
 
 </manifest>

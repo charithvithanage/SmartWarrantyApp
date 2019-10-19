@@ -32,11 +32,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
                 android:orientation="horizontal"
-                android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:background="@color/bg_color">
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="8dp">
 
 
                 <ImageView
@@ -46,14 +47,13 @@
 
                 <TextView
                     android:id="@+id/home"
+                    style="@style/navigation_view_item_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingStart="32dp"
-                    android:text="Home"
-                    style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
-                    />
+                    android:paddingStart="32dp"
+                    android:text="Home" />
             </LinearLayout>
 
             <LinearLayout
@@ -61,11 +61,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
                 android:orientation="horizontal"
-                android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:background="@color/bg_color">
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="8dp">
 
 
                 <ImageView
@@ -75,14 +76,13 @@
 
                 <TextView
                     android:id="@+id/reports"
+                    style="@style/navigation_view_item_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingStart="32dp"
-                    android:text="Reports"
-                    style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
-                    />
+                    android:paddingStart="32dp"
+                    android:text="Reports" />
             </LinearLayout>
 
             <LinearLayout
@@ -90,11 +90,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
                 android:orientation="horizontal"
-                android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:background="@color/bg_color">
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="8dp">
 
 
                 <ImageView
@@ -104,14 +105,13 @@
 
                 <TextView
                     android:id="@+id/about"
+                    style="@style/navigation_view_item_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingStart="32dp"
-                    android:text="About"
-                    style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
-                    />
+                    android:paddingStart="32dp"
+                    android:text="About" />
             </LinearLayout>
 
             <LinearLayout
@@ -119,27 +119,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
                 android:orientation="horizontal"
-                android:paddingRight="16dp"
                 android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:background="@color/bg_color">
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="8dp">
 
 
                 <ImageView
                     android:layout_width="@dimen/design_navigation_icon_size"
                     android:layout_height="@dimen/design_navigation_icon_size"
-                    android:src="@mipmap/settings"/>
+                    android:src="@mipmap/settings" />
 
                 <TextView
+                    style="@style/navigation_view_item_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingStart="32dp"
-                    android:text="Settings"
-                    style="@style/navigation_view_item_style"
                     android:background="@android:color/transparent"
-                    />
+                    android:paddingStart="32dp"
+                    android:text="Settings" />
             </LinearLayout>
 
             <LinearLayout

@@ -53,7 +53,7 @@ public class ActivityReportsAdapter extends ArrayAdapter<Warranty> {
         holder.brand.setText(eventObj.getBrand());
         holder.model.setText(eventObj.getModel());
         holder.user.setText(eventObj.getCustomerName());
-        holder.model.setText(eventObj.getWarrantyActivatedDate());
+        holder.date.setText(eventObj.getWarrantyActivatedDate());
 
 
         return convertView;

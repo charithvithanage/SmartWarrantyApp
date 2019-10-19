@@ -36,7 +36,7 @@
                         android:layout_height="@dimen/selectBtnSize"
                         android:background="@drawable/select_btn_bg"
                         android:stateListAnimator="@null"
-                        android:text="Activity Reports"
+                        android:text="Activity Report"
                         android:textAllCaps="false" />
 
                 </LinearLayout>
@@ -55,7 +55,7 @@
                         android:layout_height="@dimen/selectBtnSize"
                         android:background="@drawable/deselect_btn_bg"
                         android:stateListAnimator="@null"
-                        android:text="Summary Reports"
+                        android:text="Summary Report"
                         android:textAllCaps="false" />
                 </LinearLayout>
 
@@ -178,14 +178,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/filterBtnPaddingLeft">
+                android:orientation="horizontal">
 
                 <TextView
                     style="@style/lable_style"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Total   :    "></TextView>
+                    android:layout_weight="1"
+                    android:background="@drawable/bottom_left_layout"
+                    android:gravity="center"
+                    android:padding="@dimen/filterBtnPaddingLeft"
+                    android:text="Total "></TextView>
 
                 <TextView
                     android:id="@+id/tvTotal"
@@ -193,6 +196,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/bottom_right_layout"
+                    android:gravity="center"
+                    android:padding="@dimen/filterBtnPaddingLeft"
                     android:text="Total"></TextView>
             </LinearLayout>
 

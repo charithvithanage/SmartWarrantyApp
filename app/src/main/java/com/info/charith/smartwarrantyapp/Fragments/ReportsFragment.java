@@ -109,19 +109,19 @@ public class ReportsFragment extends Fragment {
         summaryReportListView = root.findViewById(R.id.summaryReportsListView);
 
 
-        activityReportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Warranty warranty = activityReportsAdapter.getItem(position);
-                Gson gson = new Gson();
-                Intent intent = new Intent(getActivity(), DeivceInfoActivity.class);
-                intent.putExtra("type", "Warranty Details");
-                intent.putExtra("warrantyString", gson.toJson(warranty));
-                intent.putExtra("previous_activity", "activation_list_activity");
-                getActivity().startActivity(intent);
-
-            }
-        });
+//        activityReportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Warranty warranty = activityReportsAdapter.getItem(position);
+//                Gson gson = new Gson();
+//                Intent intent = new Intent(getActivity(), DeivceInfoActivity.class);
+//                intent.putExtra("type", "Warranty Details");
+//                intent.putExtra("warrantyString", gson.toJson(warranty));
+//                intent.putExtra("previous_activity", "activation_list_activity");
+//                getActivity().startActivity(intent);
+//
+//            }
+//        });
 
         fromDate = new DateTime();
         fromDate = fromDate.minusDays(1);

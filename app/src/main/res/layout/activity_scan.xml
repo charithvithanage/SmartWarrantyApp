@@ -21,7 +21,6 @@
             android:layout_height="@dimen/actionButtonSize"
             android:layout_alignParentLeft="true"
             android:background="@null"
-            android:onClick="backPressed"
             android:paddingBottom="@dimen/actionButtonPadding"
             android:paddingTop="@dimen/actionButtonPadding"
             android:scaleType="fitCenter"

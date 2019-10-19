@@ -81,7 +81,7 @@
             android:background="@drawable/edt_bg_normal"
             android:ems="10"
             android:focusableInTouchMode="true"
-            android:maxLength="13"
+            android:maxLength="12"
             android:paddingStart="@dimen/login_edit_text_padding"
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"

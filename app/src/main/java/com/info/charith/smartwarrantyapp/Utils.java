@@ -130,7 +130,7 @@ public class Utils {
             valid = false;
         } else {
 
-            if (userNIC.length() == 13) {
+            if (userNIC.length() == 12) {
 
                 if (!userNIC.matches("[0-9]+")) {
                     valid = false;
@@ -170,7 +170,7 @@ public class Utils {
             valid = "Empty User NIC";
         } else {
 
-            if (userNIC.length() == 13) {
+            if (userNIC.length() == 12) {
 
                 if (!userNIC.matches("[0-9]+")) {
                     valid = "Invalid NIC";
