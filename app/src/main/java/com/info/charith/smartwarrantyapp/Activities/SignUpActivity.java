@@ -32,6 +32,7 @@ import static com.info.charith.smartwarrantyapp.Utils.isPasswordMatch;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
+import static com.info.charith.smartwarrantyapp.Utils.showAlertWithoutTitleDialog;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -65,8 +66,20 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                loadingProgressBar.setVisibility(View.VISIBLE);
-                signup(userNICEditText.getText().toString(), usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
+
+                if(dealer.isActive()){
+                    signup(userNICEditText.getText().toString(), usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
+                }else {
+                    showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.dealer_not_active), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            onBackPressed();
+                        }
+                    });
+                }
+
             }
         });
 

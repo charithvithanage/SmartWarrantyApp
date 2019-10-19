@@ -34,6 +34,7 @@ import com.info.charith.smartwarrantyapp.Utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -182,7 +183,9 @@ public class NewDeiveActivity extends AppCompatActivity {
 
 
         if (type.equals("new device")) {
+            DateTime dateTime = new DateTime();
             warranty.setActivationStatus("Enable with Date");
+            warranty.setActivationDate(dateTime.toString("yyyy-MM-dd"));
         }
 
         new UpdateWarrantyAsync().execute();
@@ -362,8 +365,6 @@ public class NewDeiveActivity extends AppCompatActivity {
         etCustomerName.addTextChangedListener(etNameTextWatcher);
         etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
     }
-
-
 
 
     /**

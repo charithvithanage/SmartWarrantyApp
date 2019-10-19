@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
+import static com.info.charith.smartwarrantyapp.Utils.showAlertWithoutTitleDialog;
 
 public class DealerSearchActivity extends AppCompatActivity {
 
@@ -211,9 +212,20 @@ public class DealerSearchActivity extends AppCompatActivity {
 
                                         Dealer dealer = dealers.get(position);
 
-                                        Intent intent = new Intent(DealerSearchActivity.this, SignUpActivity.class);
-                                        intent.putExtra("dealerString", gson.toJson(dealer));
-                                        startActivity(intent);
+                                        if(dealer.isActive()){
+                                            Intent intent = new Intent(DealerSearchActivity.this, SignUpActivity.class);
+                                            intent.putExtra("dealerString", gson.toJson(dealer));
+                                            startActivity(intent);
+                                        }else {
+                                            showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.dealer_not_active), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                        }
+
+
                                     }
                                 });
 

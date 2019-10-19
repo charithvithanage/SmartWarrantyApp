@@ -51,4 +51,5 @@
     <string name="password_pattern_wrong">( Password should contain at least one letter and one digit )</string>
     <string name="password_empty">Empty password</string>
     <string name="wrong_imei">Please scan correct brand</string>
+    <string name="dealer_not_active">Dealer is not active. Can\'t create the account</string>
 </resources>

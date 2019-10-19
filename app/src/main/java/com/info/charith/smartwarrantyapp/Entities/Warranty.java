@@ -23,6 +23,24 @@ public class Warranty {
     private String dealerUserName;
     private String reference;
     private String uploadDate;
+    private String district;
+    private String activationDate;
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getActivationDate() {
+        return activationDate;
+    }
+
+    public void setActivationDate(String activationDate) {
+        this.activationDate = activationDate;
+    }
 
     public String getReference() {
         return reference;
