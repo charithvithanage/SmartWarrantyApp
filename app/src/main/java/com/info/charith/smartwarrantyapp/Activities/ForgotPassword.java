@@ -47,21 +47,21 @@ public class ForgotPassword extends AppCompatActivity {
 
     }
 
-    private void init(){
+    private void init() {
         titleView = findViewById(R.id.title_view);
         titleView.setText("Forgot Password");
         btnSend = findViewById(R.id.btnRegister);
         etUsername = findViewById(R.id.username);
-        backBtn=findViewById(R.id.backBtn);
+        backBtn = findViewById(R.id.backBtn);
         errorNIC = findViewById(R.id.errorUsernameLable);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(isUserNameValid(etUsername.getText().toString())){
+                if (isUserNameValid(etUsername.getText().toString())) {
                     new ForgotPaswordAsync().execute();
-                }else {
+                } else {
                     errorNIC.setVisibility(View.VISIBLE);
                     errorNIC.setText(getString(R.string.invalid_username));
                     etUsername.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
@@ -105,14 +105,14 @@ public class ForgotPassword extends AppCompatActivity {
         errorNIC.setVisibility(View.GONE);
     }
 
-    private class ForgotPaswordAsync extends AsyncTask<Void,Void,Void> {
+    private class ForgotPaswordAsync extends AsyncTask<Void, Void, Void> {
 
         ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog=new ProgressDialog(ForgotPassword.this);
+            progressDialog = new ProgressDialog(ForgotPassword.this);
             progressDialog.setMessage(getString(R.string.waiting));
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -125,22 +125,31 @@ public class ForgotPassword extends AppCompatActivity {
                 public void onSuccess(final Context context, final JSONObject jsonObject) {
                     progressDialog.dismiss();
                     try {
-                        Boolean success=jsonObject.getBoolean("success");
-                        String message=jsonObject.getString("message");
+                        Boolean success = jsonObject.getBoolean("success");
+                        String message = jsonObject.getString("message");
 
-                        if(success){
-                            if(message.equals("No record found for given email.")){
-                                Utils.showAlertWithoutTitleDialog(context, "No record for given email", new DialogInterface.OnClickListener() {
+                        if (success) {
+                            if (message.equals("No record found for given email.")) {
+                                Utils.showAlertWithoutTitleDialog(context, "No record found for the given Username", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        Utils.navigateWithoutHistory(ForgotPassword.this,LoginActivity.class);
+                                        Utils.navigateWithoutHistory(ForgotPassword.this, LoginActivity.class);
+
+                                    }
+                                });
+                            } else {
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        onBackPressed();
 
                                     }
                                 });
                             }
 
-                        }else {
+                        } else {
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

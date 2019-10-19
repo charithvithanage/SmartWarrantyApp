@@ -2,7 +2,6 @@ package com.info.charith.smartwarrantyapp.Services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -14,13 +13,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Activities.DealerSearchActivity;
-import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.DealerRequest;
-import com.info.charith.smartwarrantyapp.Entities.DealerUser;
-import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Entities.WarrantyRequest;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;

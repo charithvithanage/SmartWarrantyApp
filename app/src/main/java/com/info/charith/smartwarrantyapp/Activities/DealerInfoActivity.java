@@ -60,8 +60,10 @@ public class DealerInfoActivity extends AppCompatActivity {
 
         dealerUserMockString = getIntent().getStringExtra("dealerUserMockString");
         dealerString = getIntent().getStringExtra("dealerString");
-
         dealer = gson.fromJson(dealerString, Dealer.class);
+        DealerUserMock dealerUserMock = gson.fromJson(dealerUserMockString, DealerUserMock.class);
+        dealerUserMock.setUserStatus(true);
+        dealerUserMockString=gson.toJson(dealerUserMock);
 
         init();
 
@@ -73,11 +75,13 @@ public class DealerInfoActivity extends AppCompatActivity {
                  * If dealer's details are correct
                  * User can register by clicking confirm button
                  */
+
+
                 new RegisterAsync().execute();
             }
         });
 
-       }
+    }
 
     private void init() {
         btnConfirm = findViewById(R.id.btnRegister);
@@ -259,7 +263,6 @@ public class DealerInfoActivity extends AppCompatActivity {
                             }).execute();
 
 
-                            
                         } else {
                             String message = jsonObject.getString("message");
 

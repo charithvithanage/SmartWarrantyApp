@@ -1,6 +1,7 @@
 package com.info.charith.smartwarrantyapp.Entities;
 
 public class DealerUserMock {
+
     private String dealerCode;
     private String nic;
     private String username;

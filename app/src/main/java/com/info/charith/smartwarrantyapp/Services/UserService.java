@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import androidx.fragment.app.FragmentActivity;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -15,14 +13,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Activities.SignUpActivity;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.ChangePassword;
 import com.info.charith.smartwarrantyapp.Entities.Credential;
-import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
-import com.info.charith.smartwarrantyapp.Entities.WarrantyRequest;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
 

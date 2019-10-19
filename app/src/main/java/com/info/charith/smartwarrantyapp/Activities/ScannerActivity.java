@@ -266,6 +266,14 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mScannerView != null) {
+                mScannerView.stopCamera();
+
+            }
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -351,6 +359,11 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+                                        if (mScannerView != null) {
+                                            mScannerView.setResultHandler(ScannerActivity.this);
+                                            mScannerView.startCamera();
+
+                                        }
                                     }
                                 });
                             }
@@ -358,6 +371,11 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        if (mScannerView != null) {
+                            mScannerView.setResultHandler(ScannerActivity.this);
+                            mScannerView.startCamera();
+
+                        }
                     }
 
 
@@ -371,6 +389,11 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            if (mScannerView != null) {
+                                mScannerView.setResultHandler(ScannerActivity.this);
+                                mScannerView.startCamera();
+
+                            }
                         }
                     });
                 }
