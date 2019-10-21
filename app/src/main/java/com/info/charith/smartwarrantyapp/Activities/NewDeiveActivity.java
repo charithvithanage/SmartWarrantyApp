@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +22,7 @@ import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
-import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Entities.WarrantyRequest;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -32,17 +31,9 @@ import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.info.charith.smartwarrantyapp.Utils.capitalize;
 
@@ -65,7 +56,7 @@ public class NewDeiveActivity extends AppCompatActivity {
     String waranntyRequest;
     ImageButton homeBtn;
     String dealerCode = null;
-    DealerUserMock dealerUserMock;
+    DealerUser dealerUserMock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +166,7 @@ public class NewDeiveActivity extends AppCompatActivity {
             Gson gson = new Gson();
 
             String dealerString = sharedPref.getString("loggedInUser", "0");
-            dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
+            dealerUserMock = gson.fromJson(dealerString, DealerUser.class);
 
             warranty.setDealerCode(dealer.getDealerCode());
             warranty.setDealerUserName(dealerUserMock.getUsername());
@@ -219,7 +210,7 @@ public class NewDeiveActivity extends AppCompatActivity {
         Gson gson = new Gson();
 
         String dealerString = sharedPref.getString("loggedInUser", "0");
-        dealerUserMock = gson.fromJson(dealerString, DealerUserMock.class);
+        dealerUserMock = gson.fromJson(dealerString, DealerUser.class);
 
         if (type.equals("new device")) {
             warranty.setActivationStatus("Enable with Date");
@@ -332,6 +323,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                 etCustomerName.removeTextChangedListener(this);
                 str = capitalize(str);
                 etCustomerName.setText(str);
+                String lenght= String.valueOf(etCustomerName.length());
                 etCustomerName.setSelection(etCustomerName.length());
                 etCustomerName.addTextChangedListener(etNameTextWatcher);
             }

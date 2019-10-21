@@ -69,9 +69,16 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         manualBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopCamera();
                 final Dialog dialog = new Dialog(ScannerActivity.this);
                 dialog.setContentView(R.layout.imei_dialog_layout);
                 dialog.setCancelable(true);
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        startCamera();
+                    }
+                });
 
                 final EditText imei = dialog.findViewById(R.id.imei);
                 final TextView errorLable = dialog.findViewById(R.id.errorIMEILable);
@@ -102,8 +109,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                     @Override
                     public void onClick(View v) {
 
+
                         if (imei.getText().length() == 15) {
                             dialog.dismiss();
+
                             if (!TextUtils.isEmpty(imei.getText())) {
                                 warrantyRequest.setImei(imei.getText().toString());
                                 new GetProductAsync(selectedBrand).execute();
@@ -119,6 +128,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
             }
         });
     }
+
 
     private void init() {
         warrantyRequest = new WarrantyRequest();
@@ -147,7 +157,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                 contentFrame.addView(mScannerView);
             }
-        }else {
+        } else {
             mScannerView = new ZXingScannerView(this) {
 
                 @Override
@@ -168,19 +178,19 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         if (warranty.getActivationStatus().equals("Enable")) {
             type = "new device";
-        }else if(warranty.getActivationStatus().equals("Disable")){
+        } else if (warranty.getActivationStatus().equals("Disable")) {
             type = "disabled device";
-        } else if(warranty.getActivationStatus().equals("Enable with Date")){
-            if(warranty.getCustomerName()!=null&&warranty.getEmail()!=null&&warranty.getContactNo()!=null&&warranty.getAddress()!=null){
+        } else if (warranty.getActivationStatus().equals("Enable with Date")) {
+            if (warranty.getCustomerName() != null && warranty.getEmail() != null && warranty.getContactNo() != null && warranty.getAddress() != null) {
                 if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
                     type = "sold device";
                 } else {
                     type = "activated device";
                 }
-            }else {
+            } else {
                 type = "activated device";
             }
-        }else {
+        } else {
             type = "new device";
 
         }
@@ -248,32 +258,16 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void onResume() {
         super.onResume();
-        if (mScannerView != null) {
-            mScannerView.setResultHandler(this);
-            mScannerView.startCamera();
-
-        }
+        startCamera();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mScannerView != null) {
-            mScannerView.stopCamera();
-
-        }
+        stopCamera();
     }
 
     private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if (mScannerView != null) {
-                mScannerView.stopCamera();
-
-            }
-        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -301,7 +295,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
 
                             if (warranty.getBrand().equals(selectedBrand)) {
-                                if (deviceType.equals("new device") ) {
+                                if (deviceType.equals("new device")) {
                                     Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
                                     intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
                                     intent.putExtra("warrantyString", gson.toJson(warranty));
@@ -316,7 +310,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     intent.putExtra("dealerString", objectTwo);
                                     intent.putExtra("previous_activity", "scan_activity");
                                     startActivity(intent);
-                                }else if( deviceType.equals("activated device")){
+                                } else if (deviceType.equals("activated device")) {
                                     Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                     intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
                                     intent.putExtra("warrantyString", gson.toJson(warranty));
@@ -324,7 +318,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     intent.putExtra("type", deviceType);
                                     intent.putExtra("previous_activity", "scan_activity");
                                     startActivity(intent);
-                                }else if(deviceType.equals("disabled device")){
+                                } else if (deviceType.equals("disabled device")) {
                                     Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                     intent.putExtra("type", "disabled device");
                                     intent.putExtra("previous_activity", "scan_activity");
@@ -344,7 +338,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
                         } else {
 
-                            if (message.equals("Invalid country")||message.equals("No warranty entry found for given entry")) {
+                            if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
                                 Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
                                 intent.putExtra("type", "unauthorized device");
                                 intent.putExtra("previous_activity", "scan_activity");
@@ -354,16 +348,20 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                 intent.putExtra("type", "disabled device");
                                 intent.putExtra("previous_activity", "scan_activity");
                                 startActivity(intent);
-                            } else  {
+                            } else if (message.equals("Please scan correct brand")) {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        if (mScannerView != null) {
-                                            mScannerView.setResultHandler(ScannerActivity.this);
-                                            mScannerView.startCamera();
-
-                                        }
+                                        onBackPressed();
+                                    }
+                                });
+                            } else {
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        startCamera();
                                     }
                                 });
                             }
@@ -371,11 +369,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        if (mScannerView != null) {
-                            mScannerView.setResultHandler(ScannerActivity.this);
-                            mScannerView.startCamera();
-
-                        }
+                        startCamera();
                     }
 
 
@@ -389,11 +383,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            if (mScannerView != null) {
-                                mScannerView.setResultHandler(ScannerActivity.this);
-                                mScannerView.startCamera();
-
-                            }
+                            startCamera();
                         }
                     });
                 }
@@ -407,10 +397,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         String productName;
 
+
         public GetProductAsync(String productName) {
             this.productName = productName;
         }
-
 
 
         @Override
@@ -419,6 +409,8 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
             progressDialog = new ProgressDialog(ScannerActivity.this);
             progressDialog.setMessage(getString(R.string.waiting));
             progressDialog.show();
+
+            stopCamera();
         }
 
         @Override
@@ -439,10 +431,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         Gson gson = new Gson();
                         Product product = gson.fromJson(object, Product.class);
 
-                        if(product.isBrandStatus()){
+                        if (product.isBrandStatus()) {
                             warrantyRequest.setProduct(product);
                             new RequestWarrantyAsync().execute();
-                        }else {
+                        } else {
                             Utils.showAlertWithoutTitleDialog(context, "Brand is not active", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -453,11 +445,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         }
 
 
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                         progressDialog.dismiss();
-
+                        startCamera();
                     }
 
 
@@ -471,12 +462,26 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            startCamera();
                         }
                     });
                 }
             });
 
             return null;
+        }
+    }
+
+    private void startCamera() {
+        if (mScannerView != null) {
+            mScannerView.setResultHandler(ScannerActivity.this);
+            mScannerView.startCamera();
+        }
+    }
+
+    private void stopCamera() {
+        if (mScannerView != null) {
+            mScannerView.stopCamera();
         }
     }
 

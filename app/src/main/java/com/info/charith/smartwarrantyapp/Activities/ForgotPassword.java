@@ -129,12 +129,12 @@ public class ForgotPassword extends AppCompatActivity {
                         String message = jsonObject.getString("message");
 
                         if (success) {
-                            if (message.equals("No record found for given email.")) {
-                                Utils.showAlertWithoutTitleDialog(context, "No record found for the given Username", new DialogInterface.OnClickListener() {
+                            if (message.equals("Password reset successfull")) {
+                                Utils.showAlertWithoutTitleDialog(context, "Password reset successfully.", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        Utils.navigateWithoutHistory(ForgotPassword.this, LoginActivity.class);
+                                        onBackPressed();
 
                                     }
                                 });
@@ -150,12 +150,24 @@ public class ForgotPassword extends AppCompatActivity {
                             }
 
                         } else {
-                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            if (message.equals("No record found for given email.")) {
+                                Utils.showAlertWithoutTitleDialog(context, "Invalid Username.", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        Utils.navigateWithoutHistory(ForgotPassword.this, LoginActivity.class);
+
+                                    }
+                                });
+                            } else {
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

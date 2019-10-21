@@ -13,6 +13,15 @@ public class Product {
     private String dapPolicy;
     private String brandPrefix;
     private String imgBase64;
+    private Integer priority;
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 
     public String getImgBase64() {
         return imgBase64;

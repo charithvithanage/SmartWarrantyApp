@@ -19,6 +19,7 @@ import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
 import com.info.charith.smartwarrantyapp.AsyncTasks.GetProductsAsync;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
+import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
 import com.info.charith.smartwarrantyapp.Entities.Product;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
 import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
+import static com.info.charith.smartwarrantyapp.Utils.sortProductList;
 
 public class DealerInfoActivity extends AppCompatActivity {
     private static final String TAG = "SmartWarrantyApp";
@@ -182,7 +184,7 @@ public class DealerInfoActivity extends AppCompatActivity {
 
 
                             gson = new Gson();
-                            DealerUserMock dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
+                            DealerUser dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
                             dealer = gson.fromJson(userDealer, Dealer.class);
 
                             new GetDealerAsync(DealerInfoActivity.this, dealerUserMock.getDealerCode(), new AsyncListner() {
@@ -239,7 +241,7 @@ public class DealerInfoActivity extends AppCompatActivity {
                                                 SharedPreferences.Editor editor = sharedPref.edit();
                                                 editor.putString("enabledBrands", object);
                                                 editor.commit();
-                                                Config.Instance.setEnabledBrands(brands);
+                                                Config.Instance.setEnabledBrands(sortProductList(brands));
                                                 Utils.navigateWithoutHistory(context, MainActivity.class);
 
 

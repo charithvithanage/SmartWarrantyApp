@@ -4,25 +4,20 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
-import com.info.charith.smartwarrantyapp.Fragments.SettingsFragment;
+import com.info.charith.smartwarrantyapp.Entities.Product;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -275,7 +270,8 @@ public class Utils {
      * @return end of the day time
      */
     public static DateTime endOfDay(DateTime date) {
-        return date.plusDays(1).minusMinutes(1);
+
+        return date.withTimeAtStartOfDay().plusDays(1).minusMinutes(1);
 //        return date.plusMinutes(1);
 
     }
@@ -314,6 +310,22 @@ public class Utils {
         }
 
         return capMatcher.appendTail(capBuffer).toString();
+    }
+
+    /**
+     * Sort acsending order product list by the priority
+     * @param lsit
+     * @return sorted list
+     */
+    public static List<Product> sortProductList(List<Product> lsit) {
+
+        Collections.sort(lsit, new Comparator<Product>() {
+            public int compare(Product obj1, Product obj2) {
+                // ## Ascending order
+                return obj1.getPriority().compareTo(obj2.getPriority()); // To compare string values
+            }
+        });
+        return lsit;
     }
 
 }

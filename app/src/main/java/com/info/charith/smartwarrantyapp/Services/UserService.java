@@ -100,6 +100,7 @@ public class UserService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d(TAG,error.toString());
                 callback.onError(context,error.toString());
             }
         });

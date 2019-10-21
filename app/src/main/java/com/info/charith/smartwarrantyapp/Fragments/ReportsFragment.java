@@ -53,6 +53,7 @@ public class ReportsFragment extends Fragment {
     TextView tvTotal;
     String activationReportsSize, summaryReportsSize = null;
     boolean showActivationLayout = true;
+    TextView emptyActivityLable, emptySummartLable;
 
 
     @Nullable
@@ -104,27 +105,29 @@ public class ReportsFragment extends Fragment {
         tvFromDate = root.findViewById(R.id.tvFromDate);
         tvToDate = root.findViewById(R.id.tvToDate);
         tvTotal = root.findViewById(R.id.tvTotal);
+        emptyActivityLable = root.findViewById(R.id.emptyActivityLable);
+        emptySummartLable = root.findViewById(R.id.emptySummaryLable);
 
         activityReportListView = root.findViewById(R.id.activityReportsListView);
         summaryReportListView = root.findViewById(R.id.summaryReportsListView);
 
 
-//        activityReportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Warranty warranty = activityReportsAdapter.getItem(position);
-//                Gson gson = new Gson();
-//                Intent intent = new Intent(getActivity(), DeivceInfoActivity.class);
-//                intent.putExtra("type", "Warranty Details");
-//                intent.putExtra("warrantyString", gson.toJson(warranty));
-//                intent.putExtra("previous_activity", "activation_list_activity");
-//                getActivity().startActivity(intent);
-//
-//            }
-//        });
+        activityReportListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Warranty warranty = activityReportsAdapter.getItem(position);
+                Gson gson = new Gson();
+                Intent intent = new Intent(getActivity(), DeivceInfoActivity.class);
+                intent.putExtra("type", "Warranty Details");
+                intent.putExtra("warrantyString", gson.toJson(warranty));
+                intent.putExtra("previous_activity", "activation_list_activity");
+                getActivity().startActivity(intent);
+
+            }
+        });
 
         fromDate = new DateTime();
-        fromDate = fromDate.minusDays(1);
+//        fromDate = fromDate.minusDays(1);
         toDate = new DateTime();
 
         tvFromDate.setText(toDate.toString("dd MMM YYYY"));
@@ -196,8 +199,16 @@ public class ReportsFragment extends Fragment {
 
         activityReportListView.setVisibility(View.VISIBLE);
         summaryReportListView.setVisibility(View.GONE);
-
+        emptySummartLable.setVisibility(View.GONE);
+        showActivationLayout = true;
         tvTotal.setText(activationReportsSize);
+        if (activityReports.size() == 0) {
+            emptyActivityLable.setVisibility(View.VISIBLE);
+        } else {
+            emptyActivityLable.setVisibility(View.GONE);
+        }
+
+
 
     }
 
@@ -206,21 +217,16 @@ public class ReportsFragment extends Fragment {
         selectByDateBtn.setTextColor(getResources().getColor(R.color.platinum));
         selectByDateBtn.setBackground(getResources().getDrawable(R.drawable.deselect_btn_bg));
         selectByClientBtn.setBackground(getResources().getDrawable(R.drawable.select_btn_bg));
-
+        showActivationLayout = false;
         summaryReportListView.setVisibility(View.VISIBLE);
         activityReportListView.setVisibility(View.GONE);
+        emptyActivityLable.setVisibility(View.GONE);
         tvTotal.setText(summaryReportsSize);
-
-    }
-
-    //return time as 12.00 am time of given date
-    public static DateTime beginOfDay(DateTime date) {
-        return date.withTimeAtStartOfDay();
-    }
-
-    //return time as 11.59 am time of given date
-    public static DateTime endOfDay(DateTime date) {
-        return date.plusDays(1).minusMinutes(1);
+        if (summaryReports.size() == 0) {
+            emptySummartLable.setVisibility(View.VISIBLE);
+        } else {
+            emptySummartLable.setVisibility(View.GONE);
+        }
     }
 
     private class GetActivityReportsAsync extends AsyncTask<Void, Void, Void> {
@@ -238,6 +244,7 @@ public class ReportsFragment extends Fragment {
             DealerService.getInstance().getActivityReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+                    activityReports = new ArrayList<>();
 
                     try {
 
@@ -249,7 +256,6 @@ public class ReportsFragment extends Fragment {
                             JSONArray jsonArray = new JSONArray(objectString);
 
                             if (jsonArray.length() > 0) {
-                                activityReports = new ArrayList<>();
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     Warranty activityReport = gson.fromJson(jsonArray.getString(i), Warranty.class);
                                     activityReports.add(activityReport);
@@ -259,8 +265,14 @@ public class ReportsFragment extends Fragment {
 
                         activationReportsSize = String.valueOf(activityReports.size());
 
-                        if(showActivationLayout){
+                        if (showActivationLayout) {
                             tvTotal.setText(activationReportsSize);
+                            if (activityReports.size() == 0) {
+                                emptyActivityLable.setVisibility(View.VISIBLE);
+                            }else {
+                                emptyActivityLable.setVisibility(View.GONE);
+
+                            }
                         }
 
                         activityReportsAdapter = new ActivityReportsAdapter(getActivity(), activityReports);
@@ -294,6 +306,7 @@ public class ReportsFragment extends Fragment {
             DealerService.getInstance().getSummaryReports(getActivity(), fromDate.toString("yyyy-MM-dd"), toDate.toString("yyyy-MM-dd"), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+                    summaryReports = new ArrayList<>();
 
                     try {
 
@@ -305,7 +318,6 @@ public class ReportsFragment extends Fragment {
                             JSONArray jsonArray = new JSONArray(objectString);
 
                             if (jsonArray.length() > 0) {
-                                summaryReports = new ArrayList<>();
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     SummaryReport summaryReport = gson.fromJson(jsonArray.getString(i), SummaryReport.class);
                                     summaryReports.add(summaryReport);
@@ -316,8 +328,13 @@ public class ReportsFragment extends Fragment {
                         summaryReportsSize = String.valueOf(summaryReports.size());
 
 
-                        if(!showActivationLayout){
+                        if (!showActivationLayout) {
                             tvTotal.setText(summaryReportsSize);
+                            if (summaryReports.size() == 0) {
+                                emptySummartLable.setVisibility(View.VISIBLE);
+                            }else {
+                                emptySummartLable.setVisibility(View.GONE);
+                            }
                         }
 
                         summaryReportsAdapter = new SummaryReportsAdapter(getActivity(), summaryReports);

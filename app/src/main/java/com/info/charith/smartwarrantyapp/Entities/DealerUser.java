@@ -7,7 +7,7 @@ public class DealerUser {
     private String nic;
     private String username;
     private String password;
-    private boolean userStatus;
+    private boolean dealerUserStatus;
 
     public long getId() {
         return id;
@@ -49,11 +49,11 @@ public class DealerUser {
         this.password = password;
     }
 
-    public boolean isUserStatus() {
-        return userStatus;
+    public boolean isDealerUserStatus() {
+        return dealerUserStatus;
     }
 
-    public void setUserStatus(boolean userStatus) {
-        this.userStatus = userStatus;
+    public void setDealerUserStatus(boolean dealerUserStatus) {
+        this.dealerUserStatus = dealerUserStatus;
     }
 }

@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.Entities.ChangePassword;
-import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.UserService;
@@ -185,7 +185,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             Gson gson=new Gson();
 
             String dealerString=sharedPref.getString("loggedInUser","0");
-            DealerUserMock dealerUserMock=gson.fromJson(dealerString,DealerUserMock.class);
+            DealerUser dealerUserMock=gson.fromJson(dealerString, DealerUser.class);
 
             changePassword.setUsername(dealerUserMock.getUsername());
             changePassword.setOldPassword(oldPassword);
@@ -198,6 +198,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
             if (!isPasswordValid(oldPassword)) {
                 errorOldPassword.setVisibility(View.VISIBLE);
+
                 errorOldPassword.setText(getPasswordValidStatus(ChangePasswordActivity.this,oldPassword));
                 oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
             }
@@ -212,7 +213,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
             if(!password.matches(confirmPassword)){
                 errorConfirmPassword.setVisibility(View.VISIBLE);
-                errorConfirmPassword.setText(getString(R.string.invalid_user_password_not_match));
+                errorConfirmPassword.setText("( New Password do not match. )");
                 confirmPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
             }
         }
@@ -250,9 +251,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
 
                         } else {
-                            errorOldPassword.setVisibility(View.VISIBLE);
-                            errorOldPassword.setText(message);
-                            oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                            if(message.equals("Provided old password does not match")){
+                                errorOldPassword.setVisibility(View.VISIBLE);
+                                errorOldPassword.setText("Current Password incorrect");
+                                oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                            }else {
+                                errorOldPassword.setVisibility(View.VISIBLE);
+                                errorOldPassword.setText(message);
+                                oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                            }
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -3,7 +3,6 @@ package com.info.charith.smartwarrantyapp.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Activities.MainActivity;
 import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
 import com.info.charith.smartwarrantyapp.Adapters.BrandAdapter;
-import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
-import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Entities.Product;
-import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
-import com.info.charith.smartwarrantyapp.Services.DealerService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +38,7 @@ public class HomeFragment extends Fragment {
     AtomicInteger atomicInteger;
     LinearLayoutManager MyLayoutManager;
 
-    DealerUserMock dealerUserMock;
+    DealerUser dealerUserMock;
 
     Gson gson = new Gson();
 
@@ -65,7 +59,7 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String loggedInUser = sharedPref.getString("loggedInUser", null);
-        dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
+        dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
         String dealerString = sharedPref.getString("userDealer", "0");
         dealer = gson.fromJson(dealerString, Dealer.class);
 

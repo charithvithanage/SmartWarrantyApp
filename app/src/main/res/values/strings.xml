@@ -38,8 +38,8 @@
     <string name="no_permission_to_camera">Camera access restricted or denieded. Can configure it from settings.</string>
     <string name="device_info">Device Information</string>
     <string name="contact_no_start_wrong">( Should start with 0 )</string>
-    <string name="enter_single_value">Enter customer details</string>
-    <string name="wrong_email_pattern">( Wrong email pattern )</string>
+    <string name="enter_single_value">Please fill in all customer information fields</string>
+    <string name="wrong_email_pattern">( Invalid email pattern )</string>
     <string name="invalid_contact_no">( Invalid contact no )</string>
     <string name="waiting">Waiting........</string>
     <string name="logout_confirmation_message">Are you sure you want to logout?</string>

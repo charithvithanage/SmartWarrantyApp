@@ -44,6 +44,7 @@ public class DealershipAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             Dealer dealer = list.get(position);
             if (dealer != null) {
                 ((MyViewHolder) holder).dealerName.setText(dealer.getDealerName());
+                ((MyViewHolder) holder).dealerCity.setText(dealer.getCity());
             }
         }
 
@@ -67,12 +68,13 @@ public class DealershipAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView dealerName;
-
+        TextView dealerCity;
 
         public MyViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
             dealerName = v.findViewById(R.id.dealerName);
+            dealerCity = v.findViewById(R.id.tvCity);
         }
 
         @Override

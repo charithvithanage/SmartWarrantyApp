@@ -329,13 +329,10 @@ public class SignUpActivity extends AppCompatActivity {
 
 
                         if (success) {
-
-
                             Intent intent = new Intent(SignUpActivity.this, DealerInfoActivity.class);
                             intent.putExtra("dealerString", jsonObject.getString("dealer"));
                             intent.putExtra("dealerUserMockString", jsonObject.getString("dealerUserMock"));
                             startActivity(intent);
-
                         } else {
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override

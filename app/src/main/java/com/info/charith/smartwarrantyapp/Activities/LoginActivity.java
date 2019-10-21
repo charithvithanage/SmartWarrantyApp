@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,19 +17,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.info.charith.smartwarrantyapp.Adapters.BrandAdapter;
 import com.info.charith.smartwarrantyapp.AsyncTasks.GetDealerAsync;
 import com.info.charith.smartwarrantyapp.AsyncTasks.GetProductsAsync;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.Credential;
 import com.info.charith.smartwarrantyapp.Entities.Dealer;
-import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
+import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Entities.Product;
-import com.info.charith.smartwarrantyapp.Fragments.HomeFragment;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
-import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
@@ -47,6 +42,7 @@ import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
 import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
+import static com.info.charith.smartwarrantyapp.Utils.sortProductList;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -252,7 +248,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.commit();
 
                             gson = new Gson();
-                            DealerUserMock dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
+                            DealerUser dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
                             dealer = gson.fromJson(userDealer, Dealer.class);
 
                             new GetDealerAsync(LoginActivity.this, dealerUserMock.getDealerCode(), new AsyncListner() {
@@ -309,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 SharedPreferences.Editor editor = sharedPref.edit();
                                                 editor.putString("enabledBrands", object);
                                                 editor.commit();
-                                                Config.Instance.setEnabledBrands(brands);
+                                                Config.Instance.setEnabledBrands(sortProductList(brands));
                                                 Utils.navigateWithoutHistory(context, MainActivity.class);
 
 
@@ -335,12 +331,22 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             String message = jsonObject.getString("message");
 
-                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            if(message.equals("Invalid Credentials or Inactive User.")){
+                                Utils.showAlertWithoutTitleDialog(context, "Invalid Credentials", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }else {
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+
                         }
 
                     } catch (JSONException e) {

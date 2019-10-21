@@ -188,7 +188,7 @@
                     android:background="@drawable/bottom_left_layout"
                     android:gravity="center"
                     android:padding="@dimen/filterBtnPaddingLeft"
-                    android:text="Total "></TextView>
+                    android:text="Total Count"></TextView>
 
                 <TextView
                     android:id="@+id/tvTotal"
@@ -198,8 +198,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bottom_right_layout"
                     android:gravity="center"
-                    android:padding="@dimen/filterBtnPaddingLeft"
-                    android:text="Total"></TextView>
+                    android:padding="@dimen/filterBtnPaddingLeft"></TextView>
             </LinearLayout>
 
 
@@ -210,6 +209,14 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/emptyActivityLable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="No data available"
+                    android:visibility="gone"></TextView>
+
                 <ListView
                     android:id="@+id/activityReportsListView"
                     android:layout_width="match_parent"
@@ -217,6 +224,14 @@
                     android:layout_weight="1"
                     android:divider="@null"
                     android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/emptySummaryLable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="No data available"
+                    android:visibility="gone"></TextView>
 
                 <ListView
                     android:id="@+id/summaryReportsListView"

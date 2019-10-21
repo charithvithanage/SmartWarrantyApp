@@ -6,14 +6,9 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -24,20 +19,15 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Adapters.CustomExpandableListAdapter;
-import com.info.charith.smartwarrantyapp.Entities.DealerUserMock;
-import com.info.charith.smartwarrantyapp.Entities.ExpandableListDataPump;
+import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.joda.time.DateTime;
+import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
 
@@ -53,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     LinearLayout logoutBtn;
 
-    DealerUserMock dealerUserMock;
+    DealerUser dealerUserMock;
 
     Gson gson = new Gson();
 
@@ -75,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String logoutTimeString = sharedPref.getString("logoutTime", null);
         String loggedInUser = sharedPref.getString("loggedInUser", null);
 
-        dealerUserMock = gson.fromJson(loggedInUser, DealerUserMock.class);
+        dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
 
         DateTime now = new DateTime();
 
@@ -130,16 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                SharedPreferences sharedPref = getSharedPreferences(
-                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPref.edit();
-                                editor.putString("loggedInUser", "0");
-                                editor.putString("accessToken", "0");
-                                editor.putString("refreshToken", "0");
-                                editor.putString("userDealer", "0");
-                                editor.putString("logoutTime", null);
-                                editor.commit();
-                                Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+                                new LogoutAsync().execute();
 
                             }
                         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -148,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         dialog.dismiss();
                     }
                 }).show();
-
             }
         });
 
@@ -224,9 +204,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             DealerService.getInstance().logout(MainActivity.this, dealerUserMock.getUsername(), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+
                     SharedPreferences sharedPref = context.getSharedPreferences(
                             getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("logoutTime", null);
+                    editor.putString("loggedInUser", "0");
+                    editor.putString("accessToken", "0");
+                    editor.putString("refreshToken", "0");
+                    editor.putString("userDealer", "0");
                     editor.putString("logoutTime", null);
                     editor.commit();
                     Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
@@ -234,7 +220,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void onError(Context context, String error) {
-                    Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage(getString(R.string.server_error))
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new LogoutAsync().execute();
+                                }
+                            }).show();
+//                    Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);
                 }
             });
 
