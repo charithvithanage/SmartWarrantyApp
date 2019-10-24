@@ -29,9 +29,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordMatch;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.navigateWithoutHistory;
+import static com.info.charith.smartwarrantyapp.Utils.showProgressDialog;
 
 public class ChangePasswordActivity extends AppCompatActivity {
     EditText passwordEditText, oldPasswordEditText, confirmPasswordEditText;
@@ -44,6 +46,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     ImageButton backBtn;
     ImageButton homeBtn;
     TextView titleView;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,20 @@ public class ChangePasswordActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changePassword(passwordEditText.getText().toString(),confirmPasswordEditText.getText().toString(),oldPasswordEditText.getText().toString());
+
+                if(isDeviceOnline(ChangePasswordActivity.this)){
+                    progressDialog = showProgressDialog(ChangePasswordActivity.this);
+                    progressDialog.show();
+                    signUpButton.setEnabled(false);
+                    changePassword(passwordEditText.getText().toString(),confirmPasswordEditText.getText().toString(),oldPasswordEditText.getText().toString());
+                }else {
+                    Utils.showAlertWithoutTitleDialog(ChangePasswordActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
             }
         });
     }
@@ -191,10 +207,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
             changePassword.setOldPassword(oldPassword);
             changePassword.setNewPassword(password);
 
-
             new ChangePasswordAsync().execute();
 
         } else {
+
+            progressDialog.dismiss();
+            signUpButton.setEnabled(true);
 
             if (!isPasswordValid(oldPassword)) {
                 errorOldPassword.setVisibility(View.VISIBLE);
@@ -222,16 +240,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private class ChangePasswordAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(ChangePasswordActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
-
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -248,9 +256,18 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         if (success) {
 //                            findNavController(getParentFragment().getView())
 //                                    .navigate(R.id.nav_home);
-                            navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
+
+                            Utils.showAlertWithoutTitleDialog(context, "Password Changed Successfully.", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    signUpButton.setEnabled(true);
+                                    navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
+                                }
+                            });
 
                         } else {
+                            signUpButton.setEnabled(true);
                             if(message.equals("Provided old password does not match")){
                                 errorOldPassword.setVisibility(View.VISIBLE);
                                 errorOldPassword.setText("Current Password incorrect");
@@ -263,6 +280,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
                         }
                     } catch (JSONException e) {
+                        signUpButton.setEnabled(true);
                         e.printStackTrace();
                     }
 
@@ -277,6 +295,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            signUpButton.setEnabled(true);
+
                         }
                     });
                 }

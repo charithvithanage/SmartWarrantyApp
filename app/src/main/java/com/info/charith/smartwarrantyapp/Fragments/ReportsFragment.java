@@ -134,6 +134,7 @@ public class ReportsFragment extends Fragment {
         tvToDate.setText(toDate.toString("dd MMM YYYY"));
 
         progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.waiting));
 
         showActivationLayout = true;

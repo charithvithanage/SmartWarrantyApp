@@ -82,7 +82,6 @@
             android:background="@drawable/edt_bg_normal"
             android:ems="10"
             android:inputType="textPassword"
-            android:maxLength="8"
             android:paddingStart="@dimen/login_edit_text_padding"
             app:layout_constraintTop_toBottomOf="@+id/textView9"
             tools:layout_editor_absoluteX="31dp" />

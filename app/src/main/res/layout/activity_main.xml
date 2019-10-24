@@ -25,8 +25,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:orientation="vertical"
-            android:background="@color/list_item_click_bg_color">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <include layout="@layout/nav_header_main"></include>
 
             <LinearLayout
@@ -126,7 +127,7 @@
                 android:paddingLeft="16dp"
                 android:paddingTop="15dp"
                 android:paddingRight="16dp"
-                android:paddingBottom="8dp">
+                android:paddingBottom="16dp">
 
 
                 <ImageView
@@ -147,9 +148,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:layout_weight="1"
-                android:background="@color/bg_color">
+                android:background="@color/menu_bg_color">
 
                 <LinearLayout
                     android:id="@+id/nav_logout"

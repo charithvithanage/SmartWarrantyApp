@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +34,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
 import static com.info.charith.smartwarrantyapp.Utils.showAlertWithoutTitleDialog;
+import static com.info.charith.smartwarrantyapp.Utils.showProgressDialog;
 
 public class DealerSearchActivity extends AppCompatActivity {
 
@@ -49,6 +50,7 @@ public class DealerSearchActivity extends AppCompatActivity {
     TextView loginButton;
     TextWatcher userNICTextWatcher;
     TextView errorNIC;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,23 +98,37 @@ public class DealerSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (isUserNICValid(etDealerNIC.getText().toString())) {
+                if(isDeviceOnline(DealerSearchActivity.this)){
+                    if (isUserNICValid(etDealerNIC.getText().toString())) {
 
-                    dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
+                        dealerRequest.setNic(etDealerNIC.getText().toString().toUpperCase());
 
-                    /**
-                     * Enter dealer's NIC
-                     * And get dealer's dealerships from the server
-                     * User can select dealer ship and go to the sign up page
-                     */
-                    new GetDealerAsync().execute();
 
-                }else {
-                    if (!isUserNICValid(etDealerNIC.getText().toString())) {
-                        errorNIC.setVisibility(View.VISIBLE);
-                        errorNIC.setText(getString(R.string.invalid_user_nic));
-                        etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                        /**
+                         * Enter dealer's NIC
+                         * And get dealer's dealerships from the server
+                         * User can select dealer ship and go to the sign up page
+                         */
+                        progressDialog=showProgressDialog(DealerSearchActivity.this);
+                        progressDialog.show();
+                        btnSearch.setEnabled(false);
+
+                        new GetDealerAsync().execute();
+
+                    }else {
+                        if (!isUserNICValid(etDealerNIC.getText().toString())) {
+                            errorNIC.setVisibility(View.VISIBLE);
+                            errorNIC.setText(getString(R.string.invalid_user_nic));
+                            etDealerNIC.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                        }
                     }
+                }else {
+                    Utils.showAlertWithoutTitleDialog(DealerSearchActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
                 }
             }
         });
@@ -153,16 +169,6 @@ public class DealerSearchActivity extends AppCompatActivity {
     }
 
     private class GetDealerAsync extends AsyncTask<Void, Void, Void> {
-
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(DealerSearchActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -213,6 +219,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                                         Dealer dealer = dealers.get(position);
 
                                         if(dealer.isActive()){
+                                            btnSearch.setEnabled(true);
                                             Intent intent = new Intent(DealerSearchActivity.this, SignUpActivity.class);
                                             intent.putExtra("dealerString", gson.toJson(dealer));
                                             startActivity(intent);
@@ -221,6 +228,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     dialog.dismiss();
+                                                    btnSearch.setEnabled(true);
                                                 }
                                             });
                                         }
@@ -233,7 +241,8 @@ public class DealerSearchActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         dialog.dismiss();
-                                    }
+                                        btnSearch.setEnabled(true);
+                                   }
                                 });
                                 dialog.show();
                             } else {
@@ -241,6 +250,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+                                        btnSearch.setEnabled(true);
                                     }
                                 });
                             }
@@ -250,6 +260,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    btnSearch.setEnabled(true);
                                     dialog.dismiss();
                                 }
                             });
@@ -257,6 +268,8 @@ public class DealerSearchActivity extends AppCompatActivity {
 
 
                     } catch (Exception e) {
+                        btnSearch.setEnabled(true);
+
                         e.printStackTrace();
                     }
 
@@ -270,6 +283,7 @@ public class DealerSearchActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            btnSearch.setEnabled(true);
                         }
                     });
                 }

@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import io.fabric.sdk.android.Fabric;
 
 import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 
 public class Splash extends AppCompatActivity {
 
@@ -32,32 +33,43 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if(isDeviceOnline(Splash.this)){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                SharedPreferences sharedPref = getSharedPreferences(
-                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                String logoutTimeString = sharedPref.getString("logoutTime", null);
+                    SharedPreferences sharedPref = getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                    String logoutTimeString = sharedPref.getString("logoutTime", null);
 
-                final String loggedInLawyer = sharedPref.getString("loggedInUser", "0");
-                final String accessToken = sharedPref.getString("accessToken", "0");
+                    final String loggedInLawyer = sharedPref.getString("loggedInUser", "0");
+                    final String accessToken = sharedPref.getString("accessToken", "0");
 
-                if (logoutTimeString != null) {
+                    if (logoutTimeString != null) {
 
-                    if (!loggedInLawyer.equals("0") && !accessToken.equals("0")) {
-                        Utils.navigateWithoutHistory(Splash.this, MainActivity.class);
-                    } else {
+                        if (!loggedInLawyer.equals("0") && !accessToken.equals("0")) {
+                            Utils.navigateWithoutHistory(Splash.this, MainActivity.class);
+                        } else {
+                            Utils.navigateWithoutHistory(Splash.this, LoginActivity.class);
+                        }
+
+                    }else {
                         Utils.navigateWithoutHistory(Splash.this, LoginActivity.class);
                     }
 
-                }else {
-                    Utils.navigateWithoutHistory(Splash.this, LoginActivity.class);
+
                 }
+            }, 1000);
+        }else {
+            Utils.showAlertWithoutTitleDialog(Splash.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
 
 
-            }
-        }, 1000);
     }
 
 

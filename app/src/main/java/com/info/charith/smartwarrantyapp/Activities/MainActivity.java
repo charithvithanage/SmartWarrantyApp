@@ -1,11 +1,13 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -29,7 +31,9 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.info.charith.smartwarrantyapp.Utils.capEachWord;
 import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,15 +53,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     LinearLayout nav_home, nav_reports, nav_about, nav_settings;
 
+    private static final String TAG = "SmartWarrantyApp";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG,capEachWord("the sentence you want to apply caps to"));
+
         /**
          * Change status bar color programmatically
          */
         Utils.changeStatusBarColor(MainActivity.this, getWindow());
+
+
 
 
         SharedPreferences sharedPref = getSharedPreferences(
@@ -83,7 +93,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            new LogoutAsync().execute();
+                            if(isDeviceOnline(MainActivity.this)){
+                                new LogoutAsync().execute();
+
+                            }else {
+                                Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
                         }
                     }).show();
         } else {
@@ -120,7 +140,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                new LogoutAsync().execute();
+
+                                if(isDeviceOnline(MainActivity.this)){
+                                    new LogoutAsync().execute();
+                                }else {
+                                    Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                }
 
                             }
                         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -187,7 +217,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.nav_report:
-                navController.navigate(R.id.nav_report);
+                if(isDeviceOnline(MainActivity.this)){
+                    navController.navigate(R.id.nav_report);
+
+                }else {
+                    Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
                 break;
 
             case R.id.nav_settings:
@@ -198,6 +238,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class LogoutAsync extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog=new ProgressDialog(MainActivity.this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.waiting));
+            progressDialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -205,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
 
+                    progressDialog.dismiss();
                     SharedPreferences sharedPref = context.getSharedPreferences(
                             getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
@@ -220,13 +272,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
                     new AlertDialog.Builder(MainActivity.this)
                             .setMessage(getString(R.string.server_error))
                             .setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    new LogoutAsync().execute();
+                                    dialog.dismiss();
+
                                 }
                             }).show();
 //                    Utils.navigateWithoutHistory(MainActivity.this, LoginActivity.class);

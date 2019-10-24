@@ -41,7 +41,7 @@ import org.json.JSONObject;
 import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-import static androidx.navigation.fragment.NavHostFragment.findNavController;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 
 public class ScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
@@ -110,17 +110,28 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                     public void onClick(View v) {
 
 
-                        if (imei.getText().length() == 15) {
-                            dialog.dismiss();
+                        if(isDeviceOnline(ScannerActivity.this)){
+                            if (imei.getText().length() == 15) {
+                                dialog.dismiss();
 
-                            if (!TextUtils.isEmpty(imei.getText())) {
-                                warrantyRequest.setImei(imei.getText().toString());
-                                new GetProductAsync(selectedBrand).execute();
+                                if (!TextUtils.isEmpty(imei.getText())) {
+                                    warrantyRequest.setImei(imei.getText().toString());
+                                    new GetProductAsync(selectedBrand).execute();
+                                }
+                            } else {
+                                errorLable.setText("( Enter correct IMEI )");
+                                errorLable.setVisibility(View.VISIBLE);
                             }
-                        } else {
-                            errorLable.setText("( Enter correct IMEI )");
-                            errorLable.setVisibility(View.VISIBLE);
+                        }else {
+                            Utils.showAlertWithoutTitleDialog(ScannerActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
                         }
+
+
 
                     }
                 });
@@ -177,7 +188,9 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         String type;
 
         if (warranty.getActivationStatus().equals("Enable")) {
+
             type = "new device";
+
         } else if (warranty.getActivationStatus().equals("Disable")) {
             type = "disabled device";
         } else if (warranty.getActivationStatus().equals("Enable with Date")) {
@@ -407,6 +420,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(ScannerActivity.this);
+            progressDialog.setCancelable(false);
             progressDialog.setMessage(getString(R.string.waiting));
             progressDialog.show();
 

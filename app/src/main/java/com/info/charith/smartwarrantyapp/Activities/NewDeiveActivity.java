@@ -30,12 +30,14 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
+import com.info.charith.smartwarrantyapp.WordUtils;
 
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.info.charith.smartwarrantyapp.Utils.capitalize;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
+import static com.info.charith.smartwarrantyapp.Utils.showProgressDialog;
 
 public class NewDeiveActivity extends AppCompatActivity {
 
@@ -58,6 +60,8 @@ public class NewDeiveActivity extends AppCompatActivity {
     String dealerCode = null;
     DealerUser dealerUserMock;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,57 +81,71 @@ public class NewDeiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!TextUtils.isEmpty(etCustomerName.getText()) && !TextUtils.isEmpty(etCustomerAddress.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText()) && !TextUtils.isEmpty(etCustomerEmail.getText())) {
+                if(isDeviceOnline(NewDeiveActivity.this)){
+                    if (!TextUtils.isEmpty(etCustomerName.getText()) && !TextUtils.isEmpty(etCustomerAddress.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText()) && !TextUtils.isEmpty(etCustomerEmail.getText())) {
 
-                    if (!TextUtils.isEmpty(etCustomerEmail.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText())) {
+                        if (!TextUtils.isEmpty(etCustomerEmail.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText())) {
 
-                        if (etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern) && etCustomerContactNo.getText().toString().length() == 10) {
-                            /**
-                             * If email and contact no are correct  navigate to device info activity
-                             */
-                            navigateToDeviceInfoActivity();
+                            if (etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern) && etCustomerContactNo.getText().toString().length() == 10) {
+                                /**
+                                 * If email and contact no are correct  navigate to device info activity
+                                 */
+                                progressDialog=showProgressDialog(NewDeiveActivity.this);
+                                progressDialog.show();
+                                btnConfirm.setEnabled(false);
+                                navigateToDeviceInfoActivity();
+                            } else {
+
+                                if (!etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)) {
+                                    errorEmail.setVisibility(View.VISIBLE);
+                                    errorEmail.setText(getString(R.string.wrong_email_pattern));
+                                    etCustomerEmail.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                                } else {
+                                    setEmailEditTextBGNormal();
+                                }
+
+                                if (etCustomerContactNo.getText().toString().length() != 10) {
+                                    errorContactNo.setVisibility(View.VISIBLE);
+                                    errorContactNo.setText(getString(R.string.invalid_contact_no));
+                                    etCustomerContactNo.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+
+                                } else {
+                                    setContactNoEditTextBGNormal();
+                                }
+                            }
+
                         } else {
-
-                            if (!etCustomerEmail.getText().toString().matches(Config.Instance.emailPattern)) {
+                            if (!TextUtils.isEmpty(etCustomerEmail.getText())) {
                                 errorEmail.setVisibility(View.VISIBLE);
                                 errorEmail.setText(getString(R.string.wrong_email_pattern));
                                 etCustomerEmail.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                            } else {
-                                setEmailEditTextBGNormal();
                             }
 
-                            if (etCustomerContactNo.getText().toString().length() != 10) {
+                            if (!TextUtils.isEmpty(etCustomerContactNo.getText())) {
                                 errorContactNo.setVisibility(View.VISIBLE);
                                 errorContactNo.setText(getString(R.string.invalid_contact_no));
                                 etCustomerContactNo.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-
-                            } else {
-                                setContactNoEditTextBGNormal();
                             }
                         }
 
                     } else {
-                        if (!TextUtils.isEmpty(etCustomerEmail.getText())) {
-                            errorEmail.setVisibility(View.VISIBLE);
-                            errorEmail.setText(getString(R.string.wrong_email_pattern));
-                            etCustomerEmail.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                        }
-
-                        if (!TextUtils.isEmpty(etCustomerContactNo.getText())) {
-                            errorContactNo.setVisibility(View.VISIBLE);
-                            errorContactNo.setText(getString(R.string.invalid_contact_no));
-                            etCustomerContactNo.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                        }
+                        Utils.showAlertWithoutTitleDialog(NewDeiveActivity.this, getString(R.string.enter_single_value), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
-
-                } else {
-                    Utils.showAlertWithoutTitleDialog(NewDeiveActivity.this, getString(R.string.enter_single_value), new DialogInterface.OnClickListener() {
+                }else {
+                    Utils.showAlertWithoutTitleDialog(NewDeiveActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
                 }
+
+
 
             }
         });
@@ -320,10 +338,10 @@ public class NewDeiveActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String str = s.toString();
+
                 etCustomerName.removeTextChangedListener(this);
-                str = capitalize(str);
+                str = WordUtils.capitalize(str);
                 etCustomerName.setText(str);
-                String lenght= String.valueOf(etCustomerName.length());
                 etCustomerName.setSelection(etCustomerName.length());
                 etCustomerName.addTextChangedListener(etNameTextWatcher);
             }
@@ -345,7 +363,8 @@ public class NewDeiveActivity extends AppCompatActivity {
 
                 String str = s.toString();
                 etCustomerAddress.removeTextChangedListener(this);
-                str = capitalize(str);
+//                str = WordUtils.capitalize(str);
+                str = WordUtils.capitalize(str);
                 etCustomerAddress.setText(str);
                 etCustomerAddress.setSelection(etCustomerAddress.length());
                 etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
@@ -390,43 +409,56 @@ public class NewDeiveActivity extends AppCompatActivity {
 
     private class UpdateWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(NewDeiveActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
-
         @Override
         protected Void doInBackground(Void... voids) {
 
             UserService.getInstance().updateWarranty(NewDeiveActivity.this, warranty, new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
-                    progressDialog.dismiss();
                     try {
                         boolean success = jsonObject.getBoolean("success");
+                        String message = jsonObject.getString("message");
                         if (success) {
                             new RequestWarrantyAsync().execute();
+                        } else {
+                            if (message.contains("No warranty template found for brand :")) {
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        new RequestWarrantyAsync().execute();
+                                    }
+                                });
+                            }else {
+                                progressDialog.dismiss();
+
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        btnConfirm.setEnabled(true);
+                                    }
+                                });
+                            }
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        progressDialog.dismiss();
+                        btnConfirm.setEnabled(true);
+
                     }
                 }
 
                 @Override
                 public void onError(Context context, String error) {
-                    progressDialog = new ProgressDialog(NewDeiveActivity.this);
-                    progressDialog.setMessage(getString(R.string.waiting));
                     progressDialog.dismiss();
                     Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            btnConfirm.setEnabled(true);
+
                         }
                     });
                 }
@@ -445,9 +477,8 @@ public class NewDeiveActivity extends AppCompatActivity {
             DealerService.getInstance().getWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequest, WarrantyRequest.class), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
-
-                    String objectOne = null;
-                    String objectTwo = null;
+                    progressDialog.dismiss();
+                    String objectOne;
 
                     try {
                         boolean success = jsonObject.getBoolean("success");
@@ -465,6 +496,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     } catch (JSONException e) {
+                        btnConfirm.setEnabled(true);
                         e.printStackTrace();
                     }
 
@@ -473,10 +505,12 @@ public class NewDeiveActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(Context context, String error) {
+                    progressDialog.dismiss();
                     Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            btnConfirm.setEnabled(true);
                         }
                     });
                 }
@@ -485,24 +519,4 @@ public class NewDeiveActivity extends AppCompatActivity {
             return null;
         }
     }
-
-    private String getDeviceType(Warranty warranty) {
-
-        String type;
-
-        if (warranty.getActivationStatus().equals("Enable")) {
-            type = "new device";
-        } else if (warranty.getActivationStatus().equals("Disable")) {
-            type = "disabled device";
-        } else {
-            if (!warranty.getCustomerName().equals("") && !warranty.getEmail().equals("") && !warranty.getContactNo().equals("") && !warranty.getAddress().equals("")) {
-                type = "sold device";
-            } else {
-                type = "activated device";
-            }
-        }
-
-        return type;
-    }
-
 }

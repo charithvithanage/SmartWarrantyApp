@@ -1,12 +1,8 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -20,7 +16,6 @@ import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.Warranty;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
-import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.json.JSONException;
@@ -122,7 +117,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+//                onBackPressed();
             }
         });
 
@@ -232,55 +227,10 @@ public class DeivceInfoActivity extends AppCompatActivity {
             tvServiceWStatus.setText(warranty.getServiceWarrantyStatus());
 
         }
-
-
-
     }
 
+    @Override
+    public void onBackPressed() {
 
-    /**
-     * Update warranty to the server
-     */
-    private class UpdateWarrantyAsync extends AsyncTask<Void, Void, Void> {
-
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(DeivceInfoActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            UserService.getInstance().updateWarranty(DeivceInfoActivity.this, warranty, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    Log.d(TAG, jsonObject.toString());
-                    progressDialog.dismiss();
-                    Intent intent = new Intent(DeivceInfoActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    progressDialog = new ProgressDialog(DeivceInfoActivity.this);
-                    progressDialog.setMessage(getString(R.string.waiting));
-                    progressDialog.dismiss();
-                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                }
-            });
-
-            return null;
-        }
     }
 }

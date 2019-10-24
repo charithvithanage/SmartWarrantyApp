@@ -53,6 +53,8 @@ public class MessageActivity extends AppCompatActivity {
                  * Navigate to the new device activity to enter customer details
                  * Else navigate to home fragment
                  */
+
+                btnSubmit.setEnabled(false);
                 if (type.equals("activated device") && previous_activity.equals("scan_activity")) {
                     Intent intent = new Intent(MessageActivity.this, NewDeiveActivity.class);
                     intent.putExtra("type", type);

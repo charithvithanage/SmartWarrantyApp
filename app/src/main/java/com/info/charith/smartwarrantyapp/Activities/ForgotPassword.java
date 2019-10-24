@@ -1,20 +1,19 @@
 package com.info.charith.smartwarrantyapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
@@ -24,7 +23,9 @@ import com.info.charith.smartwarrantyapp.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
+import static com.info.charith.smartwarrantyapp.Utils.showProgressDialog;
 
 public class ForgotPassword extends AppCompatActivity {
     TextView titleView;
@@ -33,6 +34,7 @@ public class ForgotPassword extends AppCompatActivity {
     ImageButton backBtn;
     TextView errorNIC;
     TextWatcher usernameTextWatcher;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +61,24 @@ public class ForgotPassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (isUserNameValid(etUsername.getText().toString())) {
-                    new ForgotPaswordAsync().execute();
-                } else {
-                    errorNIC.setVisibility(View.VISIBLE);
-                    errorNIC.setText(getString(R.string.invalid_username));
-                    etUsername.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                if(isDeviceOnline(ForgotPassword.this)){
+                    if (isUserNameValid(etUsername.getText().toString())) {
+                        progressDialog=showProgressDialog(ForgotPassword.this);
+                        btnSend.setEnabled(false);
+                        new ForgotPaswordAsync().execute();
+                    } else {
+                        errorNIC.setVisibility(View.VISIBLE);
+                        errorNIC.setText(getString(R.string.invalid_username));
+                        etUsername.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
+                    }
+                }else {
+                    Utils.showAlertWithoutTitleDialog(ForgotPassword.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
                 }
-
-
             }
         });
 
@@ -107,17 +118,6 @@ public class ForgotPassword extends AppCompatActivity {
 
     private class ForgotPaswordAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(ForgotPassword.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
         @Override
         protected Void doInBackground(Void... voids) {
             DealerService.getInstance().fogotPassword(ForgotPassword.this, etUsername.getText().toString(), new AsyncListner() {
@@ -130,11 +130,11 @@ public class ForgotPassword extends AppCompatActivity {
 
                         if (success) {
                             if (message.equals("Password reset successfull")) {
-                                Utils.showAlertWithoutTitleDialog(context, "Password reset successfully.", new DialogInterface.OnClickListener() {
+                                Utils.showAlertWithoutTitleDialog(context, "Password Reset Successfully.", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        onBackPressed();
+                                                                               onBackPressed();
 
                                     }
                                 });
@@ -143,7 +143,9 @@ public class ForgotPassword extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+
                                         onBackPressed();
+
 
                                     }
                                 });
@@ -154,15 +156,15 @@ public class ForgotPassword extends AppCompatActivity {
                                 Utils.showAlertWithoutTitleDialog(context, "Invalid Username.", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        btnSend.setEnabled(true);
                                         dialog.dismiss();
-                                        Utils.navigateWithoutHistory(ForgotPassword.this, LoginActivity.class);
-
                                     }
                                 });
                             } else {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        btnSend.setEnabled(true);
                                         dialog.dismiss();
                                     }
                                 });
@@ -171,6 +173,8 @@ public class ForgotPassword extends AppCompatActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        btnSend.setEnabled(true);
+
                     }
 
                 }
@@ -183,6 +187,7 @@ public class ForgotPassword extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            btnSend.setEnabled(true);
                         }
                     });
                 }

@@ -28,11 +28,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordMatch;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNICValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
 import static com.info.charith.smartwarrantyapp.Utils.showAlertWithoutTitleDialog;
+import static com.info.charith.smartwarrantyapp.Utils.showProgressDialog;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -47,6 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     TextWatcher userNameTextWatcher, userNICTextWatcher, userPasswordTextWatcher, confirmPasswordTextWatcher;
     TextView errorUserName, errorPassword, errorConfirmPassword, errorNIC;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +68,33 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                loadingProgressBar.setVisibility(View.VISIBLE);
 
-                if(dealer.isActive()){
-                    signup(userNICEditText.getText().toString(), usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
+                if(isDeviceOnline(SignUpActivity.this)){
+                    if(dealer.isActive()){
+                        progressDialog=showProgressDialog(SignUpActivity.this);
+                        progressDialog.show();
+                        signUpButton.setEnabled(false);
+                        signup(userNICEditText.getText().toString(), usernameEditText.getText().toString(),
+                                passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
+                    }else {
+                        showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.dealer_not_active), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                onBackPressed();
+                            }
+                        });
+                    }
                 }else {
-                    showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.dealer_not_active), new DialogInterface.OnClickListener() {
+                    Utils.showAlertWithoutTitleDialog(SignUpActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            onBackPressed();
                         }
                     });
                 }
+
+
 
             }
         });
@@ -272,6 +288,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         } else {
 
+            progressDialog.dismiss();
+            signUpButton.setEnabled(true);
+
             if (!isUserNICValid(userNIC)) {
                 errorNIC.setVisibility(View.VISIBLE);
                 errorNIC.setText(getString(R.string.invalid_user_nic));
@@ -305,15 +324,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private class ConfirmRegistrationDataAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(SignUpActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -332,16 +342,19 @@ public class SignUpActivity extends AppCompatActivity {
                             Intent intent = new Intent(SignUpActivity.this, DealerInfoActivity.class);
                             intent.putExtra("dealerString", jsonObject.getString("dealer"));
                             intent.putExtra("dealerUserMockString", jsonObject.getString("dealerUserMock"));
-                            startActivity(intent);
+                                                   startActivity(intent);
                         } else {
                             Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    signUpButton.setEnabled(true);
                                     dialog.dismiss();
+
                                 }
                             });
                         }
                     } catch (JSONException e) {
+                        signUpButton.setEnabled(true);
                         e.printStackTrace();
                     }
 
@@ -355,6 +368,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            signUpButton.setEnabled(true);
                             dialog.dismiss();
                         }
                     });
@@ -363,6 +377,12 @@ public class SignUpActivity extends AppCompatActivity {
 
             return null;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        signUpButton.setEnabled(true);
     }
 }
 

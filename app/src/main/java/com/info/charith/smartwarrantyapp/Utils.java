@@ -1,14 +1,18 @@
 package com.info.charith.smartwarrantyapp;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.info.charith.smartwarrantyapp.Activities.NewDeiveActivity;
 import com.info.charith.smartwarrantyapp.Entities.Product;
 
 import org.joda.time.DateTime;
@@ -19,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -138,7 +143,7 @@ public class Utils {
                 String first9Characters = userNIC.substring(0, 9);
 
                 String lastCharacter = userNIC.substring(userNIC.length() - 1);
-                if(first9Characters.matches("[0-9]+")){
+                if (first9Characters.matches("[0-9]+")) {
                     if (lastCharacter.equals("V")) {
                         valid = true;
                     } else if (lastCharacter.equals("X")) {
@@ -146,7 +151,7 @@ public class Utils {
                     } else {
                         valid = false;
                     }
-                }else {
+                } else {
                     valid = false;
                 }
 
@@ -297,23 +302,10 @@ public class Utils {
         return date;
     }
 
-    /**
-     * Convert first letter of each an every word of a sentence
-     * @param capString String to be capitalized
-     * @return formatted string
-     */
-    public static String capitalize(String capString){
-        StringBuffer capBuffer = new StringBuffer();
-        Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
-        while (capMatcher.find()){
-            capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
-        }
-
-        return capMatcher.appendTail(capBuffer).toString();
-    }
 
     /**
      * Sort acsending order product list by the priority
+     *
      * @param lsit
      * @return sorted list
      */
@@ -327,5 +319,45 @@ public class Utils {
         });
         return lsit;
     }
+
+    public static String capEachWord(String source) {
+        String result = "";
+        String[] splitString = source.split(" ");
+        for (String target : splitString) {
+            result += Character.toUpperCase(target.charAt(0)) + target.substring(1) + " ";
+        }
+        return result;
+    }
+
+    /**
+     * Convert first letter of each an every word of a sentence
+     *
+     * @param capString String to be capitalized
+     * @return formatted string
+     */
+    public static String capitalize(String capString) {
+        StringBuffer capBuffer = new StringBuffer();
+        Matcher capMatcher = Pattern.compile("([a-z])([a-z]*)", Pattern.CASE_INSENSITIVE).matcher(capString);
+        while (capMatcher.find()) {
+            capMatcher.appendReplacement(capBuffer, capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
+        }
+
+        return capMatcher.appendTail(capBuffer).toString();
+    }
+
+    public static boolean isDeviceOnline(Context context) {
+        ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static ProgressDialog showProgressDialog(Context context) {
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(context.getString(R.string.waiting));
+        return progressDialog;
+    }
+
 
 }

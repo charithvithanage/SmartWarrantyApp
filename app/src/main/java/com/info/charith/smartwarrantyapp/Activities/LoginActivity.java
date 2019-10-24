@@ -40,8 +40,10 @@ import java.util.List;
 import static com.info.charith.smartwarrantyapp.Utils.dateTimeToString;
 import static com.info.charith.smartwarrantyapp.Utils.endOfDay;
 import static com.info.charith.smartwarrantyapp.Utils.getPasswordValidStatus;
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 import static com.info.charith.smartwarrantyapp.Utils.isPasswordValid;
 import static com.info.charith.smartwarrantyapp.Utils.isUserNameValid;
+import static com.info.charith.smartwarrantyapp.Utils.showProgressDialog;
 import static com.info.charith.smartwarrantyapp.Utils.sortProductList;
 
 public class LoginActivity extends AppCompatActivity {
@@ -52,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
     Credential credential;
     TextView errorUserName, errorPassword, forgotPasswordLink;
     TextWatcher userNameTextWatcher, userPasswordTextWatcher;
+
+    ProgressDialog progressDialog = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,9 +71,22 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                loadingProgressBar.setVisibility(View.VISIBLE);
-                login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                if (isDeviceOnline(LoginActivity.this)) {
+
+                    progressDialog = showProgressDialog(LoginActivity.this);
+                    progressDialog.show();
+                    loginButton.setEnabled(false);
+                    login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());
+                } else {
+                    Utils.showAlertWithoutTitleDialog(LoginActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+
             }
         });
 
@@ -171,6 +188,9 @@ public class LoginActivity extends AppCompatActivity {
             new LoginUserAsync().execute();
 
         } else {
+            progressDialog.dismiss();
+            loginButton.setEnabled(true);
+
             if (!isUserNameValid(username)) {
                 errorUserName.setVisibility(View.VISIBLE);
                 errorUserName.setText(getString(R.string.invalid_username));
@@ -193,17 +213,8 @@ public class LoginActivity extends AppCompatActivity {
      */
     private class LoginUserAsync extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
         Dealer dealer;
         Gson gson;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setMessage(getString(R.string.waiting));
-            progressDialog.show();
-        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -211,8 +222,6 @@ public class LoginActivity extends AppCompatActivity {
             UserService.getInstance().loginUser(LoginActivity.this, credential, new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
-
-                    progressDialog.dismiss();
 
                     try {
                         boolean success = jsonObject.getBoolean("success");
@@ -271,78 +280,103 @@ public class LoginActivity extends AppCompatActivity {
                                             SharedPreferences.Editor editor = sharedPref.edit();
                                             editor.putString("userDealer", gson.toJson(dealer));
                                             editor.commit();
+
+                                            new GetProductsAsync(LoginActivity.this, dealer.getDealerCode(), new AsyncListner() {
+                                                @Override
+                                                public void onSuccess(Context context, JSONObject jsonObject) {
+                                                    String object = null;
+                                                    progressDialog.dismiss();
+
+                                                    try {
+                                                        object = jsonObject.getString("object");
+
+                                                        JSONArray jsonArray = new JSONArray(object);
+                                                        List<Product> brands = new ArrayList<>();
+
+
+                                                        if (jsonArray.length() > 0) {
+                                                            brands = new ArrayList<>();
+
+                                                            for (int i = 0; i < jsonArray.length(); i++) {
+                                                                Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+                                                                brands.add(dealer);
+                                                            }
+                                                        }
+
+                                                        Config.Instance.setEnabledBrands(sortProductList(brands));
+
+                                                        JSONArray sortedJsonArray=new JSONArray();
+
+                                                        for (int i = 0; i < Config.Instance.getEnabledBrands().size(); i++) {
+                                                            Product dealer = Config.Instance.getEnabledBrands().get(i);
+                                                            sortedJsonArray.put(gson.toJson(dealer));
+                                                        }
+
+                                                        SharedPreferences sharedPref = context.getSharedPreferences(
+                                                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                                        editor.putString("enabledBrands", sortedJsonArray.toString());
+                                                        editor.commit();
+
+                                                        loginButton.setEnabled(true);
+                                                        Utils.navigateWithoutHistory(context, MainActivity.class);
+
+
+                                                    } catch (JSONException e) {
+                                                        progressDialog.dismiss();
+                                                        loginButton.setEnabled(true);
+
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onError(Context context, String error) {
+                                                    progressDialog.dismiss();
+                                                    loginButton.setEnabled(true);
+
+                                                }
+                                            }).execute();
+
                                         }
 
 
                                     } catch (JSONException e) {
+                                        progressDialog.dismiss();
+                                        loginButton.setEnabled(true);
+
                                         e.printStackTrace();
                                     }
-
-                                    new GetProductsAsync(LoginActivity.this, dealer.getDealerCode(), new AsyncListner() {
-                                        @Override
-                                        public void onSuccess(Context context, JSONObject jsonObject) {
-                                            String object = null;
-
-                                            try {
-                                                object = jsonObject.getString("object");
-
-                                                JSONArray jsonArray = new JSONArray(object);
-                                                List<Product> brands = new ArrayList<>();
-
-
-                                                if (jsonArray.length() > 0) {
-                                                    brands = new ArrayList<>();
-
-                                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                                        Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
-                                                        brands.add(dealer);
-                                                    }
-                                                }
-
-
-                                                SharedPreferences sharedPref = context.getSharedPreferences(
-                                                        getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                                                SharedPreferences.Editor editor = sharedPref.edit();
-                                                editor.putString("enabledBrands", object);
-                                                editor.commit();
-                                                Config.Instance.setEnabledBrands(sortProductList(brands));
-                                                Utils.navigateWithoutHistory(context, MainActivity.class);
-
-
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Context context, String error) {
-
-                                        }
-                                    }).execute();
-
 
                                 }
 
                                 @Override
                                 public void onError(Context context, String error) {
+                                    progressDialog.dismiss();
+                                    loginButton.setEnabled(true);
+
                                 }
                             }).execute();
 
                         } else {
                             String message = jsonObject.getString("message");
-
-                            if(message.equals("Invalid Credentials or Inactive User.")){
+                            if (message.equals("Invalid Credentials or Inactive User.")) {
+                                progressDialog.dismiss();
                                 Utils.showAlertWithoutTitleDialog(context, "Invalid Credentials", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+                                        loginButton.setEnabled(true);
                                     }
                                 });
-                            }else {
+                            } else {
+                                progressDialog.dismiss();
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+                                        loginButton.setEnabled(true);
+
                                     }
                                 });
                             }
@@ -350,6 +384,9 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                     } catch (JSONException e) {
+                        progressDialog.dismiss();
+                        loginButton.setEnabled(true);
+
                         e.printStackTrace();
                     }
 
@@ -359,6 +396,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
+                    loginButton.setEnabled(true);
 
                     Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override

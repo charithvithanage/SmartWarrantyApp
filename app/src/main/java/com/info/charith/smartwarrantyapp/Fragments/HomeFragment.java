@@ -1,6 +1,7 @@
 package com.info.charith.smartwarrantyapp.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.Activities.ChangePasswordActivity;
 import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
 import com.info.charith.smartwarrantyapp.Adapters.BrandAdapter;
 import com.info.charith.smartwarrantyapp.Config;
@@ -28,6 +30,9 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
+import static com.info.charith.smartwarrantyapp.Utils.showAlertWithoutTitleDialog;
 
 public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
@@ -71,9 +76,9 @@ public class HomeFragment extends Fragment {
         MyLayoutManager = new LinearLayoutManager(getActivity());
         MyLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        if(Config.Instance.getEnabledBrands()!=null){
-            brands=Config.Instance.getEnabledBrands();
-        }else {
+        if (Config.Instance.getEnabledBrands() != null) {
+            brands = Config.Instance.getEnabledBrands();
+        } else {
             String enabledBrandsString = sharedPref.getString("enabledBrands", "0");
 
             try {
@@ -99,10 +104,21 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(View v, int position) {
 
-                Product selectedBrand = brands.get(position);
-                Intent intent = new Intent(getActivity(), ScannerActivity.class);
-                intent.putExtra("selected_brand", selectedBrand.getBrandName());
-                startActivity(intent);
+                if (isDeviceOnline(getActivity())) {
+                    Product selectedBrand = brands.get(position);
+                    Intent intent = new Intent(getActivity(), ScannerActivity.class);
+                    intent.putExtra("selected_brand", selectedBrand.getBrandName());
+                    startActivity(intent);
+                } else {
+                    showAlertWithoutTitleDialog(getActivity(), getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+
+
             }
         });
     }
