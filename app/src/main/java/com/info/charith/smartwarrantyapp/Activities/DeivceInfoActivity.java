@@ -117,7 +117,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                onBackPressed();
+                onBackPressed();
             }
         });
 
@@ -231,6 +231,8 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        if (previous_activity.equals("activation_list_activity")) {
+            super.onBackPressed();
+        }
     }
 }

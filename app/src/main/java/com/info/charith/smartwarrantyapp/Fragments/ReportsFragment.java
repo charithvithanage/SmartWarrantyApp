@@ -127,10 +127,9 @@ public class ReportsFragment extends Fragment {
         });
 
         fromDate = new DateTime();
-//        fromDate = fromDate.minusDays(1);
-        toDate = new DateTime();
+        toDate = fromDate;
 
-        tvFromDate.setText(toDate.toString("dd MMM YYYY"));
+        tvFromDate.setText(fromDate.toString("dd MMM YYYY"));
         tvToDate.setText(toDate.toString("dd MMM YYYY"));
 
         progressDialog = new ProgressDialog(getActivity());
@@ -156,6 +155,17 @@ public class ReportsFragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
                 fromDate = new DateTime(date.getTimeInMillis());
+
+                fromDate = fromDate.withTimeAtStartOfDay();
+                toDate = toDate.withTimeAtStartOfDay();
+
+                if (fromDate != toDate) {
+                    if (fromDate.isAfter(toDate)) {
+                        toDate = fromDate.plusDays(1);
+                        tvToDate.setText(toDate.toString("dd MMM YYYY"));
+                    }
+                }
+
                 tvFromDate.setText(fromDate.toString("dd MMM YYYY"));
                 new GetSummaryReportsAsync().execute();
                 new GetActivityReportsAsync().execute();
@@ -175,6 +185,17 @@ public class ReportsFragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
                 toDate = new DateTime(date.getTimeInMillis());
+
+                fromDate = fromDate.withTimeAtStartOfDay();
+                toDate = toDate.withTimeAtStartOfDay();
+
+                if (fromDate != toDate) {
+                    if (toDate.isBefore(fromDate)) {
+                        fromDate = toDate.minusDays(1);
+                        tvFromDate.setText(fromDate.toString("dd MMM YYYY"));
+                    }
+                }
+
                 tvToDate.setText(toDate.toString("dd MMM YYYY"));
                 new GetSummaryReportsAsync().execute();
                 new GetActivityReportsAsync().execute();
@@ -208,7 +229,6 @@ public class ReportsFragment extends Fragment {
         } else {
             emptyActivityLable.setVisibility(View.GONE);
         }
-
 
 
     }
@@ -270,7 +290,7 @@ public class ReportsFragment extends Fragment {
                             tvTotal.setText(activationReportsSize);
                             if (activityReports.size() == 0) {
                                 emptyActivityLable.setVisibility(View.VISIBLE);
-                            }else {
+                            } else {
                                 emptyActivityLable.setVisibility(View.GONE);
 
                             }
@@ -321,19 +341,21 @@ public class ReportsFragment extends Fragment {
                             if (jsonArray.length() > 0) {
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     SummaryReport summaryReport = gson.fromJson(jsonArray.getString(i), SummaryReport.class);
-                                    summaryReports.add(summaryReport);
+                                    if (summaryReport.getQty() > 0) {
+                                        summaryReports.add(summaryReport);
+                                    }
                                 }
                             }
                         }
 
-                        summaryReportsSize = String.valueOf(summaryReports.size());
+                        summaryReportsSize = calculateSummaryReportCount(summaryReports);
 
 
                         if (!showActivationLayout) {
                             tvTotal.setText(summaryReportsSize);
                             if (summaryReports.size() == 0) {
                                 emptySummartLable.setVisibility(View.VISIBLE);
-                            }else {
+                            } else {
                                 emptySummartLable.setVisibility(View.GONE);
                             }
                         }
@@ -357,6 +379,15 @@ public class ReportsFragment extends Fragment {
 
             return null;
         }
+    }
+
+    private String calculateSummaryReportCount(List<SummaryReport> reports) {
+        Integer count = 0;
+        for (SummaryReport summaryReport : reports) {
+            count = count + summaryReport.getQty();
+        }
+
+        return String.valueOf(count);
     }
 
 }

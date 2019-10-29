@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,7 +54,8 @@ public class NewDeiveActivity extends AppCompatActivity {
     Dealer dealer;
     TextView titleView;
     ImageButton backBtn;
-    TextWatcher etContactNoTextWatcher, etEmailTextWatcher, etAddressTextWatcher, etNameTextWatcher;
+    TextWatcher etContactNoTextWatcher, etEmailTextWatcher;
+//    TextWatcher etAddressTextWatcher, etNameTextWatcher;
     TextView errorContactNo, errorEmail;
     String waranntyRequest;
     ImageButton homeBtn;
@@ -81,7 +83,7 @@ public class NewDeiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(isDeviceOnline(NewDeiveActivity.this)){
+                if (isDeviceOnline(NewDeiveActivity.this)) {
                     if (!TextUtils.isEmpty(etCustomerName.getText()) && !TextUtils.isEmpty(etCustomerAddress.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText()) && !TextUtils.isEmpty(etCustomerEmail.getText())) {
 
                         if (!TextUtils.isEmpty(etCustomerEmail.getText()) && !TextUtils.isEmpty(etCustomerContactNo.getText())) {
@@ -90,7 +92,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                                 /**
                                  * If email and contact no are correct  navigate to device info activity
                                  */
-                                progressDialog=showProgressDialog(NewDeiveActivity.this);
+                                progressDialog = showProgressDialog(NewDeiveActivity.this);
                                 progressDialog.show();
                                 btnConfirm.setEnabled(false);
                                 navigateToDeviceInfoActivity();
@@ -136,7 +138,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }else {
+                } else {
                     Utils.showAlertWithoutTitleDialog(NewDeiveActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -144,7 +146,6 @@ public class NewDeiveActivity extends AppCompatActivity {
                         }
                     });
                 }
-
 
 
             }
@@ -324,57 +325,54 @@ public class NewDeiveActivity extends AppCompatActivity {
             }
         };
 
-        etNameTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String str = s.toString();
-
-                etCustomerName.removeTextChangedListener(this);
-                str = WordUtils.capitalize(str);
-                etCustomerName.setText(str);
-                etCustomerName.setSelection(etCustomerName.length());
-                etCustomerName.addTextChangedListener(etNameTextWatcher);
-            }
-        };
-
-        etAddressTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                String str = s.toString();
-                etCustomerAddress.removeTextChangedListener(this);
+//        etNameTextWatcher = new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                etCustomerName.removeTextChangedListener(etNameTextWatcher);
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//                etCustomerName.setText(strnew);
+//                etCustomerName.setSelection(etCustomerName.length());
+//                etCustomerName.addTextChangedListener(etNameTextWatcher);
+//
+//
+//            }
+//        };
+//
+//        etAddressTextWatcher = new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//                String str = s.toString();
+//                etCustomerAddress.removeTextChangedListener(this);
+////                str = WordUtils.capitalize(str);
 //                str = WordUtils.capitalize(str);
-                str = WordUtils.capitalize(str);
-                etCustomerAddress.setText(str);
-                etCustomerAddress.setSelection(etCustomerAddress.length());
-                etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
-            }
-        };
+//                etCustomerAddress.setText(str);
+//                etCustomerAddress.setSelection(etCustomerAddress.length());
+//                etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
+//            }
+//        };
 
         etCustomerContactNo.addTextChangedListener(etContactNoTextWatcher);
         etCustomerEmail.addTextChangedListener(etEmailTextWatcher);
-        etCustomerName.addTextChangedListener(etNameTextWatcher);
-        etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
     }
 
 
@@ -429,7 +427,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                                         new RequestWarrantyAsync().execute();
                                     }
                                 });
-                            }else {
+                            } else {
                                 progressDialog.dismiss();
 
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {

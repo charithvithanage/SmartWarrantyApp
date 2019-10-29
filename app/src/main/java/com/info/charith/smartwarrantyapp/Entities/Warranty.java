@@ -26,6 +26,16 @@ public class Warranty {
     private String district;
     private String activationDate;
 
+    String timeStamp;
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
     public String getDistrict() {
         return district;
     }

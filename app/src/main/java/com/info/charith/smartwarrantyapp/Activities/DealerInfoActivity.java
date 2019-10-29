@@ -235,7 +235,7 @@ public class DealerInfoActivity extends AppCompatActivity {
 
 
                                                         Config.Instance.setEnabledBrands(sortProductList(brands));
-                                                        
+
                                                         JSONArray sortedJsonArray = new JSONArray();
 
                                                         for (int i = 0; i < Config.Instance.getEnabledBrands().size(); i++) {
