@@ -54,4 +54,6 @@
     <string name="dealer_not_active">Dealer is not active. Can\'t create the account</string>
     <string name="no_internet">Connection Error</string>
     <string name="login_again"> Please login again.</string>
+    <string name="warranty_date_time_lable">Warranty Start Date &amp; Time</string>
+    <string name="date_time_lable">Date &amp; Time</string>
 </resources>

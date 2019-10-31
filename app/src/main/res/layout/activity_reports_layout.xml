@@ -127,7 +127,7 @@
             android:paddingTop="8dp"
             android:paddingRight="@dimen/listview_lable_padding"
             android:paddingBottom="16dp"
-            android:text="Date :" />
+            android:text="@string/date_time_lable" />
 
         <TextView
             android:id="@+id/tvDate"

@@ -360,4 +360,8 @@ public class Utils {
     }
 
 
+    public static String getActivationTime(String activationTime) {
+        String str=activationTime.substring(0,5);
+        return str;
+    }
 }

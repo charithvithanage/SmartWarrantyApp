@@ -15,6 +15,8 @@ import com.info.charith.smartwarrantyapp.R;
 
 import java.util.List;
 
+import static com.info.charith.smartwarrantyapp.Utils.getActivationTime;
+
 public class ActivityReportsAdapter extends ArrayAdapter<Warranty> {
     List<Warranty> filteredActivityReports;
     List<Warranty> eventList;
@@ -53,7 +55,7 @@ public class ActivityReportsAdapter extends ArrayAdapter<Warranty> {
         holder.brand.setText(eventObj.getBrand());
         holder.model.setText(eventObj.getModel());
         holder.user.setText(eventObj.getDealerUserName());
-        holder.date.setText(eventObj.getWarrantyActivatedDate());
+        holder.date.setText(eventObj.getWarrantyActivatedDate()+"  "+getActivationTime(eventObj.getActivationTime()));
 
 
         return convertView;

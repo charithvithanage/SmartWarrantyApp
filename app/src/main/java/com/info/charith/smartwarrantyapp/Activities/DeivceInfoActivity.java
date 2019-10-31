@@ -21,6 +21,8 @@ import com.info.charith.smartwarrantyapp.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.info.charith.smartwarrantyapp.Utils.getActivationTime;
+
 public class DeivceInfoActivity extends AppCompatActivity {
     private static final String TAG = "SmartWarrantyApp";
 
@@ -204,7 +206,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
         tvFer.setText(warranty.getReferenceNo());
         warranty.setWarrantyActivatedDate(warranty.getWarrantyActivatedDate());
-        tvActivatedDate.setText(warranty.getWarrantyActivatedDate());
+        tvActivatedDate.setText(warranty.getWarrantyActivatedDate()+"  "+getActivationTime(warranty.getActivationTime()));
         if(warranty.getAccessoryWarrantyStatus().equals("Defect After Purchase")){
             tvAccessoryWStatus.setText("DAP");
         }else {

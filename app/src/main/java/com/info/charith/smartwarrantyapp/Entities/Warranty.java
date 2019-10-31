@@ -24,7 +24,16 @@ public class Warranty {
     private String reference;
     private String uploadDate;
     private String district;
-    private String activationDate;
+    private String activationDate=null;
+    private String activationTime=null;
+
+    public String getActivationTime() {
+        return activationTime;
+    }
+
+    public void setActivationTime(String activationTime) {
+        this.activationTime = activationTime;
+    }
 
     String timeStamp;
 

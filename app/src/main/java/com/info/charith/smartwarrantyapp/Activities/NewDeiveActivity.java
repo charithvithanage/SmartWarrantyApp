@@ -195,7 +195,8 @@ public class NewDeiveActivity extends AppCompatActivity {
         if (type.equals("new device")) {
             DateTime dateTime = new DateTime();
             warranty.setActivationStatus("Enable with Date");
-            warranty.setActivationDate(dateTime.toString("yyyy-MM-dd"));
+            warranty.setActivationDate(null);
+//            warranty.setActivationDate(dateTime.toString("yyyy-MM-dd"));
         }
 
         new UpdateWarrantyAsync().execute();
