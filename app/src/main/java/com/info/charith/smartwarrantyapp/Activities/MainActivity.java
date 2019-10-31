@@ -54,19 +54,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "SmartWarrantyApp";
 
+    boolean homeScreen = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG,capEachWord("the sentence you want to apply caps to"));
+        Log.d(TAG, capEachWord("the sentence you want to apply caps to"));
 
         /**
          * Change status bar color programmatically
          */
         Utils.changeStatusBarColor(MainActivity.this, getWindow());
-
-
 
 
         SharedPreferences sharedPref = getSharedPreferences(
@@ -92,10 +92,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(isDeviceOnline(MainActivity.this)){
+                            if (isDeviceOnline(MainActivity.this)) {
                                 new LogoutAsync().execute();
 
-                            }else {
+                            } else {
                                 Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -140,9 +140,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                if(isDeviceOnline(MainActivity.this)){
+                                if (isDeviceOnline(MainActivity.this)) {
                                     new LogoutAsync().execute();
-                                }else {
+                                } else {
                                     Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -172,7 +172,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
+
+        if (!homeScreen) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(getString(R.string.back_confirmation_message))
+                    .setCancelable(false)
+                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            homeScreen = NavigationUI.navigateUp(Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment), drawerLayout);
+                        }
+                    }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    homeScreen = false;
+
+                }
+            }).show();
+        } else {
+            homeScreen = NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
+        }
+        return homeScreen;
     }
 
     @Override
@@ -208,18 +229,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
 
             case R.id.nav_home:
+                homeScreen = true;
                 navController.navigate(R.id.nav_home);
                 break;
 
             case R.id.nav_about:
+                homeScreen = false;
+
                 navController.navigate(R.id.nav_about);
                 break;
 
             case R.id.nav_report:
-                if(isDeviceOnline(MainActivity.this)){
+                homeScreen = false;
+
+                if (isDeviceOnline(MainActivity.this)) {
                     navController.navigate(R.id.nav_report);
 
-                }else {
+                } else {
                     Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -230,6 +256,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.nav_settings:
+                homeScreen = false;
+
                 navController.navigate(R.id.nav_settings);
                 break;
         }
@@ -242,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog=new ProgressDialog(MainActivity.this);
+            progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setCancelable(false);
             progressDialog.setMessage(getString(R.string.waiting));
             progressDialog.show();
