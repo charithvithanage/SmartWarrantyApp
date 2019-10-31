@@ -369,6 +369,14 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                         onBackPressed();
                                     }
                                 });
+                            }else if (message.equals("Disabled model")) {
+                                Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        onBackPressed();
+                                    }
+                                });
                             } else {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
