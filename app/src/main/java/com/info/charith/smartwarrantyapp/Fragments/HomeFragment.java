@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.info.charith.smartwarrantyapp.Activities.ChangePasswordActivity;
 import com.info.charith.smartwarrantyapp.Activities.ScannerActivity;
 import com.info.charith.smartwarrantyapp.Adapters.BrandAdapter;
 import com.info.charith.smartwarrantyapp.Config;

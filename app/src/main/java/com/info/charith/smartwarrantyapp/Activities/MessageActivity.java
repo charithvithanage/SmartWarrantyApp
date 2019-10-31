@@ -4,18 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Utils;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class MessageActivity extends AppCompatActivity {
 

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +30,6 @@ import com.info.charith.smartwarrantyapp.R;
 import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Services.UserService;
 import com.info.charith.smartwarrantyapp.Utils;
-import com.info.charith.smartwarrantyapp.WordUtils;
 
 import org.joda.time.DateTime;
 import org.json.JSONException;

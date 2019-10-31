@@ -2,28 +2,18 @@ package com.info.charith.smartwarrantyapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
-import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
-import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Utils;
-
-import org.joda.time.DateTime;
-import org.json.JSONObject;
 
 import io.fabric.sdk.android.Fabric;
 
-import static com.info.charith.smartwarrantyapp.Utils.dateStringToDateTime;
 import static com.info.charith.smartwarrantyapp.Utils.isDeviceOnline;
 
 public class Splash extends AppCompatActivity {

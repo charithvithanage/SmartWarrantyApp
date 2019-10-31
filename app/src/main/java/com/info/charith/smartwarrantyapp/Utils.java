@@ -12,7 +12,6 @@ import android.os.Build;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.info.charith.smartwarrantyapp.Activities.NewDeiveActivity;
 import com.info.charith.smartwarrantyapp.Entities.Product;
 
 import org.joda.time.DateTime;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Utils {
 

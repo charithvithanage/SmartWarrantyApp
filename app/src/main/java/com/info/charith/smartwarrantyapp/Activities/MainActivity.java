@@ -28,7 +28,6 @@ import com.info.charith.smartwarrantyapp.Services.DealerService;
 import com.info.charith.smartwarrantyapp.Utils;
 
 import org.joda.time.DateTime;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.info.charith.smartwarrantyapp.Utils.capEachWord;
