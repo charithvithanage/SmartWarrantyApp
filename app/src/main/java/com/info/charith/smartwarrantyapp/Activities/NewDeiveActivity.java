@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -490,7 +491,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        new RequestWarrantyAsync().execute();
+                                        new RequestExternalApiWarrantyAsync().execute();
                                     }
                                 });
                             } else {
@@ -583,4 +584,58 @@ public class NewDeiveActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    private class RequestExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
+
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            DealerService.getInstance().getExternalApiWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+                    progressDialog.dismiss();
+                    String objectOne;
+
+                    try {
+                        boolean success = jsonObject.getBoolean("success");
+                        String message = jsonObject.getString("message");
+
+                        if (success) {
+                            objectOne = jsonObject.getString("objectOne");
+                            Gson gson = new Gson();
+                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                            Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+                            intent.putExtra("warrantyString", gson.toJson(warranty));
+                            intent.putExtra("type", type);
+                            intent.putExtra("previous_activity", "new_device_activity");
+                            startActivity(intent);
+                        }
+                    } catch (JSONException e) {
+                        btnConfirm.setEnabled(true);
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            btnConfirm.setEnabled(true);
+                        }
+                    });
+                }
+            });
+
+            return null;
+        }
+    }
+
 }
