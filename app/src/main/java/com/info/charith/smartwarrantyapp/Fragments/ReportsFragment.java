@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.info.charith.smartwarrantyapp.Utils.sortWarrantyList;
+
 public class ReportsFragment extends Fragment {
 
     Button selectByDateBtn, selectByClientBtn;
@@ -296,7 +298,7 @@ public class ReportsFragment extends Fragment {
                             }
                         }
 
-                        activityReportsAdapter = new ActivityReportsAdapter(getActivity(), activityReports);
+                        activityReportsAdapter = new ActivityReportsAdapter(getActivity(), sortWarrantyList(activityReports));
                         activityReportListView.setAdapter(activityReportsAdapter);
 
 

@@ -173,27 +173,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onSupportNavigateUp() {
 
-        if (!homeScreen) {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setMessage(getString(R.string.back_confirmation_message))
-                    .setCancelable(false)
-                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            homeScreen = NavigationUI.navigateUp(Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment), drawerLayout);
-                        }
-                    }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    homeScreen = false;
-
-                }
-            }).show();
-        } else {
-            homeScreen = NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
-        }
-        return homeScreen;
+//        if (!homeScreen) {
+//            new AlertDialog.Builder(MainActivity.this)
+//                    .setMessage(getString(R.string.back_confirmation_message))
+//                    .setCancelable(false)
+//                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            homeScreen = NavigationUI.navigateUp(Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment), drawerLayout);
+//                        }
+//                    }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                    homeScreen = false;
+//
+//                }
+//            }).show();
+//        } else {
+//            homeScreen = NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
+//        }
+        return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
     }
 
     @Override
@@ -201,20 +201,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setMessage(getString(R.string.back_confirmation_message))
-                    .setCancelable(false)
-                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            }).show();
+            if (homeScreen) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(getString(R.string.back_confirmation_message))
+                        .setCancelable(false)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+            } else {
+                homeScreen = true;
+                navController.navigate(R.id.nav_home);
+            }
+
+
         }
     }
 

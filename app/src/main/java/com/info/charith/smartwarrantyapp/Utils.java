@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.info.charith.smartwarrantyapp.Entities.Product;
+import com.info.charith.smartwarrantyapp.Entities.Warranty;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -359,7 +360,37 @@ public class Utils {
 
 
     public static String getActivationTime(String activationTime) {
-        String str=activationTime.substring(0,5);
-        return str;
+
+        if (activationTime.length() == 5) {
+            activationTime = activationTime.substring(0, 5) + ":00";
+        } else {
+            activationTime = activationTime.substring(0, 8);
+
+        }
+        return activationTime;
+    }
+
+    public static DateTime stringToDateTime(String date, String time) {
+        String dateTimeString = date + " " + time;
+        DateTime dateTime = DateTime.parse(dateTimeString, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+
+        return dateTime;
+    }
+
+    /**
+     * Sort activity report by the activation date
+     *
+     * @param lsit
+     * @return sorted list
+     */
+    public static List<Warranty> sortWarrantyList(List<Warranty> lsit) {
+
+        Collections.sort(lsit, new Comparator<Warranty>() {
+            public int compare(Warranty obj1, Warranty obj2) {
+                // ## Ascending order
+                return (stringToDateTime(obj2.getWarrantyActivatedDate(), getActivationTime(obj2.getActivationTime()))).compareTo(stringToDateTime(obj1.getWarrantyActivatedDate(), getActivationTime(obj1.getActivationTime()))); // To compare string values
+            }
+        });
+        return lsit;
     }
 }

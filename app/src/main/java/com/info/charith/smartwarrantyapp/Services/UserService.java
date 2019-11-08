@@ -169,7 +169,7 @@ public class UserService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                callback.onError(context,error.toString());
+                callback.onError(context, String.valueOf(error.networkResponse.statusCode));
             }
         }){
             @Override
