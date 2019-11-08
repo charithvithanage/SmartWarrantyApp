@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.Activities.NewDeiveActivity;
 import com.info.charith.smartwarrantyapp.Config;
 import com.info.charith.smartwarrantyapp.Entities.ChangePassword;
 import com.info.charith.smartwarrantyapp.Entities.Credential;
@@ -216,6 +217,52 @@ public class UserService {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.onError(context,error.toString());
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer " + accessToken);
+
+                return headers;
+            }
+        };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy( 50000, 5, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        queue.add(jsonObjectRequest);
+    }
+
+    public void updateExternalApiWarranty(final Context context, Warranty warranty, final AsyncListner callback) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        final String accessToken = sharedPref.getString("accessToken", null);
+
+        RequestQueue queue= Volley.newRequestQueue(context);
+
+        String jsonString = gson.toJson(warranty);
+        Log.d(TAG, jsonString);
+        Log.d(TAG, Config.update_external_api_warranty);
+        Log.d(TAG, accessToken);
+
+        JSONObject object = null;
+
+        try {
+            object = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Config.update_external_api_warranty, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                callback.onSuccess(context,response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.onError(context, String.valueOf(error.networkResponse.statusCode));
             }
         }){
             @Override

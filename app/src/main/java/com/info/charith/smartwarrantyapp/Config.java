@@ -16,6 +16,7 @@ public enum Config {
     public static String imei_url = ServerUrl + "dealeruserservice/warranty";
     public static String external_api_imei_url = ServerUrl + "dealeruserservice/externalwarranty";
     public static String update_warranty = ServerUrl + "dealeruserservice/updatenewwarranty";
+    public static String update_external_api_warranty = ServerUrl + "dealeruserservice/updatenewexternalwarranty";
     public static String change_password= ServerUrl + "dealeruserservice/changepassword";
     public static String get_product_url= ServerUrl + "dealeruserservice/product/";
     public static String get_activity_reports_url= ServerUrl + "dealeruserservice/filteractivationlist";

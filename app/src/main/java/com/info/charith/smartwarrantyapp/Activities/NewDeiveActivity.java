@@ -55,12 +55,14 @@ public class NewDeiveActivity extends AppCompatActivity {
     TextWatcher etContactNoTextWatcher, etEmailTextWatcher;
 //    TextWatcher etAddressTextWatcher, etNameTextWatcher;
     TextView errorContactNo, errorEmail;
-    String waranntyRequest;
+    String waranntyRequestString;
     ImageButton homeBtn;
     String dealerCode = null;
     DealerUser dealerUserMock;
 
     ProgressDialog progressDialog;
+    WarrantyRequest warrantyRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +73,8 @@ public class NewDeiveActivity extends AppCompatActivity {
         type = getIntent().getStringExtra("type");
         warrantyString = getIntent().getStringExtra("warrantyString");
         previous_activity = getIntent().getStringExtra("previous_activity");
-        waranntyRequest = getIntent().getStringExtra("waranntyRequest");
-
+        waranntyRequestString = getIntent().getStringExtra("waranntyRequest");
+        warrantyRequest=gson.fromJson(waranntyRequestString,WarrantyRequest.class);
         warranty = gson.fromJson(warrantyString, Warranty.class);
 
         init();
@@ -197,9 +199,13 @@ public class NewDeiveActivity extends AppCompatActivity {
 //            warranty.setActivationDate(dateTime.toString("yyyy-MM-dd"));
         }
 
-        new UpdateWarrantyAsync().execute();
 
-
+        if(warrantyRequest.getProduct().getApi().equals("internal")){
+            new UpdateWarrantyAsync().execute();
+        }else {
+            warranty.setId(null);
+            new UpdateExternalApiWarrantyAsync().execute();
+        }
     }
 
     private void init() {
@@ -465,13 +471,74 @@ public class NewDeiveActivity extends AppCompatActivity {
         }
     }
 
+    private class UpdateExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            UserService.getInstance().updateExternalApiWarranty(NewDeiveActivity.this, warranty, new AsyncListner() {
+                @Override
+                public void onSuccess(Context context, JSONObject jsonObject) {
+                    try {
+                        boolean success = jsonObject.getBoolean("success");
+                        String message = jsonObject.getString("message");
+                        if (success) {
+                            new RequestWarrantyAsync().execute();
+                        } else {
+                            if (message.contains("No warranty template found for brand :")) {
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        new RequestWarrantyAsync().execute();
+                                    }
+                                });
+                            } else {
+                                progressDialog.dismiss();
+
+                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        btnConfirm.setEnabled(true);
+                                    }
+                                });
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                        btnConfirm.setEnabled(true);
+
+                    }
+                }
+
+                @Override
+                public void onError(Context context, String error) {
+                    progressDialog.dismiss();
+                    Utils.showAlertWithoutTitleDialog(context, error, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            btnConfirm.setEnabled(true);
+
+                        }
+                    });
+                }
+            });
+
+            return null;
+        }
+    }
+
     private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DealerService.getInstance().getWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequest, WarrantyRequest.class), new AsyncListner() {
+            DealerService.getInstance().getWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     progressDialog.dismiss();
