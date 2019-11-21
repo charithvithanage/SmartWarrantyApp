@@ -14,14 +14,19 @@
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.info.charith.smartwarrantyapp.Activities.ChangePasswordActivity" android:screenOrientation="portrait"
+        <activity android:name=".Activities.AppListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.ForgotPassword"
+            android:name=".Activities.ChangePasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.Splash"
+            android:name=".Activities.ForgotPassword"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activities.Splash"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -31,49 +36,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.DealerSearchActivity"
+            android:name=".Activities.DealerSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.MessageActivity"
+            android:name=".Activities.MessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.DeivceInfoActivity"
+            android:name=".Activities.DeivceInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.NewDeiveActivity"
+            android:name=".Activities.NewDeiveActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.ScannerActivity"
+            android:name=".Activities.ScannerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- <activity android:name=".ui.ScanActivity"></activity> -->
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.DealerInfoActivity"
+            android:name=".Activities.DealerInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.SignUpActivity"
+            android:name=".Activities.SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.MainActivity"
+            android:name=".Activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.info.charith.smartwarrantyapp.Activities.LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="84f48e1fd1a4aee92ecfcd9c7ae40e5cd7a57ea3" /> <!-- This goes inside the application tags -->
-        <!-- This is the receiver you called when the alarm was executed -->
-
+            android:value="84f48e1fd1a4aee92ecfcd9c7ae40e5cd7a57ea3" />
     </application>
 
 </manifest>

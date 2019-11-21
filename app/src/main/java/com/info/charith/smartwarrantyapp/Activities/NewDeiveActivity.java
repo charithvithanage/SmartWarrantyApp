@@ -419,6 +419,8 @@ public class NewDeiveActivity extends AppCompatActivity {
             UserService.getInstance().updateWarranty(NewDeiveActivity.this, warranty, new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+                    Log.d(TAG,jsonObject.toString());
+
                     try {
                         boolean success = jsonObject.getBoolean("success");
                         String message = jsonObject.getString("message");
@@ -480,11 +482,13 @@ public class NewDeiveActivity extends AppCompatActivity {
             UserService.getInstance().updateExternalApiWarranty(NewDeiveActivity.this, warranty, new AsyncListner() {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
+
+                    Log.d(TAG,jsonObject.toString());
                     try {
                         boolean success = jsonObject.getBoolean("success");
                         String message = jsonObject.getString("message");
                         if (success) {
-                            new RequestWarrantyAsync().execute();
+                            new RequestExternalApiWarrantyAsync().execute();
                         } else {
                             if (message.contains("No warranty template found for brand :")) {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
@@ -544,6 +548,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     progressDialog.dismiss();
                     String objectOne;
+                    Log.d(TAG,jsonObject.toString());
 
                     try {
                         boolean success = jsonObject.getBoolean("success");
@@ -587,8 +592,6 @@ public class NewDeiveActivity extends AppCompatActivity {
 
     private class RequestExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
-
-
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -597,6 +600,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                 public void onSuccess(Context context, JSONObject jsonObject) {
                     progressDialog.dismiss();
                     String objectOne;
+                    Log.d(TAG,jsonObject.toString());
 
                     try {
                         boolean success = jsonObject.getBoolean("success");

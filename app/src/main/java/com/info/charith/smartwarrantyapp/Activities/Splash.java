@@ -23,6 +23,12 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
 
+        /**
+         * Change status bar color programmatically
+         */
+        Utils.changeStatusBarColor(Splash.this, getWindow());
+
+
         if(isDeviceOnline(Splash.this)){
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -38,7 +44,7 @@ public class Splash extends AppCompatActivity {
                     if (logoutTimeString != null) {
 
                         if (!loggedInLawyer.equals("0") && !accessToken.equals("0")) {
-                            Utils.navigateWithoutHistory(Splash.this, MainActivity.class);
+                            Utils.navigateWithoutHistory(Splash.this, AppListActivity.class);
                         } else {
                             Utils.navigateWithoutHistory(Splash.this, LoginActivity.class);
                         }

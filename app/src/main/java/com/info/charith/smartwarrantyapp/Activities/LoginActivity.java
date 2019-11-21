@@ -319,8 +319,8 @@ public class LoginActivity extends AppCompatActivity {
                                                         editor.commit();
 
                                                         loginButton.setEnabled(true);
-                                                        Utils.navigateWithoutHistory(context, MainActivity.class);
-
+                                                        Intent intent = new Intent(LoginActivity.this, AppListActivity.class);
+                                                        startActivity(intent);
 
                                                     } catch (JSONException e) {
                                                         progressDialog.dismiss();

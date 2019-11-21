@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.info.charith.smartwarrantyapp.Entities.Dealer;
 import com.info.charith.smartwarrantyapp.Entities.DealerUser;
 import com.info.charith.smartwarrantyapp.Interfaces.AsyncListner;
 import com.info.charith.smartwarrantyapp.R;
@@ -47,10 +49,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayout logoutBtn;
 
     DealerUser dealerUserMock;
+    Dealer dealer;
 
     Gson gson = new Gson();
 
     LinearLayout nav_home, nav_reports, nav_about, nav_settings;
+    TextView tvUserName,tvDealerName;
 
     private static final String TAG = "SmartWarrantyApp";
 
@@ -73,8 +77,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String logoutTimeString = sharedPref.getString("logoutTime", null);
         String loggedInUser = sharedPref.getString("loggedInUser", null);
+        String userDealer = sharedPref.getString("userDealer", null);
 
         dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
+        dealer = gson.fromJson(userDealer, Dealer.class);
 
         DateTime now = new DateTime();
 
@@ -124,11 +130,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         logoutBtn = navigationView.findViewById(R.id.nav_logout);
+        tvUserName = navigationView.findViewById(R.id.tvUserName);
+        tvDealerName = navigationView.findViewById(R.id.tvDealerName);
 
         nav_home = navigationView.findViewById(R.id.nav_home);
         nav_reports = navigationView.findViewById(R.id.nav_report);
         nav_about = navigationView.findViewById(R.id.nav_about);
         nav_settings = navigationView.findViewById(R.id.nav_settings);
+
+        tvUserName.setText(dealerUserMock.getUsername());
+        tvDealerName.setText(dealer.getDealerName());
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override

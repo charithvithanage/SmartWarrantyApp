@@ -30,6 +30,26 @@
 
             <include layout="@layout/nav_header_main"></include>
 
+
+            <TextView
+                android:id="@+id/tvUserName"
+                style="@style/navigation_view_username_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/list_item_bg"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tvDealerName"
+                style="@style/navigation_view_dealername_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/list_item_bg"
+                android:gravity="center" />
+
+
             <LinearLayout
                 android:id="@+id/nav_home"
                 android:layout_width="match_parent"

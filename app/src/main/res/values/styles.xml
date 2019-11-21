@@ -125,5 +125,18 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <style name="navigation_view_username_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="navigation_view_dealername_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
 
 </resources>
