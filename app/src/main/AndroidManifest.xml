@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.info.charith.smartwarrantyapp">
+    package="com.info.tellko.smartwarrantyapp">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,19 +14,19 @@
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.AppListActivity"
+        <activity android:name="com.info.tellko.smartwarrantyapp.Activities.AppListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".Activities.ChangePasswordActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.ChangePasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.ForgotPassword"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.ForgotPassword"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.Splash"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.Splash"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -36,40 +36,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.DealerSearchActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.DealerSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.MessageActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.MessageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.DeivceInfoActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.DeivceInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.NewDeiveActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.NewDeiveActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.ScannerActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.ScannerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" /> <!-- <activity android:name=".ui.ScanActivity"></activity> -->
         <activity
-            android:name=".Activities.DealerInfoActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.DealerInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.SignUpActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.MainActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activities.LoginActivity"
+            android:name="com.info.tellko.smartwarrantyapp.Activities.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
