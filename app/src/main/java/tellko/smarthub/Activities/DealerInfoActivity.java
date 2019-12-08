@@ -51,6 +51,7 @@ public class DealerInfoActivity extends AppCompatActivity {
     Gson gson = new Gson();
     TextView tvDealerCode, tvDealerName, tvAddress, tvCity, tvDistric, tvOwnerName, tvNIC, tvContactNo, tvEmail, tvDealerStatus;
     ProgressDialog progressDialog;
+    boolean backStatus=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class DealerInfoActivity extends AppCompatActivity {
                     progressDialog = showProgressDialog(DealerInfoActivity.this);
                     progressDialog.show();
                     btnConfirm.setEnabled(false);
+                    backStatus=false;
                     new RegisterAsync().execute();
                 } else {
                     Utils.showAlertWithoutTitleDialog(DealerInfoActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
@@ -167,157 +169,159 @@ public class DealerInfoActivity extends AppCompatActivity {
                         boolean success = jsonObject.getBoolean("success");
 
                         if (success) {
-
-                            DateTime dateTime = new DateTime();
-                            loggedInUser = jsonObject.getString("objectOne");
-                            accessToken = jsonObject.getString("accessToken");
-                            refreshToken = jsonObject.getString("refreshToken");
-                            userDealer = jsonObject.getString("objectTwo");
-
-                            SharedPreferences sharedPref = context.getSharedPreferences(
-                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString("loggedInUser", loggedInUser);
-                            editor.putString("accessToken", accessToken);
-                            editor.putString("refreshToken", refreshToken);
-                            editor.putString("userDealer", userDealer);
-                            editor.putString("logoutTime", dateTimeToString(endOfDay(dateTime)));
-
-                            editor.commit();
+                            progressDialog.dismiss();
+                            Utils.navigateWithoutHistory(context, LoginActivity.class);
 
 
-                            gson = new Gson();
-                            DealerUser dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
-                            dealer = gson.fromJson(userDealer, Dealer.class);
-
-                            new GetDealerAsync(DealerInfoActivity.this, dealerUserMock.getDealerCode(), new AsyncListner() {
-                                @Override
-
-                                public void onSuccess(Context context, JSONObject jsonObject) {
-                                    String objectOne = null;
-
-                                    try {
-                                        boolean success = jsonObject.getBoolean("success");
-                                        String message = jsonObject.getString("message");
-
-                                        if (success) {
-                                            objectOne = jsonObject.getString("object");
-
-                                            dealer = gson.fromJson(objectOne, Dealer.class);
-
-                                            SharedPreferences sharedPref = context.getSharedPreferences(
-                                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = sharedPref.edit();
-                                            editor.putString("userDealer", gson.toJson(dealer));
-                                            editor.commit();
-
-                                            new GetProductsAsync(DealerInfoActivity.this, dealer.getDealerCode(), new AsyncListner() {
-                                                @Override
-                                                public void onSuccess(Context context, JSONObject jsonObject) {
-                                                    String object = null;
-                                                    progressDialog.dismiss();
-
-                                                    try {
-                                                        object = jsonObject.getString("object");
-
-                                                        JSONArray jsonArray = new JSONArray(object);
-                                                        List<Product> brands = new ArrayList<>();
-
-
-                                                        if (jsonArray.length() > 0) {
-                                                            brands = new ArrayList<>();
-
-                                                            for (int i = 0; i < jsonArray.length(); i++) {
-                                                                Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
-                                                                brands.add(dealer);
-                                                            }
-                                                        }
-
-
-                                                        Config.Instance.setEnabledBrands(sortProductList(brands));
-
-                                                        JSONArray sortedJsonArray = new JSONArray();
-
-                                                        for (int i = 0; i < Config.Instance.getEnabledBrands().size(); i++) {
-                                                            Product dealer = Config.Instance.getEnabledBrands().get(i);
-                                                            sortedJsonArray.put(gson.toJson(dealer));
-                                                        }
-
-                                                        SharedPreferences sharedPref = context.getSharedPreferences(
-                                                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                                        editor.putString("enabledBrands", sortedJsonArray.toString());
-                                                        editor.commit();
-
-                                                        Utils.navigateWithoutHistory(context, LoginActivity.class);
-
-
-                                                    } catch (JSONException e) {
-                                                        Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                dialog.dismiss();
-                                                                navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
-                                                            }
-                                                        });
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onError(Context context, String error) {
-                                                    progressDialog.dismiss();
-                                                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            dialog.dismiss();
-                                                            navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
-                                                        }
-                                                    });
-
-                                                }
-                                            }).execute();
-
-
-                                        } else {
-                                            progressDialog.dismiss();
-                                            Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                    navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
-                                                }
-                                            });
-                                        }
-
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        progressDialog.dismiss();
-                                        Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
-                                            }
-                                        });
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onError(Context context, String error) {
-                                    progressDialog.dismiss();
-                                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                            navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
-                                        }
-                                    });
-                                }
-                            }).execute();
+//                            DateTime dateTime = new DateTime();
+//                            loggedInUser = jsonObject.getString("objectOne");
+//                            accessToken = jsonObject.getString("accessToken");
+//                            refreshToken = jsonObject.getString("refreshToken");
+//                            userDealer = jsonObject.getString("objectTwo");
+//
+//                            SharedPreferences sharedPref = context.getSharedPreferences(
+//                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = sharedPref.edit();
+//                            editor.putString("loggedInUser", loggedInUser);
+//                            editor.putString("accessToken", accessToken);
+//                            editor.putString("refreshToken", refreshToken);
+//                            editor.putString("userDealer", userDealer);
+//                            editor.putString("logoutTime", dateTimeToString(endOfDay(dateTime)));
+//
+//                            editor.commit();
+//
+//
+//                            gson = new Gson();
+//                            DealerUser dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
+//                            dealer = gson.fromJson(userDealer, Dealer.class);
+//
+//                            new GetDealerAsync(DealerInfoActivity.this, dealerUserMock.getDealerCode(), new AsyncListner() {
+//                                @Override
+//
+//                                public void onSuccess(Context context, JSONObject jsonObject) {
+//                                    String objectOne = null;
+//
+//                                    try {
+//                                        boolean success = jsonObject.getBoolean("success");
+//                                        String message = jsonObject.getString("message");
+//
+//                                        if (success) {
+//                                            objectOne = jsonObject.getString("object");
+//
+//                                            dealer = gson.fromJson(objectOne, Dealer.class);
+//
+//                                            SharedPreferences sharedPref = context.getSharedPreferences(
+//                                                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                                            SharedPreferences.Editor editor = sharedPref.edit();
+//                                            editor.putString("userDealer", gson.toJson(dealer));
+//                                            editor.commit();
+//
+//                                            new GetProductsAsync(DealerInfoActivity.this, dealer.getDealerCode(), new AsyncListner() {
+//                                                @Override
+//                                                public void onSuccess(Context context, JSONObject jsonObject) {
+//                                                    String object = null;
+//                                                    progressDialog.dismiss();
+//
+//                                                    try {
+//                                                        object = jsonObject.getString("object");
+//
+//                                                        JSONArray jsonArray = new JSONArray(object);
+//                                                        List<Product> brands = new ArrayList<>();
+//
+//
+//                                                        if (jsonArray.length() > 0) {
+//                                                            brands = new ArrayList<>();
+//
+//                                                            for (int i = 0; i < jsonArray.length(); i++) {
+//                                                                Product dealer = gson.fromJson(jsonArray.getString(i), Product.class);
+//                                                                brands.add(dealer);
+//                                                            }
+//                                                        }
+//
+//
+//                                                        Config.Instance.setEnabledBrands(sortProductList(brands));
+//
+//                                                        JSONArray sortedJsonArray = new JSONArray();
+//
+//                                                        for (int i = 0; i < Config.Instance.getEnabledBrands().size(); i++) {
+//                                                            Product dealer = Config.Instance.getEnabledBrands().get(i);
+//                                                            sortedJsonArray.put(gson.toJson(dealer));
+//                                                        }
+//
+//                                                        SharedPreferences sharedPref = context.getSharedPreferences(
+//                                                                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                                                        SharedPreferences.Editor editor = sharedPref.edit();
+//                                                        editor.putString("enabledBrands", sortedJsonArray.toString());
+//                                                        editor.commit();
+//
+//
+//
+//                                                    } catch (JSONException e) {
+//                                                        Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
+//                                                            @Override
+//                                                            public void onClick(DialogInterface dialog, int which) {
+//                                                                dialog.dismiss();
+//                                                                navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
+//                                                            }
+//                                                        });
+//                                                        e.printStackTrace();
+//                                                    }
+//                                                }
+//
+//                                                @Override
+//                                                public void onError(Context context, String error) {
+//                                                    progressDialog.dismiss();
+//                                                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
+//                                                        @Override
+//                                                        public void onClick(DialogInterface dialog, int which) {
+//                                                            dialog.dismiss();
+//                                                            navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
+//                                                        }
+//                                                    });
+//
+//                                                }
+//                                            }).execute();
+//
+//
+//                                        } else {
+//                                            progressDialog.dismiss();
+//                                            Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    dialog.dismiss();
+//                                                    navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
+//                                                }
+//                                            });
+//                                        }
+//
+//
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                        progressDialog.dismiss();
+//                                        Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(DialogInterface dialog, int which) {
+//                                                dialog.dismiss();
+//                                                navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
+//                                            }
+//                                        });
+//                                    }
+//
+//
+//                                }
+//
+//                                @Override
+//                                public void onError(Context context, String error) {
+//                                    progressDialog.dismiss();
+//                                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.login_again), new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            dialog.dismiss();
+//                                            navigateWithoutHistory(DealerInfoActivity.this, LoginActivity.class);
+//                                        }
+//                                    });
+//                                }
+//                            }).execute();
 
 
                         } else {
@@ -354,11 +358,13 @@ public class DealerInfoActivity extends AppCompatActivity {
                 public void onError(Context context, String error) {
                     progressDialog.dismiss();
 
+
                     Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             btnConfirm.setEnabled(true);
+                            backStatus=true;
                         }
                     });
                 }
@@ -368,4 +374,11 @@ public class DealerInfoActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if(backStatus){
+            super.onBackPressed();
+        }
+    }
 }
