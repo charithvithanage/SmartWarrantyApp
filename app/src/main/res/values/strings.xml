@@ -56,4 +56,5 @@
     <string name="login_again"> Please login again.</string>
     <string name="warranty_date_time_lable">Warranty Start Date &amp; Time</string>
     <string name="date_time_lable">Date &amp; Time</string>
+    <string name="menu_app_name">Smart Hub</string>
 </resources>

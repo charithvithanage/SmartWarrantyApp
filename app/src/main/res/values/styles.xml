@@ -15,6 +15,11 @@
 
     </style>
 
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">@color/bg_color</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -103,7 +108,8 @@
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
 <!--        <item name="android:windowFullscreen">true</item>-->
-        <item name="android:background">@mipmap/splash_new</item>
+
+        <item name="android:windowBackground">@mipmap/splash_latest</item>
     </style>
 
     <style name="select_btn_style" parent="android:Widget.Button">
@@ -136,6 +142,13 @@
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textSize">18dp</item>
         <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="about_app_name_style" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/about_app_name_color</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 

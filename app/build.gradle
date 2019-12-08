@@ -19,12 +19,12 @@ android {
     compileSdkVersion 28
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "com.info.tellko.smartwarrantyapp"
+        applicationId "tellko.smarthub"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
+        versionCode 6
 
-        versionName "1.0"
+        versionName "1.2"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.info.tellko.smartwarrantyapp.Fragments.HomeFragment"
+        android:name="tellko.smarthub.Fragments.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" >
 
@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/nav_report"
-        android:name="com.info.tellko.smartwarrantyapp.Fragments.ReportsFragment"
+        android:name="tellko.smarthub.Fragments.ReportsFragment"
         android:label="@string/menu_reports"
         tools:layout="@layout/fragment_reports" >
 
@@ -23,14 +23,14 @@
 
     <fragment
         android:id="@+id/nav_about"
-        android:name="com.info.tellko.smartwarrantyapp.Fragments.AboutFragment"
+        android:name="tellko.smarthub.Fragments.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
 
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="com.info.tellko.smartwarrantyapp.Fragments.SettingsFragment"
+        android:name="tellko.smarthub.Fragments.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" >
 

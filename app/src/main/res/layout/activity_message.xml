@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Activities.MessageActivity">
+    tools:context="tellko.smarthub.Activities.MessageActivity">
 
     <include
         android:id="@+id/include2"

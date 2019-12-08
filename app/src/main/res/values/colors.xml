@@ -20,5 +20,6 @@
 
     <color name="button_click_bg_color">#b25eba</color>
     <color name="list_item_click_bg_color">#e6e7e8</color>
+    <color name="about_app_name_color">#5E5E61</color>
 
 </resources>

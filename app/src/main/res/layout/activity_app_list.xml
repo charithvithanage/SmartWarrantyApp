@@ -1,12 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView"
+    <include
+        layout="@layout/app_bar__applist_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="24dp"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@color/list_item_click_bg_color" />
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:itemTextAppearance="@style/navigation_view_item_style"
+        >
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include  layout="@layout/nav_header_main"></include>
+
+
+            <TextView
+                android:id="@+id/tvUserName"
+                style="@style/navigation_view_username_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/list_item_bg"
+                android:paddingLeft="@dimen/activity_horizontal_margin" />
+
+            <TextView
+                android:id="@+id/tvDealerName"
+                style="@style/navigation_view_dealername_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/list_item_bg"
+                android:ellipsize="end"
+                android:lines="1"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/platinum"></View>
+
+
+            <LinearLayout
+                android:id="@+id/nav_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingTop="15dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="15dp">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/home" />
+
+                <TextView
+                    android:id="@+id/home"
+                    style="@style/navigation_view_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="32dp"
+                    android:text="Home" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingTop="15dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="15dp">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/about" />
+
+                <TextView
+                    android:id="@+id/about"
+                    style="@style/navigation_view_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="32dp"
+                    android:text="About" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nav_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/list_item_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingTop="15dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp">
+
+
+                <ImageView
+                    android:layout_width="@dimen/design_navigation_icon_size"
+                    android:layout_height="@dimen/design_navigation_icon_size"
+                    android:src="@mipmap/settings" />
+
+                <TextView
+                    style="@style/navigation_view_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@android:color/transparent"
+                    android:paddingStart="32dp"
+                    android:text="Settings" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/menu_bg_color">
+
+                <LinearLayout
+                    android:id="@+id/nav_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/list_item_bg"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+
+                    <ImageView
+                        android:layout_width="@dimen/design_navigation_icon_size"
+                        android:layout_height="@dimen/design_navigation_icon_size"
+                        android:src="@mipmap/logout" />
+
+                    <TextView
+                        android:id="@+id/logout"
+                        style="@style/navigation_view_item_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="32dp"
+                        android:text="@string/menu_share" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </com.google.android.material.navigation.NavigationView>
+
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
