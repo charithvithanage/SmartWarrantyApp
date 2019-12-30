@@ -78,7 +78,7 @@ public class MessageActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigateWithoutHistory(MessageActivity.this, MainActivity.class);
+                Utils.navigateWithoutHistory(MessageActivity.this, AppListActivity.class);
             }
         });
 

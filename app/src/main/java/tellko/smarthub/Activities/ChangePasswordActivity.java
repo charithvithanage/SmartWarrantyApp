@@ -72,11 +72,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(previousActivity.equals("AppListActivity")){
-                    Utils.navigateWithoutHistory(ChangePasswordActivity.this,AppListActivity.class);
-                }else {
-                    Utils.navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
-                }
+                Utils.navigateWithoutHistory(ChangePasswordActivity.this,AppListActivity.class);
+
             }
         });
 

@@ -125,7 +125,7 @@ public class DealerInfoActivity extends AppCompatActivity {
         tvDistric.setText(dealer.getDistrict());
         tvOwnerName.setText(dealer.getOwnerName());
         tvNIC.setText(dealer.getNic());
-        tvContactNo.setText(dealer.getContactNo());
+        tvContactNo.setText(dealer.getDealerContact());
         tvEmail.setText(dealer.getEmail());
         tvDealerStatus.setText(checkStatus(dealer.isActive()));
     }

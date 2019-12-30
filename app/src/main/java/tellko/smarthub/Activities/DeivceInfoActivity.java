@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+
 import tellko.smarthub.AsyncTasks.GetDealerAsync;
 import tellko.smarthub.Entities.Dealer;
 import tellko.smarthub.Entities.Warranty;
@@ -31,7 +32,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
     Button btnSubmit;
 
     TextView tvBrand, tvModel, tvIMEI, tvDealerName, tvCity, tvDistric;
-    TextView tvCustomerName, tvCustomerAddress, tvCustomerContactNo, tvCustomerEmail;
+    TextView tvCustomerName, tvCustomerAddress, tvCustomerContactNo, tvCustomerEmail, tvBrandCategory, tvDealerContact;
     TextView tvFer, tvActivatedDate, tvAccessoryWStatus, tvDeviceWStatus, tvServiceWStatus;
     String warrantyString;
     Warranty warranty;
@@ -58,6 +59,15 @@ public class DeivceInfoActivity extends AppCompatActivity {
         previous_activity = getIntent().getStringExtra("previous_activity");
         warranty = gson.fromJson(warrantyString, Warranty.class);
 
+
+        init();
+
+        if (!previous_activity.equals("activation_list_activity")) {
+            if (!type.equals("sold device")) {
+                backBtn.setVisibility(View.GONE);
+            }
+        }
+
         new GetDealerAsync(DeivceInfoActivity.this, warranty.getDealerCode(), new AsyncListner() {
             @Override
             public void onSuccess(Context context, JSONObject jsonObject) {
@@ -80,6 +90,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
                     tvDealerName.setText(dealer.getDealerName());
                     tvCity.setText(dealer.getCity());
                     tvDistric.setText(dealer.getDistrict());
+                    tvDealerContact.setText(dealer.getDealerContact());
                 }
             }
 
@@ -89,9 +100,6 @@ public class DeivceInfoActivity extends AppCompatActivity {
             }
         }).execute();
 
-
-
-        init();
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +134,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigateWithoutHistory(DeivceInfoActivity.this,MainActivity.class);
+                Utils.navigateWithoutHistory(DeivceInfoActivity.this, AppListActivity.class);
             }
         });
 
@@ -135,6 +143,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
 
     private void init() {
+        tvDealerContact = findViewById(R.id.dealerContact);
         titleView = findViewById(R.id.title_view);
         backBtn = findViewById(R.id.backBtn);
         btnSubmit = findViewById(R.id.btnSubmit);
@@ -144,6 +153,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
         tvDealerName = findViewById(R.id.dealerName);
         tvCity = findViewById(R.id.city);
         tvDistric = findViewById(R.id.distric);
+        tvBrandCategory = findViewById(R.id.brandCategory);
         tvCustomerAddress = findViewById(R.id.customerAddress);
         tvCustomerContactNo = findViewById(R.id.customerContactNo);
         tvCustomerEmail = findViewById(R.id.customerEmail);
@@ -184,6 +194,7 @@ public class DeivceInfoActivity extends AppCompatActivity {
         tvBrand.setText(warranty.getBrand());
         tvModel.setText(warranty.getModel());
         tvIMEI.setText(warranty.getImei());
+        tvBrandCategory.setText(warranty.getBrandCategory());
 
         if (warranty.getAddress() != null) {
             tvCustomerAddress.setText(warranty.getAddress());
@@ -206,26 +217,26 @@ public class DeivceInfoActivity extends AppCompatActivity {
 
         tvFer.setText(warranty.getReferenceNo());
         warranty.setWarrantyActivatedDate(warranty.getWarrantyActivatedDate());
-        tvActivatedDate.setText(warranty.getWarrantyActivatedDate()+"  "+getActivationTime(warranty.getActivationTime()));
-        if(warranty.getAccessoryWarrantyStatus().equals("Defect After Purchase")){
+        tvActivatedDate.setText(warranty.getWarrantyActivatedDate() + "  " + getActivationTime(warranty.getActivationTime()));
+        if (warranty.getAccessoryWarrantyStatus().equals("Defect After Purchase")) {
             tvAccessoryWStatus.setText("DAP");
-        }else {
+        } else {
             tvAccessoryWStatus.setText(warranty.getAccessoryWarrantyStatus());
 
         }
 
-        if(warranty.getDeviceWarrantyStatus().equals("Defect After Purchase")){
+        if (warranty.getDeviceWarrantyStatus().equals("Defect After Purchase")) {
             tvDeviceWStatus.setText("DAP");
 
-        }else {
+        } else {
             tvDeviceWStatus.setText(warranty.getDeviceWarrantyStatus());
 
         }
 
-        if(warranty.getServiceWarrantyStatus().equals("Defect After Purchase")){
+        if (warranty.getServiceWarrantyStatus().equals("Defect After Purchase")) {
             tvServiceWStatus.setText("DAP");
 
-        }else {
+        } else {
             tvServiceWStatus.setText(warranty.getServiceWarrantyStatus());
 
         }
@@ -234,6 +245,8 @@ public class DeivceInfoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (previous_activity.equals("activation_list_activity")) {
+            super.onBackPressed();
+        } else if (type.equals("sold device")) {
             super.onBackPressed();
         }
     }

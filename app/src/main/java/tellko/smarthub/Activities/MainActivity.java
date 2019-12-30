@@ -3,6 +3,7 @@ package tellko.smarthub.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -81,78 +82,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
         dealer = gson.fromJson(userDealer, Dealer.class);
 
-        DateTime now = new DateTime();
-
-        /**
-         * Get saved logout time(This time will save when user logged in)
-         * Compare both time
-         * If current time is after the saved time
-         * Display a alert to the user to logout from the app
-         * And navigate to login page
-         */
-        if (now.isAfter(dateStringToDateTime(logoutTimeString))) {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setMessage(getString(R.string.access_token_expired_message))
-                    .setCancelable(false)
-                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (isDeviceOnline(MainActivity.this)) {
-                                new LogoutAsync(MainActivity.this, dealerUserMock, new AsyncListner() {
-                                    @Override
-                                    public void onSuccess(Context context, JSONObject jsonObject) {
-                                        SharedPreferences sharedPref = context.getSharedPreferences(
-                                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPref.edit();
-                                        editor.putString("logoutTime", null);
-                                        editor.putString("loggedInUser", "0");
-                                        editor.putString("accessToken", "0");
-                                        editor.putString("refreshToken", "0");
-                                        editor.putString("userDealer", "0");
-                                        editor.putString("logoutTime", null);
-                                        editor.commit();
-                                        Utils.navigateWithoutHistory(context, LoginActivity.class);
-                                    }
-
-                                    @Override
-                                    public void onError(final Context context, String error) {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                new AlertDialog.Builder(context)
-                                                        .setMessage(context.getString(R.string.server_error))
-                                                        .setCancelable(false)
-                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                dialog.dismiss();
-
-                                                            }
-                                                        }).show();
-                                            }
-                                        });
-                                    }
-                                }).execute();
-
-                            } else {
-                                Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                            }
-                        }
-                    }).show();
-        } else {
-            init();
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
-            NavigationUI.setupWithNavController(navigationView, navController);
-
-        }
+//        DateTime now = new DateTime();
+//
+//        /**
+//         * Get saved logout time(This time will save when user logged in)
+//         * Compare both time
+//         * If current time is after the saved time
+//         * Display a alert to the user to logout from the app
+//         * And navigate to login page
+//         */
+//        if (now.isAfter(dateStringToDateTime(logoutTimeString))) {
+//            new AlertDialog.Builder(MainActivity.this)
+//                    .setMessage(getString(R.string.access_token_expired_message))
+//                    .setCancelable(false)
+//                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            if (isDeviceOnline(MainActivity.this)) {
+//                                new LogoutAsync(MainActivity.this, dealerUserMock, new AsyncListner() {
+//                                    @Override
+//                                    public void onSuccess(Context context, JSONObject jsonObject) {
+//                                        SharedPreferences sharedPref = context.getSharedPreferences(
+//                                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+//                                        SharedPreferences.Editor editor = sharedPref.edit();
+//                                        editor.putString("logoutTime", null);
+//                                        editor.putString("loggedInUser", "0");
+//                                        editor.putString("accessToken", "0");
+//                                        editor.putString("refreshToken", "0");
+//                                        editor.putString("userDealer", "0");
+//                                        editor.putString("logoutTime", null);
+//                                        editor.commit();
+//                                        Utils.navigateWithoutHistory(context, LoginActivity.class);
+//                                    }
+//
+//                                    @Override
+//                                    public void onError(final Context context, String error) {
+//                                        runOnUiThread(new Runnable() {
+//                                            @Override
+//                                            public void run() {
+//                                                new AlertDialog.Builder(context)
+//                                                        .setMessage(context.getString(R.string.server_error))
+//                                                        .setCancelable(false)
+//                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                                            @Override
+//                                                            public void onClick(DialogInterface dialog, int which) {
+//                                                                dialog.dismiss();
+//
+//                                                            }
+//                                                        }).show();
+//                                            }
+//                                        });
+//                                    }
+//                                }).execute();
+//
+//                            } else {
+//                                Utils.showAlertWithoutTitleDialog(MainActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    }).show();
+//        } else {
+//            init();
+//            setSupportActionBar(toolbar);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//            NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
+//            NavigationUI.setupWithNavController(navigationView, navController);
+//
+//        }
 
 
     }
@@ -280,7 +281,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             if (homeScreen) {
-                finish();
+                Intent intent = new Intent(MainActivity.this, AppListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             } else {
                 homeScreen = true;
                 navController.navigate(R.id.nav_home);
@@ -303,8 +306,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.nav_home:
 //                homeScreen = true;
 //                navController.navigate(R.id.nav_home);
-
-                finish();
+                Intent intent = new Intent(MainActivity.this, AppListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 break;
 
             case R.id.nav_about:
