@@ -26,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.google.zxing.Result;
+
 import tellko.smarthub.CustomViews.CustomZXingScannerView;
 import tellko.smarthub.Entities.Product;
 import tellko.smarthub.Entities.Warranty;
@@ -110,7 +111,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                     public void onClick(View v) {
 
 
-                        if(isDeviceOnline(ScannerActivity.this)){
+                        if (isDeviceOnline(ScannerActivity.this)) {
                             if (imei.getText().length() == 15) {
                                 dialog.dismiss();
 
@@ -119,10 +120,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                     new GetProductAsync(selectedBrand).execute();
                                 }
                             } else {
-                                errorLable.setText("( Enter correct IMEI )");
+                                errorLable.setText("( Enter correct IMEI / Serial )");
                                 errorLable.setVisibility(View.VISIBLE);
                             }
-                        }else {
+                        } else {
                             Utils.showAlertWithoutTitleDialog(ScannerActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -130,7 +131,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                 }
                             });
                         }
-
 
 
                     }
@@ -257,7 +257,16 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         warrantyRequest.setImei(barCodeString);
 
-        new GetProductAsync(selectedBrand).execute();
+        if (isDeviceOnline(ScannerActivity.this)) {
+            new GetProductAsync(selectedBrand).execute();
+        } else {
+            Utils.showAlertWithoutTitleDialog(ScannerActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        }
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -369,7 +378,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                         onBackPressed();
                                     }
                                 });
-                            }else if (message.equals("Disabled model")) {
+                            } else if (message.equals("Disabled model")) {
                                 Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -503,7 +512,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                         onBackPressed();
                                     }
                                 });
-                            }else if (message.equals("Disabled model")) {
+                            } else if (message.equals("Disabled model")) {
                                 Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
@@ -591,9 +600,9 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         if (product.isBrandStatus()) {
                             warrantyRequest.setProduct(product);
 
-                            if(product.getApi().equals("internal")){
+                            if (product.getApi().equals("internal")) {
                                 new RequestWarrantyAsync().execute();
-                            }else {
+                            } else {
                                 new RequestExternalApiWarrantyAsync().execute();
                             }
 

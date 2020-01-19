@@ -22,9 +22,9 @@ android {
         applicationId "tellko.smarthub"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 8
+        versionCode 12
 
-        versionName "1.4"
+        versionName "1.8"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

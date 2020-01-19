@@ -192,8 +192,14 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void afterTextChanged(Editable et) {
+                String str=et.toString();
+                if(!str.equals(str.replace(" ", "")))
+                {
+                    str=str.replace(" ", "");
+                    usernameEditText.setText(str);
+                    usernameEditText.setSelection(usernameEditText.length()); //fix reverse texting
+                }
             }
         };
 

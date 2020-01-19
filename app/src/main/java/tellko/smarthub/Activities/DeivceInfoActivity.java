@@ -179,6 +179,8 @@ public class DeivceInfoActivity extends AppCompatActivity {
             tvDistric.setVisibility(View.GONE);
             tvCity.setVisibility(View.GONE);
             tvDealerName.setVisibility(View.GONE);
+            tvDealerContact.setVisibility(View.GONE);
+            findViewById(R.id.dealerContactLable).setVisibility(View.GONE);
             findViewById(R.id.textView15).setVisibility(View.GONE);
             findViewById(R.id.textView17).setVisibility(View.GONE);
             findViewById(R.id.textView29).setVisibility(View.GONE);

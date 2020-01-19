@@ -81,6 +81,12 @@ public class AppListActivity extends AppCompatActivity implements View.OnClickLi
         dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
         dealer = gson.fromJson(userDealer, Dealer.class);
 
+        init();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
+        NavigationUI.setupWithNavController(navigationView, navController);
         DateTime now = new DateTime();
 
         /**
@@ -144,14 +150,6 @@ public class AppListActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         }
                     }).show();
-        } else {
-            init();
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
-            NavigationUI.setupWithNavController(navigationView, navController);
-
         }
 
 

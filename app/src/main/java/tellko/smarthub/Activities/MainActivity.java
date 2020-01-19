@@ -7,7 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayout nav_home, nav_reports, nav_about, nav_settings;
     TextView tvUserName,tvDealerName;
 
+    ImageButton homeBtn;
+
+
     private static final String TAG = "SmartWarrantyApp";
 
     boolean homeScreen = true;
@@ -81,6 +88,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
         dealer = gson.fromJson(userDealer, Dealer.class);
+
+        init();
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
 //        DateTime now = new DateTime();
 //
@@ -171,9 +185,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nav_reports = navigationView.findViewById(R.id.nav_report);
         nav_about = navigationView.findViewById(R.id.nav_about);
         nav_settings = navigationView.findViewById(R.id.nav_settings);
+        homeBtn = findViewById(R.id.btnHome);
 
         tvUserName.setText(dealerUserMock.getUsername());
         tvDealerName.setText(dealer.getDealerName());
+
+        homeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigateWithoutHistory(MainActivity.this, AppListActivity.class);
+            }
+        });
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
