@@ -13,7 +13,25 @@ public class Dealer {
     private String city;
     private String district;
     private List<String> enableBrands;
-    private String contactNo;
+    private String ownerContact;
+    private String dealerContact;
+
+    public String getOwnerContact() {
+        return ownerContact;
+    }
+
+    public void setOwnerContact(String ownerContact) {
+        this.ownerContact = ownerContact;
+    }
+
+    public String getDealerContact() {
+        return dealerContact;
+    }
+
+    public void setDealerContact(String dealerContact) {
+        this.dealerContact = dealerContact;
+    }
+
     private String email;
     private boolean active;
 
@@ -87,14 +105,6 @@ public class Dealer {
 
     public void setEnableBrands(List<String> enableBrands) {
         this.enableBrands = enableBrands;
-    }
-
-    public String getContactNo() {
-        return contactNo;
-    }
-
-    public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
     }
 
     public String getEmail() {

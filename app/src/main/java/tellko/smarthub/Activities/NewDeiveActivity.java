@@ -51,7 +51,7 @@ public class NewDeiveActivity extends AppCompatActivity {
     String warrantyString;
     Warranty warranty;
     Gson gson = new Gson();
-    TextView tvBrand, tvModel, tvIMEI, tvDealerName, tvCity, tvDistric;
+    TextView tvBrand, tvModel, tvIMEI, tvDealerName, tvCity, tvDistric,tvBrandCategory,tvDealerContact;
     EditText etCustomerName, etCustomerAddress, etCustomerContactNo, etCustomerEmail;
     Dealer dealer;
     TextView titleView;
@@ -165,7 +165,7 @@ public class NewDeiveActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigateWithoutHistory(NewDeiveActivity.this, MainActivity.class);
+                Utils.navigateWithoutHistory(NewDeiveActivity.this, AppListActivity.class);
             }
         });
 
@@ -226,6 +226,8 @@ public class NewDeiveActivity extends AppCompatActivity {
         tvDealerName = findViewById(R.id.dealerName);
         tvCity = findViewById(R.id.city);
         tvDistric = findViewById(R.id.distric);
+        tvBrandCategory = findViewById(R.id.brandCategory);
+        tvDealerContact = findViewById(R.id.dealerContact);
         etCustomerAddress = findViewById(R.id.customerAddress);
         etCustomerContactNo = findViewById(R.id.customerContactNo);
         etCustomerEmail = findViewById(R.id.customerEmail);
@@ -279,6 +281,7 @@ public class NewDeiveActivity extends AppCompatActivity {
                     tvDealerName.setText(dealer.getDealerName());
                     tvCity.setText(dealer.getCity());
                     tvDistric.setText(dealer.getDistrict());
+                    tvDealerContact.setText(dealer.getDealerContact());
                 }
             }
 
@@ -351,6 +354,7 @@ public class NewDeiveActivity extends AppCompatActivity {
         tvBrand.setText(warranty.getBrand());
         tvModel.setText(warranty.getModel());
         tvIMEI.setText(warranty.getImei());
+        tvBrandCategory.setText(warranty.getBrandCategory());
 
 
     }

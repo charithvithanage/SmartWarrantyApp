@@ -26,6 +26,15 @@ public class Warranty {
     private String district;
     private String activationDate=null;
     private String activationTime=null;
+    private String brandCategory;
+
+    public String getBrandCategory() {
+        return brandCategory;
+    }
+
+    public void setBrandCategory(String brandCategory) {
+        this.brandCategory = brandCategory;
+    }
 
     public String getActivationTime() {
         return activationTime;

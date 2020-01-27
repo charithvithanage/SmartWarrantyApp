@@ -22,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
+import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 import tellko.smarthub.AsyncTasks.LogoutAsync;
@@ -32,6 +33,7 @@ import tellko.smarthub.R;
 import tellko.smarthub.Utils;
 
 import static tellko.smarthub.Utils.capEachWord;
+import static tellko.smarthub.Utils.dateStringToDateTime;
 import static tellko.smarthub.Utils.isDeviceOnline;
 
 public class AppListActivity extends AppCompatActivity implements View.OnClickListener {
@@ -74,6 +76,7 @@ public class AppListActivity extends AppCompatActivity implements View.OnClickLi
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         String loggedInUser = sharedPref.getString("loggedInUser", null);
         String userDealer = sharedPref.getString("userDealer", null);
+        String logoutTimeString = sharedPref.getString("logoutTime", null);
 
         dealerUserMock = gson.fromJson(loggedInUser, DealerUser.class);
         dealer = gson.fromJson(userDealer, Dealer.class);
@@ -84,6 +87,70 @@ public class AppListActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
         NavigationUI.setupWithNavController(navigationView, navController);
+        DateTime now = new DateTime();
+
+        /**
+         * Get saved logout time(This time will save when user logged in)
+         * Compare both time
+         * If current time is after the saved time
+         * Display a alert to the user to logout from the app
+         * And navigate to login page
+         */
+        if (now.isAfter(dateStringToDateTime(logoutTimeString))) {
+            new AlertDialog.Builder(AppListActivity.this)
+                    .setMessage(getString(R.string.access_token_expired_message))
+                    .setCancelable(false)
+                    .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (isDeviceOnline(AppListActivity.this)) {
+                                new LogoutAsync(AppListActivity.this, dealerUserMock, new AsyncListner() {
+                                    @Override
+                                    public void onSuccess(Context context, JSONObject jsonObject) {
+                                        SharedPreferences sharedPref = context.getSharedPreferences(
+                                                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPref.edit();
+                                        editor.putString("logoutTime", null);
+                                        editor.putString("loggedInUser", "0");
+                                        editor.putString("accessToken", "0");
+                                        editor.putString("refreshToken", "0");
+                                        editor.putString("userDealer", "0");
+                                        editor.putString("logoutTime", null);
+                                        editor.commit();
+                                        Utils.navigateWithoutHistory(context, LoginActivity.class);
+                                    }
+
+                                    @Override
+                                    public void onError(final Context context, String error) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                new AlertDialog.Builder(context)
+                                                        .setMessage(context.getString(R.string.server_error))
+                                                        .setCancelable(false)
+                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+
+                                                            }
+                                                        }).show();
+                                            }
+                                        });
+                                    }
+                                }).execute();
+
+                            } else {
+                                Utils.showAlertWithoutTitleDialog(AppListActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        }
+                    }).show();
+        }
 
 
     }

@@ -36,7 +36,7 @@ public class AboutFragment extends Fragment {
 
     private void init(View root) {
         tvAppVersion = root.findViewById(R.id.tvAppVersion);
-        tvAppVersion.setText("App Version " + BuildConfig.VERSION_NAME + "." + String.valueOf(BuildConfig.VERSION_CODE));
+        tvAppVersion.setText("App Version " + BuildConfig.VERSION_NAME);
 
     }
 

@@ -72,7 +72,7 @@
             android:paddingLeft="@dimen/listview_lable_padding"
             android:paddingTop="8dp"
             android:paddingRight="@dimen/listview_lable_padding"
-            android:text="IMEI :" />
+            android:text="IMEI / Serial :" />
 
         <TextView
             android:id="@+id/tvImei"
