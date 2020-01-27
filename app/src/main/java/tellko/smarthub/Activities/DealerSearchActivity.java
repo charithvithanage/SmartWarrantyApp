@@ -168,6 +168,9 @@ public class DealerSearchActivity extends AppCompatActivity {
         errorNIC.setVisibility(View.GONE);
     }
 
+    /**
+     * Call to the dealer details from nic end point using AsyncTask
+     */
     private class GetDealerAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -210,6 +213,9 @@ public class DealerSearchActivity extends AppCompatActivity {
                                 recyclerView.setAdapter(adapter);
                                 recyclerView.setLayoutManager(MyLayoutManager);
 
+                                /**
+                                 * If selected dealership is Active navigate to dealer user registration page
+                                 */
                                 adapter.setMyClickListener(new DealershipAdapter.MyClickListener() {
                                     @Override
                                     public void onItemClick(View v, int position) {

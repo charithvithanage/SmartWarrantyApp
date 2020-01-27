@@ -116,6 +116,9 @@ public class ForgotPassword extends AppCompatActivity {
         errorNIC.setVisibility(View.GONE);
     }
 
+    /**
+     * Call to the forgot password end point using AsyncTask
+     */
     private class ForgotPaswordAsync extends AsyncTask<Void, Void, Void> {
 
         @Override

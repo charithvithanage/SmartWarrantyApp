@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+
 import tellko.smarthub.Entities.ChangePassword;
 import tellko.smarthub.Entities.DealerUser;
 import tellko.smarthub.Interfaces.AsyncListner;
@@ -55,11 +56,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        previousActivity=getIntent().getStringExtra("activityName");
+        previousActivity = getIntent().getStringExtra("activityName");
 /**
  * Change status bar color programmatically
  */
+
         Utils.changeStatusBarColor(ChangePasswordActivity.this, getWindow());
+
         init();
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -72,10 +75,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(previousActivity.equals("AppListActivity")){
-                    Utils.navigateWithoutHistory(ChangePasswordActivity.this,AppListActivity.class);
-                }else {
-                    Utils.navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
+                if (previousActivity.equals("AppListActivity")) {
+                    Utils.navigateWithoutHistory(ChangePasswordActivity.this, AppListActivity.class);
+                } else {
+                    Utils.navigateWithoutHistory(ChangePasswordActivity.this, MainActivity.class);
                 }
             }
         });
@@ -84,12 +87,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(isDeviceOnline(ChangePasswordActivity.this)){
+                if (isDeviceOnline(ChangePasswordActivity.this)) {
                     progressDialog = showProgressDialog(ChangePasswordActivity.this);
                     progressDialog.show();
                     signUpButton.setEnabled(false);
-                    changePassword(passwordEditText.getText().toString(),confirmPasswordEditText.getText().toString(),oldPasswordEditText.getText().toString());
-                }else {
+                    changePassword(passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString(), oldPasswordEditText.getText().toString());
+                } else {
                     Utils.showAlertWithoutTitleDialog(ChangePasswordActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -105,7 +108,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void init() {
 
         changePassword = new ChangePassword();
-
 
         passwordEditText = findViewById(R.id.password);
         oldPasswordEditText = findViewById(R.id.oldPassword);
@@ -125,7 +127,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
         titleView = findViewById(R.id.title_view);
 
         titleView.setText("Change Password");
-
 
 
         userPasswordTextWatcher = new TextWatcher() {
@@ -187,6 +188,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
         confirmPasswordEditText.addTextChangedListener(confirmPasswordTextWatcher);
     }
 
+    /**
+     * Display error stroke(Red color border) on background
+     */
     private void setEditTextBGNormal() {
 
         confirmPasswordEditText.setBackground(getResources().getDrawable(R.drawable.edt_bg_normal));
@@ -198,18 +202,24 @@ public class ChangePasswordActivity extends AppCompatActivity {
         errorOldPassword.setVisibility(View.GONE);
     }
 
-    public void changePassword(String password,String confirmPassword, String oldPassword) {
+    /**
+     * Change the validation of a password and if it is ok password change
+     * @param password
+     * @param confirmPassword
+     * @param oldPassword
+     */
+    public void changePassword(String password, String confirmPassword, String oldPassword) {
 
 
-        if (isPasswordValid(oldPassword)&&isPasswordValid(password) && isPasswordMatch(password, confirmPassword)) {
+        if (isPasswordValid(oldPassword) && isPasswordValid(password) && isPasswordMatch(password, confirmPassword)) {
 
             SharedPreferences sharedPref = getSharedPreferences(
                     getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-            Gson gson=new Gson();
+            Gson gson = new Gson();
 
-            String dealerString=sharedPref.getString("loggedInUser","0");
-            DealerUser dealerUserMock=gson.fromJson(dealerString, DealerUser.class);
+            String dealerString = sharedPref.getString("loggedInUser", "0");
+            DealerUser dealerUserMock = gson.fromJson(dealerString, DealerUser.class);
 
             changePassword.setUsername(dealerUserMock.getUsername());
             changePassword.setOldPassword(oldPassword);
@@ -225,19 +235,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
             if (!isPasswordValid(oldPassword)) {
                 errorOldPassword.setVisibility(View.VISIBLE);
 
-                errorOldPassword.setText(getPasswordValidStatus(ChangePasswordActivity.this,oldPassword));
+                errorOldPassword.setText(getPasswordValidStatus(ChangePasswordActivity.this, oldPassword));
                 oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
             }
 
 
             if (!isPasswordValid(password)) {
                 errorPassword.setVisibility(View.VISIBLE);
-                errorPassword.setText(getPasswordValidStatus(ChangePasswordActivity.this,password));
+                errorPassword.setText(getPasswordValidStatus(ChangePasswordActivity.this, password));
                 passwordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
 
             }
 
-            if(!password.matches(confirmPassword)){
+            if (!password.matches(confirmPassword)) {
                 errorConfirmPassword.setVisibility(View.VISIBLE);
                 errorConfirmPassword.setText("( New Password do not match. )");
                 confirmPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
@@ -246,6 +256,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Call to the dealer user change password end point using AsyncTask
+     */
     private class ChangePasswordAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -270,21 +283,21 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                     signUpButton.setEnabled(true);
-                                    if(previousActivity.equals("AppListActivity")){
-                                        navigateWithoutHistory(ChangePasswordActivity.this,AppListActivity.class);
-                                    }else {
-                                        navigateWithoutHistory(ChangePasswordActivity.this,MainActivity.class);
+                                    if (previousActivity.equals("AppListActivity")) {
+                                        navigateWithoutHistory(ChangePasswordActivity.this, AppListActivity.class);
+                                    } else {
+                                        navigateWithoutHistory(ChangePasswordActivity.this, MainActivity.class);
                                     }
                                 }
                             });
 
                         } else {
                             signUpButton.setEnabled(true);
-                            if(message.equals("Provided old password does not match")){
+                            if (message.equals("Provided old password does not match")) {
                                 errorOldPassword.setVisibility(View.VISIBLE);
                                 errorOldPassword.setText("Current Password incorrect");
                                 oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));
-                            }else {
+                            } else {
                                 errorOldPassword.setVisibility(View.VISIBLE);
                                 errorOldPassword.setText(message);
                                 oldPasswordEditText.setBackground(getResources().getDrawable(R.drawable.error_edit_bg));

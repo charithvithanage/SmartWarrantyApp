@@ -3,7 +3,6 @@ package tellko.smarthub.Activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,32 +13,20 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import tellko.smarthub.AsyncTasks.GetDealerAsync;
-import tellko.smarthub.AsyncTasks.GetProductsAsync;
-import tellko.smarthub.Config;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import tellko.smarthub.Entities.Dealer;
-import tellko.smarthub.Entities.DealerUser;
 import tellko.smarthub.Entities.DealerUserMock;
-import tellko.smarthub.Entities.Product;
 import tellko.smarthub.Interfaces.AsyncListner;
 import tellko.smarthub.R;
 import tellko.smarthub.Services.UserService;
 import tellko.smarthub.Utils;
 
-import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static tellko.smarthub.Utils.dateTimeToString;
-import static tellko.smarthub.Utils.endOfDay;
 import static tellko.smarthub.Utils.isDeviceOnline;
 import static tellko.smarthub.Utils.navigateWithoutHistory;
 import static tellko.smarthub.Utils.showProgressDialog;
-import static tellko.smarthub.Utils.sortProductList;
 
 public class DealerInfoActivity extends AppCompatActivity {
     private static final String TAG = "SmartWarrantyApp";
@@ -113,10 +100,12 @@ public class DealerInfoActivity extends AppCompatActivity {
         tvEmail = findViewById(R.id.email);
         tvDealerStatus = findViewById(R.id.dealerStatus);
 
-
         setValues();
     }
 
+    /**
+     * Assign values to the UI elements
+     */
     private void setValues() {
         tvDealerCode.setText(dealer.getDealerCode());
         tvDealerName.setText(dealer.getDealerName());
@@ -146,6 +135,9 @@ public class DealerInfoActivity extends AppCompatActivity {
         return status;
     }
 
+    /**
+     * Call to the dealer user register end point using AsyncTask
+     */
     private class RegisterAsync extends AsyncTask<Void, Void, Void> {
 
 

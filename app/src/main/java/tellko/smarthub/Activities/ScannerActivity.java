@@ -26,6 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.google.zxing.Result;
+
+import tellko.smarthub.AsyncTasks.RequestExternalApiWarrantyAsync;
+import tellko.smarthub.AsyncTasks.RequestWarrantyAsync;
 import tellko.smarthub.CustomViews.CustomZXingScannerView;
 import tellko.smarthub.Entities.Product;
 import tellko.smarthub.Entities.Warranty;
@@ -66,6 +69,10 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
         init();
 
+        /**
+         * If click on manual imei enter button
+         * Display a dialog with a field to enter the emei
+         */
         manualBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +92,9 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                 Button btnSubmit = dialog.findViewById(R.id.btnSubmit);
                 TextWatcher imieWatcher;
 
+                /**
+                 * Validate the entered imei
+                 */
                 imieWatcher = new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -110,7 +120,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                     public void onClick(View v) {
 
 
-                        if(isDeviceOnline(ScannerActivity.this)){
+                        if (isDeviceOnline(ScannerActivity.this)) {
                             if (imei.getText().length() == 15) {
                                 dialog.dismiss();
 
@@ -122,7 +132,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                 errorLable.setText("( Enter correct IMEI )");
                                 errorLable.setVisibility(View.VISIBLE);
                             }
-                        }else {
+                        } else {
                             Utils.showAlertWithoutTitleDialog(ScannerActivity.this, getString(R.string.no_internet), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -130,7 +140,6 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                                 }
                             });
                         }
-
 
 
                     }
@@ -183,6 +192,12 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
 
     }
 
+    /**
+     * Get the device type by warranty status
+     *
+     * @param warranty
+     * @return device type
+     */
     private String getDeviceType(Warranty warranty) {
 
         String type;
@@ -280,273 +295,273 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
         stopCamera();
     }
 
-    private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
+//    private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//
+//            DealerService.getInstance().getWarrantyFromIMEI(ScannerActivity.this, warrantyRequest, new AsyncListner() {
+//                @Override
+//                public void onSuccess(Context context, JSONObject jsonObject) {
+//                    Log.d(TAG, jsonObject.toString());
+//                    progressDialog.dismiss();
+//
+//                    String objectOne;
+//                    String objectTwo = null;
+//
+//                    try {
+//                        boolean success = jsonObject.getBoolean("success");
+//                        String message = jsonObject.getString("message");
+//
+//                        if (success) {
+//                            objectOne = jsonObject.getString("objectOne");
+//                            objectTwo = jsonObject.getString("objectTwo");
+//                            Gson gson = new Gson();
+//                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+//
+//                            String deviceType = getDeviceType(warranty);
+//
+//
+//                            if (warranty.getBrand().equals(selectedBrand)) {
+//                                if (deviceType.equals("new device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
+//                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+//                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+//                                    intent.putExtra("dealerString", objectTwo);
+//                                    intent.putExtra("type", deviceType);
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                } else if (deviceType.equals("sold device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
+//                                    intent.putExtra("type", deviceType);
+//                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+//                                    intent.putExtra("dealerString", objectTwo);
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                } else if (deviceType.equals("activated device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+//                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+//                                    intent.putExtra("dealerString", objectTwo);
+//                                    intent.putExtra("type", deviceType);
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                } else if (deviceType.equals("disabled device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                    intent.putExtra("type", "disabled device");
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                }
+//                            } else {
+//                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        onBackPressed();
+//
+//                                    }
+//                                });
+//                            }
+//
+//
+//                        } else {
+//
+//                            if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
+//                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                intent.putExtra("type", "unauthorized device");
+//                                intent.putExtra("previous_activity", "scan_activity");
+//                                startActivity(intent);
+//                            } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
+//                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                intent.putExtra("type", "disabled device");
+//                                intent.putExtra("previous_activity", "scan_activity");
+//                                startActivity(intent);
+//                            } else if (message.equals("Please scan correct brand")) {
+//                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        onBackPressed();
+//                                    }
+//                                });
+//                            }else if (message.equals("Disabled model")) {
+//                                Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        onBackPressed();
+//                                    }
+//                                });
+//                            } else {
+//                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        startCamera();
+//                                    }
+//                                });
+//                            }
+//
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        startCamera();
+//                    }
+//
+//
+//                }
+//
+//                @Override
+//                public void onError(Context context, String error) {
+//                    progressDialog.dismiss();
+//
+//                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            startCamera();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return null;
+//        }
+//    }
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            DealerService.getInstance().getWarrantyFromIMEI(ScannerActivity.this, warrantyRequest, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    Log.d(TAG, jsonObject.toString());
-                    progressDialog.dismiss();
-
-                    String objectOne = null;
-                    String objectTwo = null;
-
-                    try {
-                        boolean success = jsonObject.getBoolean("success");
-                        String message = jsonObject.getString("message");
-
-                        if (success) {
-                            objectOne = jsonObject.getString("objectOne");
-                            objectTwo = jsonObject.getString("objectTwo");
-                            Gson gson = new Gson();
-                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
-
-                            String deviceType = getDeviceType(warranty);
-
-
-                            if (warranty.getBrand().equals(selectedBrand)) {
-                                if (deviceType.equals("new device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
-                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
-                                    intent.putExtra("warrantyString", gson.toJson(warranty));
-                                    intent.putExtra("dealerString", objectTwo);
-                                    intent.putExtra("type", deviceType);
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                } else if (deviceType.equals("sold device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
-                                    intent.putExtra("type", deviceType);
-                                    intent.putExtra("warrantyString", gson.toJson(warranty));
-                                    intent.putExtra("dealerString", objectTwo);
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                } else if (deviceType.equals("activated device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
-                                    intent.putExtra("warrantyString", gson.toJson(warranty));
-                                    intent.putExtra("dealerString", objectTwo);
-                                    intent.putExtra("type", deviceType);
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                } else if (deviceType.equals("disabled device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                    intent.putExtra("type", "disabled device");
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                }
-                            } else {
-                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        onBackPressed();
-
-                                    }
-                                });
-                            }
-
-
-                        } else {
-
-                            if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
-                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                intent.putExtra("type", "unauthorized device");
-                                intent.putExtra("previous_activity", "scan_activity");
-                                startActivity(intent);
-                            } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
-                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                intent.putExtra("type", "disabled device");
-                                intent.putExtra("previous_activity", "scan_activity");
-                                startActivity(intent);
-                            } else if (message.equals("Please scan correct brand")) {
-                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        onBackPressed();
-                                    }
-                                });
-                            }else if (message.equals("Disabled model")) {
-                                Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        onBackPressed();
-                                    }
-                                });
-                            } else {
-                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        startCamera();
-                                    }
-                                });
-                            }
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        startCamera();
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    progressDialog.dismiss();
-
-                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            startCamera();
-                        }
-                    });
-                }
-            });
-
-            return null;
-        }
-    }
-
-    private class RequestExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            DealerService.getInstance().getExternalApiWarrantyFromIMEI(ScannerActivity.this, warrantyRequest, new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    Log.d(TAG, jsonObject.toString());
-                    progressDialog.dismiss();
-
-                    String objectOne = null;
-                    String objectTwo = null;
-
-                    try {
-                        boolean success = jsonObject.getBoolean("success");
-                        String message = jsonObject.getString("message");
-
-                        if (success) {
-                            objectOne = jsonObject.getString("objectOne");
-                            objectTwo = jsonObject.getString("objectTwo");
-                            Gson gson = new Gson();
-                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
-
-                            String deviceType = getDeviceType(warranty);
-
-
-                            if (warranty.getBrand().equals(selectedBrand)) {
-                                if (deviceType.equals("new device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
-                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
-                                    intent.putExtra("warrantyString", gson.toJson(warranty));
-                                    intent.putExtra("dealerString", objectTwo);
-                                    intent.putExtra("type", deviceType);
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                } else if (deviceType.equals("sold device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
-                                    intent.putExtra("type", deviceType);
-                                    intent.putExtra("warrantyString", gson.toJson(warranty));
-                                    intent.putExtra("dealerString", objectTwo);
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                } else if (deviceType.equals("activated device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
-                                    intent.putExtra("warrantyString", gson.toJson(warranty));
-                                    intent.putExtra("dealerString", objectTwo);
-                                    intent.putExtra("type", deviceType);
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                } else if (deviceType.equals("disabled device")) {
-                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                    intent.putExtra("type", "disabled device");
-                                    intent.putExtra("previous_activity", "scan_activity");
-                                    startActivity(intent);
-                                }
-                            } else {
-                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        onBackPressed();
-
-                                    }
-                                });
-                            }
-
-
-                        } else {
-
-                            if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
-                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                intent.putExtra("type", "unauthorized device");
-                                intent.putExtra("previous_activity", "scan_activity");
-                                startActivity(intent);
-                            } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
-                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
-                                intent.putExtra("type", "disabled device");
-                                intent.putExtra("previous_activity", "scan_activity");
-                                startActivity(intent);
-                            } else if (message.equals("Please scan correct brand")) {
-                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        onBackPressed();
-                                    }
-                                });
-                            }else if (message.equals("Disabled model")) {
-                                Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        onBackPressed();
-                                    }
-                                });
-                            } else {
-                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        startCamera();
-                                    }
-                                });
-                            }
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        startCamera();
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    progressDialog.dismiss();
-
-                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            startCamera();
-                        }
-                    });
-                }
-            });
-
-            return null;
-        }
-    }
+//    private class RequestExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//
+//            DealerService.getInstance().getExternalApiWarrantyFromIMEI(ScannerActivity.this, warrantyRequest, new AsyncListner() {
+//                @Override
+//                public void onSuccess(Context context, JSONObject jsonObject) {
+//                    Log.d(TAG, jsonObject.toString());
+//                    progressDialog.dismiss();
+//
+//                    String objectOne = null;
+//                    String objectTwo = null;
+//
+//                    try {
+//                        boolean success = jsonObject.getBoolean("success");
+//                        String message = jsonObject.getString("message");
+//
+//                        if (success) {
+//                            objectOne = jsonObject.getString("objectOne");
+//                            objectTwo = jsonObject.getString("objectTwo");
+//                            Gson gson = new Gson();
+//                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+//
+//                            String deviceType = getDeviceType(warranty);
+//
+//
+//                            if (warranty.getBrand().equals(selectedBrand)) {
+//                                if (deviceType.equals("new device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
+//                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+//                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+//                                    intent.putExtra("dealerString", objectTwo);
+//                                    intent.putExtra("type", deviceType);
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                } else if (deviceType.equals("sold device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
+//                                    intent.putExtra("type", deviceType);
+//                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+//                                    intent.putExtra("dealerString", objectTwo);
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                } else if (deviceType.equals("activated device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                    intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+//                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+//                                    intent.putExtra("dealerString", objectTwo);
+//                                    intent.putExtra("type", deviceType);
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                } else if (deviceType.equals("disabled device")) {
+//                                    Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                    intent.putExtra("type", "disabled device");
+//                                    intent.putExtra("previous_activity", "scan_activity");
+//                                    startActivity(intent);
+//                                }
+//                            } else {
+//                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        onBackPressed();
+//
+//                                    }
+//                                });
+//                            }
+//
+//
+//                        } else {
+//
+//                            if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
+//                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                intent.putExtra("type", "unauthorized device");
+//                                intent.putExtra("previous_activity", "scan_activity");
+//                                startActivity(intent);
+//                            } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
+//                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+//                                intent.putExtra("type", "disabled device");
+//                                intent.putExtra("previous_activity", "scan_activity");
+//                                startActivity(intent);
+//                            } else if (message.equals("Please scan correct brand")) {
+//                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        onBackPressed();
+//                                    }
+//                                });
+//                            } else if (message.equals("Disabled model")) {
+//                                Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        onBackPressed();
+//                                    }
+//                                });
+//                            } else {
+//                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        dialog.dismiss();
+//                                        startCamera();
+//                                    }
+//                                });
+//                            }
+//
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                        startCamera();
+//                    }
+//
+//
+//                }
+//
+//                @Override
+//                public void onError(Context context, String error) {
+//                    progressDialog.dismiss();
+//
+//                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            startCamera();
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return null;
+//        }
+//    }
 
 
     private class GetProductAsync extends AsyncTask<Void, Void, Void> {
@@ -591,10 +606,273 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
                         if (product.isBrandStatus()) {
                             warrantyRequest.setProduct(product);
 
-                            if(product.getApi().equals("internal")){
-                                new RequestWarrantyAsync().execute();
-                            }else {
-                                new RequestExternalApiWarrantyAsync().execute();
+                            if (product.getApi().equals("internal")) {
+                                new RequestWarrantyAsync(ScannerActivity.this, warrantyRequest, new AsyncListner() {
+                                    @Override
+                                    public void onSuccess(final Context context, final JSONObject jsonObject) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Log.d(TAG, jsonObject.toString());
+                                                progressDialog.dismiss();
+
+                                                String objectOne;
+                                                String objectTwo = null;
+
+                                                try {
+                                                    boolean success = jsonObject.getBoolean("success");
+                                                    String message = jsonObject.getString("message");
+
+                                                    if (success) {
+                                                        objectOne = jsonObject.getString("objectOne");
+                                                        objectTwo = jsonObject.getString("objectTwo");
+                                                        Gson gson = new Gson();
+                                                        Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                                                        String deviceType = getDeviceType(warranty);
+
+
+                                                        if (warranty.getBrand().equals(selectedBrand)) {
+                                                            if (deviceType.equals("new device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
+                                                                intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("dealerString", objectTwo);
+                                                                intent.putExtra("type", deviceType);
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            } else if (deviceType.equals("sold device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
+                                                                intent.putExtra("type", deviceType);
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("dealerString", objectTwo);
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            } else if (deviceType.equals("activated device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                                intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("dealerString", objectTwo);
+                                                                intent.putExtra("type", deviceType);
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            } else if (deviceType.equals("disabled device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                                intent.putExtra("type", "disabled device");
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            }
+                                                        } else {
+                                                            Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    onBackPressed();
+
+                                                                }
+                                                            });
+                                                        }
+
+
+                                                    } else {
+
+                                                        if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
+                                                            Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                            intent.putExtra("type", "unauthorized device");
+                                                            intent.putExtra("previous_activity", "scan_activity");
+                                                            startActivity(intent);
+                                                        } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
+                                                            Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                            intent.putExtra("type", "disabled device");
+                                                            intent.putExtra("previous_activity", "scan_activity");
+                                                            startActivity(intent);
+                                                        } else if (message.equals("Please scan correct brand")) {
+                                                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    onBackPressed();
+                                                                }
+                                                            });
+                                                        } else if (message.equals("Disabled model")) {
+                                                            Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    onBackPressed();
+                                                                }
+                                                            });
+                                                        } else {
+                                                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    startCamera();
+                                                                }
+                                                            });
+                                                        }
+
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                    startCamera();
+                                                }
+
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final Context context, String error) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                progressDialog.dismiss();
+
+                                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        startCamera();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).execute();
+                            } else {
+                                new RequestExternalApiWarrantyAsync(ScannerActivity.this, warrantyRequest, new AsyncListner() {
+                                    @Override
+                                    public void onSuccess(final Context context, final JSONObject jsonObject) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Log.d(TAG, jsonObject.toString());
+                                                progressDialog.dismiss();
+
+                                                String objectOne = null;
+                                                String objectTwo = null;
+
+                                                try {
+                                                    boolean success = jsonObject.getBoolean("success");
+                                                    String message = jsonObject.getString("message");
+
+                                                    if (success) {
+                                                        objectOne = jsonObject.getString("objectOne");
+                                                        objectTwo = jsonObject.getString("objectTwo");
+                                                        Gson gson = new Gson();
+                                                        Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                                                        String deviceType = getDeviceType(warranty);
+
+
+                                                        if (warranty.getBrand().equals(selectedBrand)) {
+                                                            if (deviceType.equals("new device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, NewDeiveActivity.class);
+                                                                intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("dealerString", objectTwo);
+                                                                intent.putExtra("type", deviceType);
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            } else if (deviceType.equals("sold device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, DeivceInfoActivity.class);
+                                                                intent.putExtra("type", deviceType);
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("dealerString", objectTwo);
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            } else if (deviceType.equals("activated device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                                intent.putExtra("waranntyRequest", gson.toJson(warrantyRequest));
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("dealerString", objectTwo);
+                                                                intent.putExtra("type", deviceType);
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            } else if (deviceType.equals("disabled device")) {
+                                                                Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                                intent.putExtra("type", "disabled device");
+                                                                intent.putExtra("previous_activity", "scan_activity");
+                                                                startActivity(intent);
+                                                            }
+                                                        } else {
+                                                            Utils.showAlertWithoutTitleDialog(context, getString(R.string.wrong_imei), new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    onBackPressed();
+
+                                                                }
+                                                            });
+                                                        }
+
+
+                                                    } else {
+
+                                                        if (message.equals("Invalid country") || message.equals("No warranty entry found for given entry")) {
+                                                            Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                            intent.putExtra("type", "unauthorized device");
+                                                            intent.putExtra("previous_activity", "scan_activity");
+                                                            startActivity(intent);
+                                                        } else if (message.equals("Unauthorized Device, Please contact Smartwarranty Team")) {
+                                                            Intent intent = new Intent(ScannerActivity.this, MessageActivity.class);
+                                                            intent.putExtra("type", "disabled device");
+                                                            intent.putExtra("previous_activity", "scan_activity");
+                                                            startActivity(intent);
+                                                        } else if (message.equals("Please scan correct brand")) {
+                                                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    onBackPressed();
+                                                                }
+                                                            });
+                                                        } else if (message.equals("Disabled model")) {
+                                                            Utils.showAlertWithoutTitleDialog(context, "Inactive Model", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    onBackPressed();
+                                                                }
+                                                            });
+                                                        } else {
+                                                            Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    startCamera();
+                                                                }
+                                                            });
+                                                        }
+
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                    startCamera();
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(final Context context, String error) {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                progressDialog.dismiss();
+
+                                                Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        startCamera();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).execute();
                             }
 
                         } else {

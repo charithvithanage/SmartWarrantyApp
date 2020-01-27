@@ -20,7 +20,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+
 import tellko.smarthub.AsyncTasks.GetDealerAsync;
+import tellko.smarthub.AsyncTasks.RequestExternalApiWarrantyAsync;
+import tellko.smarthub.AsyncTasks.RequestWarrantyAsync;
 import tellko.smarthub.Config;
 import tellko.smarthub.Entities.Dealer;
 import tellko.smarthub.Entities.DealerUser;
@@ -54,7 +57,7 @@ public class NewDeiveActivity extends AppCompatActivity {
     TextView titleView;
     ImageButton backBtn;
     TextWatcher etContactNoTextWatcher, etEmailTextWatcher;
-//    TextWatcher etAddressTextWatcher, etNameTextWatcher;
+    //    TextWatcher etAddressTextWatcher, etNameTextWatcher;
     TextView errorContactNo, errorEmail;
     String waranntyRequestString;
     ImageButton homeBtn;
@@ -75,7 +78,7 @@ public class NewDeiveActivity extends AppCompatActivity {
         warrantyString = getIntent().getStringExtra("warrantyString");
         previous_activity = getIntent().getStringExtra("previous_activity");
         waranntyRequestString = getIntent().getStringExtra("waranntyRequest");
-        warrantyRequest=gson.fromJson(waranntyRequestString,WarrantyRequest.class);
+        warrantyRequest = gson.fromJson(waranntyRequestString, WarrantyRequest.class);
         warranty = gson.fromJson(warrantyString, Warranty.class);
 
         init();
@@ -201,9 +204,12 @@ public class NewDeiveActivity extends AppCompatActivity {
         }
 
 
-        if(warrantyRequest.getProduct().getApi().equals("internal")){
+        /**
+         * Check whether the warranty is internal api or external api
+         */
+        if (warrantyRequest.getProduct().getApi().equals("internal")) {
             new UpdateWarrantyAsync().execute();
-        }else {
+        } else {
             warranty.setId(null);
             new UpdateExternalApiWarrantyAsync().execute();
         }
@@ -331,51 +337,6 @@ public class NewDeiveActivity extends AppCompatActivity {
             }
         };
 
-//        etNameTextWatcher = new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                etCustomerName.removeTextChangedListener(etNameTextWatcher);
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//                etCustomerName.setText(strnew);
-//                etCustomerName.setSelection(etCustomerName.length());
-//                etCustomerName.addTextChangedListener(etNameTextWatcher);
-//
-//
-//            }
-//        };
-//
-//        etAddressTextWatcher = new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//                String str = s.toString();
-//                etCustomerAddress.removeTextChangedListener(this);
-////                str = WordUtils.capitalize(str);
-//                str = WordUtils.capitalize(str);
-//                etCustomerAddress.setText(str);
-//                etCustomerAddress.setSelection(etCustomerAddress.length());
-//                etCustomerAddress.addTextChangedListener(etAddressTextWatcher);
-//            }
-//        };
 
         etCustomerContactNo.addTextChangedListener(etContactNoTextWatcher);
         etCustomerEmail.addTextChangedListener(etEmailTextWatcher);
@@ -411,6 +372,9 @@ public class NewDeiveActivity extends AppCompatActivity {
         errorContactNo.setVisibility(View.GONE);
     }
 
+    /**
+     * Call to the internal warranty update end point using AsyncTask
+     */
     private class UpdateWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -418,31 +382,121 @@ public class NewDeiveActivity extends AppCompatActivity {
 
             UserService.getInstance().updateWarranty(NewDeiveActivity.this, warranty, new AsyncListner() {
                 @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    Log.d(TAG,jsonObject.toString());
+                public void onSuccess(final Context context, JSONObject jsonObject) {
+                    Log.d(TAG, jsonObject.toString());
 
                     try {
                         boolean success = jsonObject.getBoolean("success");
                         String message = jsonObject.getString("message");
                         if (success) {
-                            new RequestWarrantyAsync().execute();
+                            new RequestWarrantyAsync(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+                                @Override
+                                public void onSuccess(Context context, final JSONObject jsonObject) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressDialog.dismiss();
+                                            String objectOne;
+                                            Log.d(TAG, jsonObject.toString());
+
+                                            try {
+                                                boolean success = jsonObject.getBoolean("success");
+                                                String message = jsonObject.getString("message");
+
+                                                if (success) {
+                                                    objectOne = jsonObject.getString("objectOne");
+                                                    Gson gson = new Gson();
+                                                    Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                                                    Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+                                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                    intent.putExtra("type", type);
+                                                    intent.putExtra("previous_activity", "new_device_activity");
+                                                    startActivity(intent);
+                                                }
+                                            } catch (JSONException e) {
+                                                btnConfirm.setEnabled(true);
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(final Context context, String error) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressDialog.dismiss();
+                                            Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    btnConfirm.setEnabled(true);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }).execute();
                         } else {
                             if (message.contains("No warranty template found for brand :")) {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        new RequestWarrantyAsync().execute();
+                                        new RequestWarrantyAsync(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+                                            @Override
+                                            public void onSuccess(Context context, final JSONObject jsonObject) {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        progressDialog.dismiss();
+                                                        String objectOne;
+                                                        Log.d(TAG, jsonObject.toString());
+
+                                                        try {
+                                                            boolean success = jsonObject.getBoolean("success");
+                                                            String message = jsonObject.getString("message");
+
+                                                            if (success) {
+                                                                objectOne = jsonObject.getString("objectOne");
+                                                                Gson gson = new Gson();
+                                                                Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                                                                Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("type", type);
+                                                                intent.putExtra("previous_activity", "new_device_activity");
+                                                                startActivity(intent);
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            btnConfirm.setEnabled(true);
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onError(Context context, String error) {
+
+                                            }
+                                        }).execute();
                                     }
                                 });
                             } else {
-                                progressDialog.dismiss();
-
-                                Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
+                                runOnUiThread(new Runnable() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        btnConfirm.setEnabled(true);
+                                    public void run() {
+                                        progressDialog.dismiss();
+                                        Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                btnConfirm.setEnabled(true);
+                                            }
+                                        });
                                     }
                                 });
                             }
@@ -474,6 +528,9 @@ public class NewDeiveActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Call to the external api warranty update end point using AsyncTask
+     */
     private class UpdateExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -483,19 +540,121 @@ public class NewDeiveActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Context context, JSONObject jsonObject) {
 
-                    Log.d(TAG,jsonObject.toString());
+                    Log.d(TAG, jsonObject.toString());
                     try {
                         boolean success = jsonObject.getBoolean("success");
                         String message = jsonObject.getString("message");
                         if (success) {
-                            new RequestExternalApiWarrantyAsync().execute();
+                            new RequestExternalApiWarrantyAsync(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+                                @Override
+                                public void onSuccess(final Context context, final JSONObject jsonObject) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressDialog.dismiss();
+                                            String objectOne;
+                                            Log.d(TAG, jsonObject.toString());
+
+                                            try {
+                                                boolean success = jsonObject.getBoolean("success");
+                                                String message = jsonObject.getString("message");
+
+                                                if (success) {
+                                                    objectOne = jsonObject.getString("objectOne");
+                                                    Gson gson = new Gson();
+                                                    Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                                                    Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+                                                    intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                    intent.putExtra("type", type);
+                                                    intent.putExtra("previous_activity", "new_device_activity");
+                                                    startActivity(intent);
+                                                }
+                                            } catch (JSONException e) {
+                                                btnConfirm.setEnabled(true);
+                                                e.printStackTrace();
+                                            }
+
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onError(final Context context, String error) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressDialog.dismiss();
+                                            Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    btnConfirm.setEnabled(true);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }).execute();
                         } else {
                             if (message.contains("No warranty template found for brand :")) {
                                 Utils.showAlertWithoutTitleDialog(context, message, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        new RequestExternalApiWarrantyAsync().execute();
+                                        new RequestExternalApiWarrantyAsync(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+                                            @Override
+                                            public void onSuccess(Context context, final JSONObject jsonObject) {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        progressDialog.dismiss();
+                                                        String objectOne;
+                                                        Log.d(TAG, jsonObject.toString());
+
+                                                        try {
+                                                            boolean success = jsonObject.getBoolean("success");
+                                                            String message = jsonObject.getString("message");
+
+                                                            if (success) {
+                                                                objectOne = jsonObject.getString("objectOne");
+                                                                Gson gson = new Gson();
+                                                                Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+
+                                                                Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+                                                                intent.putExtra("warrantyString", gson.toJson(warranty));
+                                                                intent.putExtra("type", type);
+                                                                intent.putExtra("previous_activity", "new_device_activity");
+                                                                startActivity(intent);
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            btnConfirm.setEnabled(true);
+                                                            e.printStackTrace();
+                                                        }
+
+
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onError(final Context context, String error) {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        progressDialog.dismiss();
+                                                        Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+                                                                btnConfirm.setEnabled(true);
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        }).execute();
                                     }
                                 });
                             } else {
@@ -537,109 +696,115 @@ public class NewDeiveActivity extends AppCompatActivity {
         }
     }
 
-    private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
+    /**
+     * Fetch the warranty object from the server
+     */
+//    private class RequestWarrantyAsync extends AsyncTask<Void, Void, Void> {
+//
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//
+//            DealerService.getInstance().getWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+//                @Override
+//                public void onSuccess(Context context, JSONObject jsonObject) {
+//                    progressDialog.dismiss();
+//                    String objectOne;
+//                    Log.d(TAG, jsonObject.toString());
+//
+//                    try {
+//                        boolean success = jsonObject.getBoolean("success");
+//                        String message = jsonObject.getString("message");
+//
+//                        if (success) {
+//                            objectOne = jsonObject.getString("objectOne");
+//                            Gson gson = new Gson();
+//                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+//
+//                            Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+//                            intent.putExtra("warrantyString", gson.toJson(warranty));
+//                            intent.putExtra("type", type);
+//                            intent.putExtra("previous_activity", "new_device_activity");
+//                            startActivity(intent);
+//                        }
+//                    } catch (JSONException e) {
+//                        btnConfirm.setEnabled(true);
+//                        e.printStackTrace();
+//                    }
+//
+//
+//                }
+//
+//                @Override
+//                public void onError(Context context, String error) {
+//                    progressDialog.dismiss();
+//                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            btnConfirm.setEnabled(true);
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return null;
+//        }
+//    }
 
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            DealerService.getInstance().getWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    progressDialog.dismiss();
-                    String objectOne;
-                    Log.d(TAG,jsonObject.toString());
-
-                    try {
-                        boolean success = jsonObject.getBoolean("success");
-                        String message = jsonObject.getString("message");
-
-                        if (success) {
-                            objectOne = jsonObject.getString("objectOne");
-                            Gson gson = new Gson();
-                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
-
-                            Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
-                            intent.putExtra("warrantyString", gson.toJson(warranty));
-                            intent.putExtra("type", type);
-                            intent.putExtra("previous_activity", "new_device_activity");
-                            startActivity(intent);
-                        }
-                    } catch (JSONException e) {
-                        btnConfirm.setEnabled(true);
-                        e.printStackTrace();
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    progressDialog.dismiss();
-                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            btnConfirm.setEnabled(true);
-                        }
-                    });
-                }
-            });
-
-            return null;
-        }
-    }
-
-    private class RequestExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            DealerService.getInstance().getExternalApiWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
-                @Override
-                public void onSuccess(Context context, JSONObject jsonObject) {
-                    progressDialog.dismiss();
-                    String objectOne;
-                    Log.d(TAG,jsonObject.toString());
-
-                    try {
-                        boolean success = jsonObject.getBoolean("success");
-                        String message = jsonObject.getString("message");
-
-                        if (success) {
-                            objectOne = jsonObject.getString("objectOne");
-                            Gson gson = new Gson();
-                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
-
-                            Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
-                            intent.putExtra("warrantyString", gson.toJson(warranty));
-                            intent.putExtra("type", type);
-                            intent.putExtra("previous_activity", "new_device_activity");
-                            startActivity(intent);
-                        }
-                    } catch (JSONException e) {
-                        btnConfirm.setEnabled(true);
-                        e.printStackTrace();
-                    }
-
-
-                }
-
-                @Override
-                public void onError(Context context, String error) {
-                    progressDialog.dismiss();
-                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            btnConfirm.setEnabled(true);
-                        }
-                    });
-                }
-            });
-
-            return null;
-        }
-    }
+    /**
+     * Fetch external warranty object from the server
+     */
+//    private class RequestExternalApiWarrantyAsync extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//
+//            DealerService.getInstance().getExternalApiWarrantyFromIMEI(NewDeiveActivity.this, gson.fromJson(waranntyRequestString, WarrantyRequest.class), new AsyncListner() {
+//                @Override
+//                public void onSuccess(Context context, JSONObject jsonObject) {
+//                    progressDialog.dismiss();
+//                    String objectOne;
+//                    Log.d(TAG, jsonObject.toString());
+//
+//                    try {
+//                        boolean success = jsonObject.getBoolean("success");
+//                        String message = jsonObject.getString("message");
+//
+//                        if (success) {
+//                            objectOne = jsonObject.getString("objectOne");
+//                            Gson gson = new Gson();
+//                            Warranty warranty = gson.fromJson(objectOne, Warranty.class);
+//
+//                            Intent intent = new Intent(NewDeiveActivity.this, DeivceInfoActivity.class);
+//                            intent.putExtra("warrantyString", gson.toJson(warranty));
+//                            intent.putExtra("type", type);
+//                            intent.putExtra("previous_activity", "new_device_activity");
+//                            startActivity(intent);
+//                        }
+//                    } catch (JSONException e) {
+//                        btnConfirm.setEnabled(true);
+//                        e.printStackTrace();
+//                    }
+//
+//
+//                }
+//
+//                @Override
+//                public void onError(Context context, String error) {
+//                    progressDialog.dismiss();
+//                    Utils.showAlertWithoutTitleDialog(context, getString(R.string.server_error), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                            btnConfirm.setEnabled(true);
+//                        }
+//                    });
+//                }
+//            });
+//
+//            return null;
+//        }
+//    }
 
 }

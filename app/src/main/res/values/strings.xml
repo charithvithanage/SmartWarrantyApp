@@ -47,7 +47,7 @@
     <string name="date_pattern">dd/MM/YYY</string>
     <string name="time_pattern">hh:mma</string>
     <string name="back_confirmation_message">Are you sure you want to exit?</string>
-    <string name="server_error">Server Error</string>
+    <string name="server_error">Something went wrong.Please contact Tellko</string>
     <string name="password_pattern_wrong">( Password should contain at least one letter and one digit )</string>
     <string name="password_empty">Empty password</string>
     <string name="wrong_imei">Please scan correct brand</string>

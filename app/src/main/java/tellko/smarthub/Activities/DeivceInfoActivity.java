@@ -58,6 +58,9 @@ public class DeivceInfoActivity extends AppCompatActivity {
         previous_activity = getIntent().getStringExtra("previous_activity");
         warranty = gson.fromJson(warrantyString, Warranty.class);
 
+        /**
+         * Get dealer from the id
+         */
         new GetDealerAsync(DeivceInfoActivity.this, warranty.getDealerCode(), new AsyncListner() {
             @Override
             public void onSuccess(Context context, JSONObject jsonObject) {
